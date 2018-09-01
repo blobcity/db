@@ -1,0 +1,16 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "q" : "search",
+  "p" : {
+    "from" : ["table-name"],
+    "select" : ["*"],
+    "where" : [
+      {"c" : "col1", "x" : "EQ", "v" : "val"},
+      {"c" : "col2", "x" : "LT", "v" : 10},
+      {"c" : "col3", "x" : "IN", "v" : [10,12]}
+    ],
+    "association": "AND"
+  }
+}

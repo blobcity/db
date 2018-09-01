@@ -1,0 +1,8 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "q" : "truncate-ds",
+  "p" : {
+    "name" : "datastore1"
+  }
+}

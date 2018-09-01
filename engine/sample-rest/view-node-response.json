@@ -1,0 +1,16 @@
+{
+  "ack" : "1",
+  "time" : 1000,
+  "p" : {
+    "node-id" : "xxx",
+    "ip" : "192.168.0.101",
+    "cpu" : 8,
+    "mem-free" : 100000,
+    "mem-total" : 1000000,
+    "disk-free" : 100000,
+    "disk-total" : 100000,
+    "load-factor" : 0.8,
+    "license-type" : "enterprise"
+    "licensed-till" : "01/01/2017 00:00 GMT"
+  }
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (C) 2018 BlobCity Inc
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!--
+This file has a valid DTD queryCode that needs to be maintained (since XPath parses this file and any contract change requires a code change). Ensure the DTD is up to date.
+
+Author: javatarz (Karun Japhet)
+-->
+<!DOCTYPE config SYSTEM "config.dtd">
+<config>
+    <factories>
+        <name id="engine.EngineBeanConfig">com.blobcity.pom.database.engine.factory.EngineBeanConfig</name>
+	    <name id="console-endpoint.ConsoleEndPointBeanFactory">com.blobcity.lib.database.console.end.point.factory.ConsoleEndPointBeanFactory</name>
+        <name id="web-endpoint.WebEndPointBeanFactory">com.blobcity.lib.database.web.end.point.factory.WebEndPointBeanConfig</name>
+        <name id="tcp-endpoint.TcpEndPointBeanFactory">com.blobcity.lib.database.tcp.end.point.factory.TcpEndPointBeanConfig</name>
+    </factories>
+    
+    <ports>
+        <port id="com.blobcity.lib.database.tcp.end.point.bean.TcpEndPointServer">10110</port>
+        <port id="com.blobcity.lib.database.web.end.point.bean.DbEndPointServer">10111</port>
+        <port id="com.blobcity.lib.database.web.end.point.bean.InternalEndPointServer">10112</port>
+	    <port id="com.blobcity.lib.database.console.end.point.bean.ConsoleEndPointServer">10113</port>
+    </ports>
+    
+    <hosts>
+        <host id="com.blobcity.lib.database.web.end.point.bean.DbEndPointServer">http://0.0.0.0</host> <!--Used to be db.blobcity.com-->
+        <host id="com.blobcity.lib.database.web.end.point.bean.InternalEndPointServer">http://0.0.0.0</host> <!--Used to be dbint.blobcity.com-->
+    </hosts>
+
+    <resources>
+        <package id="com.blobcity.lib.database.web.end.point.bean.DbEndPointServer">com.blobcity.lib.database.web.end.point.db</package>
+        <package id="com.blobcity.lib.database.web.end.point.bean.InternalEndPointServer">com.blobcity.lib.database.web.end.point.internal</package>
+	    <package id="com.blobcity.lib.database.console.end.point.bean.ConsoleEndPointServer">com.blobcity.lib.database.console.end.point.console</package>
+    </resources>
+
+    <inject>
+        <class>com.blobcity.query.QueryExecutor</class>
+	    <class>com.blobcity.db.api.Db</class>
+    </inject>
+</config>

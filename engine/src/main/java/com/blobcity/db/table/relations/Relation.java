@@ -1,0 +1,63 @@
+/**
+ * Copyright (C) 2018 BlobCity Inc
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.blobcity.db.table.relations;
+
+/**
+ * IMPORTANT: This file is only used for data storage migration for version 1 to 2.
+ * 
+ * @author sanketsarang
+ */
+@Deprecated
+public class Relation {
+
+    private String relatedTable;
+    private String relatedColumn;
+    private RelationCascadeType onUpdate;
+    private RelationCascadeType onDelete;
+
+    public RelationCascadeType getOnDelete() {
+        return onDelete;
+    }
+
+    public void setOnDelete(RelationCascadeType onDelete) {
+        this.onDelete = onDelete;
+    }
+
+    public RelationCascadeType getOnUpdate() {
+        return onUpdate;
+    }
+
+    public void setOnUpdate(RelationCascadeType onUpdate) {
+        this.onUpdate = onUpdate;
+    }
+
+    public String getRelatedColumn() {
+        return relatedColumn;
+    }
+
+    public void setRelatedColumn(String relatedColumn) {
+        this.relatedColumn = relatedColumn;
+    }
+
+    public String getRelatedTable() {
+        return relatedTable;
+    }
+
+    public void setRelatedTable(String relatedTable) {
+        this.relatedTable = relatedTable;
+    }
+}

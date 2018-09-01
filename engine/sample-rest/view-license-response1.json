@@ -1,0 +1,24 @@
+{
+  "ack" : "1",
+  "time" : 1000,
+  "p" : {
+    "nodes" : [
+      {
+        "node-id" : "1",
+        "ip": "192.168.0.101",
+        "license-type" : "enterprise",
+        "licensed-till" : "01/01/2017 00:00 GMT",
+        "license-features" : ["geo-dist-data-rep", "geo-index",
+          "ts-index"]
+      },
+      {
+        "node-id" : "2",
+        "ip": "192.168.0.102",
+        "license-type" : "enterprise",
+        "licensed-till" : "01/01/2017 00:00 GMT",
+        "license-features" : ["geo-dist-data-rep", "geo-index",
+          "ts-index"]
+      }
+    ]
+  }
+}

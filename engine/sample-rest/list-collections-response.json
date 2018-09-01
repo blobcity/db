@@ -1,0 +1,7 @@
+{
+  "ack" : "1",
+  "time" : 1000,
+  "p" : {
+    "c" : ["datastore1.collection1", "datastore1.collection2"]
+  }
+}

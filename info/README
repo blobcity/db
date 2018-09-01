@@ -1,0 +1,33 @@
+The BlobCity DB
+=====================
+
+Running
+-------
+To start the database on Mac OS, UNIX, GNU/Linux:
+./bin/blobcity.sh
+
+(Currently no queryCode-line parameters are supported)
+
+
+Requirements
+------------
+A directory named "/blobcity" will be created in your root directory on first execution. If you do not want to create 
+this file in your root directory, create a symbolic link to another location before starting the database.
+
+(Support for an interactive startup will be added in the future for setting up the initial configuration)
+
+Supported filesystems:
+HFS+ (MacOS)
+XFS (GNU/Linux, other UNIX)
+
+
+Default Credentials
+-------------------
+username: root
+password: root
+
+
+Further reading
+---------------
+Please visit: http://docs.blobcity.com/
+

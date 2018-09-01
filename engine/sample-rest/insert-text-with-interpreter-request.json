@@ -1,0 +1,12 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "c" : "collection1",
+  "q" : "insert",
+  "p" : {
+    "type" : "text",
+    "interpreter" : "MyInterpreter"
+    "data" : ["record1","record2"]
+  }
+}

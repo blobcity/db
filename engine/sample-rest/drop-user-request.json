@@ -1,0 +1,8 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "q" : "drop-user",
+  "p" : {
+    "username" : "username1",
+  }
+}

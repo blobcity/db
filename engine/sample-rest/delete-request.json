@@ -1,0 +1,12 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "c" : "collection1",
+  "q" : "delete",
+  "p" : {
+    "where" : [
+      {"c" : "_id", "x" : "EQ", "v" : "val"}
+    ],
+  }
+}

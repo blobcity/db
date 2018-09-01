@@ -1,0 +1,9 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "q" : "apply-license",
+  "p" : {
+    "node-id" : "xxx",
+    "license" : "zzz"
+  }
+}

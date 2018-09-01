@@ -1,0 +1,14 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "c" : "collection1",
+  "q" : "save",
+  "p" : {
+    "_id" : "record-id",
+    "data" : {
+      "col1" : "value1"
+    }
+    "overwrite" : false
+  }
+}

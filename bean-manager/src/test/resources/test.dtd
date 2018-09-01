@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+Copyright (C) 2018 BlobCity Inc
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!--
+    Vocabulary definition for the Launcher project's config file
+
+    PUBLIC ID: -//blobcity//database//config//EN
+    SYSTEM ID: http://blobcity.com/DTDs/launcher-config.dtd
+-->
+
+<!--
+    Sample Config file
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE launcher-config SYSTEM "config.dtd">
+    <config>
+        <factories>
+            <name id="..">..</name>
+            <name id="..">..</name>
+            ..
+        </factories>
+        
+        <ports>
+            <port id="..">..</port>
+            <port id="..">..</port>
+            ..
+        </ports>
+
+        <hosts>
+            <host id="..">..</host>
+            <host id="..">..</host>
+            ..
+        </hosts>
+
+        <resources>
+            <package id="..">..</package>
+            <package id="..">..</package>
+            ..
+        </resources>
+
+        <inject>
+            <class>..</class>
+            <class>..</class>
+            ..
+        </inject>
+    </config>
+-->
+
+<!--- Main Launcher tag that contains exactly 1 "factories" subtag and 0 or 1 ports tag -->
+<!ELEMENT config (factories,ports?,hosts?,resources?,inject?)>
+
+<!--- Factories tags have 1+ name tags -->
+<!ELEMENT factories (name)+>
+
+<!--- Each name tag is to have data inside and also contain an attribute called "id" -->
+<!ELEMENT name (#PCDATA)>
+<!ATTLIST name
+    id CDATA #IMPLIED
+  >
+
+<!--- Each ports tag contains 1+ port tags -->
+<!ELEMENT ports (port)+>
+
+<!--- Each port tag is to have data inside (integer) and also contain an attribute called "id" -->
+<!ELEMENT port (#PCDATA)>
+<!ATTLIST port
+    id CDATA #IMPLIED
+  >
+
+<!--- Each hosts tag contains 1+ host tags -->
+<!ELEMENT hosts (host)+>
+
+<!--- Each host tag is to have data inside (String; URL address) and also contain an attribute called "id" -->
+<!ELEMENT host (#PCDATA)>
+<!ATTLIST host
+    id CDATA #IMPLIED
+  >
+
+<!--- Each resources tag contains 1+ package tags -->
+<!ELEMENT resources (package)+>
+
+<!--- Each package tag is to have data inside (fully qualified package String) and also contain an attribute called "id" -->
+<!ELEMENT package (#PCDATA)>
+<!ATTLIST package
+    id CDATA #IMPLIED
+  >
+
+<!--- Each inject tag contains 1+ class tags -->
+<!ELEMENT inject (class)+>
+<!--- Each class tag contains a fully qualified Class name for a class that can be Injected in a stored procedure using the @javax.inject.Inject annotation -->
+<!ELEMENT class (#PCDATA)>

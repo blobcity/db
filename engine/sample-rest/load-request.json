@@ -1,0 +1,10 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "c" : "collection1",
+  "q" : "load",
+  "p" : {
+    "ids" : ["id1","id2","id3"]
+  }
+}

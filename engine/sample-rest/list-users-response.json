@@ -1,0 +1,18 @@
+{
+  "ack" : "1",
+  "time" : 1000,
+  "p" : {
+    "users" : [
+      {
+        "u": "username1",
+        "r": ["view-users", "manage-users"],
+        "g": ["group1"]
+      },
+      {
+        "u": "username2",
+        "r": ["view-cluster", "manage-cluster"],
+        "g": ["group1", "group2"]
+      }
+    ]
+  }
+}

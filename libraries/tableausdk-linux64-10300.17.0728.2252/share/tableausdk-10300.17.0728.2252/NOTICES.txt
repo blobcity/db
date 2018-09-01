@@ -1,0 +1,4 @@
+Copyright (c) 2003 - 2017 Tableau and its licensors. All rights reserved.
+
+Protected by U.S. Patents and Trademarks as noted at http://www.tableausoftware.com/IP; Patents pending.
+Portions of the overall program code Copyright (c) 2002 The Board of Trustees of the Leland Stanford Junior University. All rights reserved.

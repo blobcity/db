@@ -1,0 +1,8 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "q" : "view-license",
+  "p" : {
+    "node-id" : "nnn"
+  }
+}

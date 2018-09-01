@@ -1,0 +1,11 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "q" : "create-collection",
+  "p" : {
+    "name" : "collection-name",
+    "type" : "in-memory",
+    "replication-type" : "mirrored"
+  }
+}

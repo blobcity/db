@@ -1,0 +1,8 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "q" : "ds-exists",
+  "p" : {
+    "ds" : "datastore1",
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "c" : "collection1",
+  "q" : "insert",
+  "p" : {
+    "type" : "auto",
+    "data" : ["XML","JSON",{"key":"json"},"Text"]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "c" : "collection1",
+  "q" : "update",
+  "p" : {
+    "set" : {
+      "col1" : "value1"
+    },
+    "where" : [
+      {"c" : "_id", "x" : "EQ", "v" : "val"}
+    ]
+  }
+}

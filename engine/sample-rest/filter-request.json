@@ -1,0 +1,13 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "c" : "collection1",
+  "q" : "filter",
+  "p" : {
+    "name" : "HelloWorld",
+    "p" : {
+      "param1" : "value1"
+    }
+  }
+}

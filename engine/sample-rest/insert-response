@@ -1,0 +1,10 @@
+{
+  "ack" : "1",
+  "time" : 1000,
+  "p" : {
+    "status" : [1,0,1,1],
+    "ids" : ["id1","id2","id3","id4"],
+    "inserted" : 3,
+    "failed" : 1
+  }
+}

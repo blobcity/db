@@ -1,0 +1,14 @@
+{
+  "username" : "root",
+  "password" : "root",
+  "ds" : "datastore1",
+  "c" : "collection1",
+  "q" : "delete",
+  "p" : {
+    "where" : [
+      {"c" : "gender", "x" : "EQ", "v" : "M"},
+      {"c" : "age", "x" : "LT", "v" : 21}
+    ],
+    "association" : "AND"
+  }
+}

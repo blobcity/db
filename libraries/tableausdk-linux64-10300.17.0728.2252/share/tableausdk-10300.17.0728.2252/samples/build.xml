@@ -1,0 +1,71 @@
+<!--
+  Build and Run the Tableau SDK samples.
+ -->
+<project name="TableauSDKDemos" default="usage">
+
+  <property name="local_build_dir" value="build/classes" />
+  <property name="local_lib_dir" value="../../../lib64/tableausdk" />
+  <property name="local_jar_dir" value="${local_lib_dir}/Java" />
+  <property name="global_lib_dir" value="/usr/lib64/tableausdk" />
+  <property name="global_jar_dir" value="${global_lib_dir}/Java" />
+
+  <!-- Print out the usage -->
+  <target name="usage">
+    <echo>
+      Usage: ant [target]
+
+      Top-level targets:
+        usage(default)              Generate this message
+        clean                       Clean up all the generated files
+        compile                     Compile the sample
+        run                         Run the sample
+
+      NOTE: To successfully run either the C sample or C++ sample with the"
+            "--publish-extract", you will need to provide, via command line
+            arguments, the hostname, username, password, siteID; and, optionally,
+            the extract filename, and the desired project name and datasource name."
+            A Tableau Server must be installed and running on the hostname you"
+            specify. Admin privileges are required to publish using the Tableau"
+            SDK Server API. For details, please see the Tableau SDK documentation:"
+    </echo>
+  </target>
+
+  <!-- Clean build/run artifacts -->
+  <target name="clean">
+    <delete dir="build" />
+    <delete file="order-java.tde" />
+    <delete>
+      <fileset dir="." includes="*.log" />
+    </delete>
+  </target>
+
+  <!-- Build the sample -->
+  <target name="compile">
+    <mkdir dir="build/classes" />
+    <javac
+      srcdir="."
+      destdir="build/classes"
+      includes="com/tableausoftware/demos/TableauSDKSample.java"
+      classpath="${local_jar_dir}/tableaucommon.jar:${local_jar_dir}/tableauextract.jar:${local_jar_dir}/tableauserver.jar:${local_jar_dir}/jna.jar:${global_jar_dir}/tableaucommon.jar:${global_jar_dir}/tableauextract.jar:${global_jar_dir}/tableauserver.jar:${global_jar_dir}/jna.jar"
+      source="1.8" target="1.8"
+      includeantruntime="false" />
+  </target>
+
+  <!-- Run the sample program -->
+  <target name="run" depends="compile,setRunProps">
+    <java
+      classname="com.tableausoftware.demos.TableauSDKSample"
+      classpath="${local_build_dir}:${local_jar_dir}/tableaucommon.jar:${local_jar_dir}/tableauextract.jar:${local_jar_dir}/tableauserver.jar:${local_jar_dir}/jna.jar:${global_jar_dir}/tableaucommon.jar:${global_jar_dir}/tableauextract.jar:${global_jar_dir}/tableauserver.jar:${global_jar_dir}/jna.jar"
+      fork="true">
+      <env key="${libPathKey}" path="${libPathValue}" />
+    </java>
+  </target>
+
+  <!-- Make sure the JVM can find the SDK libraries. -->
+  <target name="setRunProps">
+    <property environment="env" />
+    <property name="libPathKey" value="LD_LIBRARY_PATH" />
+    <property name="libPathValue" value="${env.LD_LIBRARY_PATH}:${local_lib_dir}:${global_lib_dir}" />
+  </target>
+
+</project>
