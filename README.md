@@ -38,6 +38,10 @@ This product is a Gartner Cool Vendor 2016. [View Report](https://www.gartner.co
 * *Database Code Projects*:
     * **Engine** - Core engine for the database
     
+# Docs
+
+Full technical docs for using BlobCity can be found at [https://docs.blobcity.com](https://docs.blobcity.com)
+
 # Contribute
 
 Your contributions are welcome. [Join our Slack community](https://join.slack.com/t/blobcity-community/shared_invite/enQtNDE1ODExNDIzMTUyLWI3Y2UxOWRjMDU1ZDQ3YjI0ZWQ0OWViODRkOTc4ZmZlN2M1MDE0ZjYxMzYyY2FkN2VlNTg0OGNmYzhlOGZkOWM) and request to become a contributor.
@@ -56,3 +60,11 @@ Your contributions are welcome. [Join our Slack community](https://join.slack.co
 * Commit without appropriate commit messages
 * Not follow the project structure and Spring life cycle
 * Add unnecessary project dependencies
+
+# Authors
+BlobCity DB was created by Sanket Sarang (sanket/blobcity/com) along with other contributors. BlobCity DB is sponsored by [BlobCity, Inc.](https://www.blobcity.com).
+   
+# License
+
+GNU Affero General Public License v3.0
+
