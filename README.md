@@ -62,7 +62,7 @@ Your contributions are welcome. [Join our Slack community](https://join.slack.co
 * Add unnecessary project dependencies
 
 # Authors
-BlobCity DB was created by Sanket Sarang (sanket/blobcity/com) along with other contributors. BlobCity DB is sponsored by [BlobCity, Inc.](https://www.blobcity.com).
+BlobCity DB was created by [Sanket Sarang](https://www.linkedin.com/in/sanketsarang/) along with other contributors. BlobCity DB is sponsored by [BlobCity, Inc.](https://www.blobcity.com).
    
 # License
 
