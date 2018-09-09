@@ -25,8 +25,6 @@ ADD distribution/target/blobcity-db-$DB_VER.tar.gz /opt/
 
 ENV BLOBCITY_DATA=/data/
 
-#ENTRYPOINT cd /opt/blobcity-db-$DB_VER && bin/blobcity.sh
-
 WORKDIR /opt/blobcity-db-$DB_VER
 
 CMD ["bin/blobcity.sh"]

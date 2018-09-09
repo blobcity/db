@@ -23,30 +23,12 @@ RUN cd / && mkdir data
 
 ADD distribution/target/blobcity-db-$DB_VER.tar.gz /opt/
 
-#WORKDIR /lib/
-
-#COPY libraries/tableausdk-linux64-10300.17.0728.2252/lib64/tableausdk/* /usr/lib/x86_64-linux-gnu/
-
-#COPY libraries/tableausdk-linux64-10300.17.0728.2252/lib64/tableausdk/* /lib/x86_64-linux-gnu/
-
-#COPY libraries/tableausdk-linux64-10300.17.0728.2252/lib64/tableausdk/* /lib64/
-
-#COPY libraries/tableausdk-linux64-10300.17.0728.2252/lib64/tableausdk/* /usr/lib/
-
-#COPY libraries/tableausdk-linux64-10300.17.0728.2252/lib64/tableausdk/* /lib/
-
-#RUN chmod -R 777 ./
-
-#RUN ls
-
 RUN apt-get update
 RUN apt-get install dmidecode
 
 COPY resources/* /resources/
 
 ENV BLOBCITY_DATA=/data/
-
-#ENTRYPOINT cd /opt/blobcity-db-$DB_VER && bin/blobcity.sh
 
 WORKDIR /opt/blobcity-db-$DB_VER
 
