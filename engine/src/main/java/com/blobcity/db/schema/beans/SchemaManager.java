@@ -113,8 +113,6 @@ public class SchemaManager {
             try {
                 if (jsonObject.has(mapping.getInternalName(column.getName()))) {
                     viewableJson.put(column.getName(), jsonObject.get(mapping.getInternalName(column.getName())));
-                } else {
-                    viewableJson.put(column.getName(), "");
                 }
             } catch (JSONException ex) {
                 logger.error(null, ex);
@@ -133,8 +131,6 @@ public class SchemaManager {
             try {
                 if (jsonObject.has(column.getName())) {
                     internalJson.put(mapping.getInternalName(column.getName()), jsonObject.get(column.getName()));
-                } else {
-                    internalJson.put(mapping.getInternalName(column.getName()), "");
                 }
             } catch (JSONException ex) {
                 logger.error(null, ex);

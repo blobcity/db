@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <parent>
         <artifactId>database</artifactId>
         <groupId>com.blobcity.pom</groupId>
-        <version>1.7-alpha</version>
+        <version>1.7.1-alpha</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
