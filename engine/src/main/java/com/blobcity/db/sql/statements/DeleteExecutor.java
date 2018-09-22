@@ -179,7 +179,7 @@ public class DeleteExecutor {
         try {
             jsonResponse = new JSONObject();
             jsonResponse.put(BQueryParameters.ACK, "1");
-            jsonResponse.put(BQueryParameters.AFFECTED_ROWS, rowsUpdatedCounter.get());
+            jsonResponse.put(BQueryParameters.ROWS, rowsUpdatedCounter.get());
         } catch (JSONException ex) {
             //TODO: Notify admin
             throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occurred");
