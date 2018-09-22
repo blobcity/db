@@ -137,6 +137,8 @@ public class SelectExecutor {
                 inMemory = true;
             }
 
+            System.out.println("Checking before caching");
+
             /* Load query result from cache if present in cache */
             if(LicenseRules.QUERY_RESULT_CACHING) {
                 final String result = queryResultCache.get(sqlString);
@@ -145,6 +147,8 @@ public class SelectExecutor {
                     return result;
                 }
             }
+
+            System.out.println("Did not return with caching");
 
             String schema = selectNode.getFromList().get(0).getTableName().getSchemaName();
 
@@ -261,8 +265,12 @@ public class SelectExecutor {
 
 
                 /* SELECT col1, col2, coln FROM table -> will use only column index */
+                /* SELECT DISTINCT col1, col2, coln FROM table -> will use only column index and then perform distinct */
                 else if(whereClause == null && aggOperations.isEmpty() && resultColumns.size() > 1 && groupByColumns.size() == 0) {
                     populateOnlyColumnsResult(appId, tableName, columnNames, resultMap);
+                    if(selectNode.isDistinct()) {
+                        keepDistinct(resultColumns, resultMap);
+                    }
                     return produceResult(appId, tableName, sqlString, resultMap, limit, startTime);
                 }
 
@@ -297,8 +305,16 @@ public class SelectExecutor {
                     orderResult(appId, tableName, orderByList, resultMap);
                 }
 
+                System.out.println("Will now limit columns");
+
                 /* Keeps only the requested columns and does not touch if * is present */
                 controlColumns(resultColumns, resultMap);
+
+                System.out.println("Will check if distinct clause is applicable");
+                if(selectNode.isDistinct()) {
+                    System.out.println("Inside the distinct check. Will go inside");
+                    keepDistinct(resultColumns, resultMap);
+                }
 
                 return produceResult(appId, tableName, sqlString, resultMap, limit, startTime);
 
@@ -328,7 +344,10 @@ public class SelectExecutor {
         }
 
         final long executionTime = System.currentTimeMillis() - startTime;
-        final String resultString = responseJson.put(BQueryParameters.ACK, "1").put(BQueryParameters.TIME, executionTime).put(BQueryParameters.PAYLOAD, result).toString();
+        final String resultString = responseJson.put(BQueryParameters.ACK, "1")
+                .put(BQueryParameters.PAYLOAD, result)
+                .put(BQueryParameters.TIME, executionTime)
+                .put(BQueryParameters.ROWS, result.size()).toString();
         if(LicenseRules.QUERY_RESULT_CACHING) {
             queryResultCache.cache(ds, collection, sqlQuery, resultString);
         }
@@ -406,12 +425,54 @@ public class SelectExecutor {
             return;
         }
 
-        resultMap.forEach((key, records) ->
-                records.parallelStream().forEach(record -> {
-                            if(record != null) {
-                                record.keySet().retainAll(displayNames);
-                            }
-                        }));
+        resultMap.forEach((key, records) -> {
+            List<JSONObject> toRemoveList = new ArrayList<>();
+            records.parallelStream().forEach(record -> {
+                if (record != null) {
+                    record.keySet().retainAll(displayNames);
+
+                    if (record.keySet().isEmpty()) {
+                        toRemoveList.add(record);
+                    }
+                }
+            });
+            records.removeAll(toRemoveList);
+        });
+    }
+
+    private void keepDistinct(final ResultColumnList resultColumns, final Map<String, List<JSONObject>> resultMap) {
+        System.out.println("Inside distinct check");
+        final Set<String> displayNames = new HashSet<>();
+
+        for (ResultColumn resultColumn : resultColumns) {
+            if (resultColumn.getExpression() instanceof ColumnReference) {
+                final String columnName = (resultColumn.getExpression()).getColumnName();
+                if(columnName != null) {
+                    displayNames.add(columnName);
+                }
+            } else if (resultColumn.getExpression() instanceof AggregateNode) {
+                AggregateNode aggNode = (AggregateNode) resultColumn.getExpression();
+                displayNames.add(aggNode.getAggregateName() + "(" + ((ColumnReference) aggNode.getOperand()).getColumnName() + ")");
+            }
+        }
+
+        /* Either only * present or * found in the column list, so ignore filtering */
+        if(displayNames.isEmpty() || displayNames.size() != resultColumns.getColumnNames().length) {
+            return;
+        }
+
+        final Set<String> distinctSet = Collections.synchronizedSet(new HashSet<>());
+        final Map<String, List<JSONObject>> newResultMap = new HashMap<>();
+
+        System.out.println("Need to keep distinct records here");
+
+        //TODO: Perform distinct keeping operation here
+//        resultMap.forEach((key, records) ->
+//                records.parallelStream().forEach(record -> {
+//                    if(record != null) {
+//                        record.keySet().retainAll(displayNames);
+//                    }
+//                }));
     }
 
     private Map<AggregateNode, Object> computeFullColumnAggregates(final String ds, final String collection, final List<AggregateNode> aggOperations) throws OperationException {
@@ -501,6 +562,50 @@ public class SelectExecutor {
             columnResultMap.put(columnName, keyValueMap);
             keysSet.addAll(internalKeysSet);
         }, OperationException.class));
+
+        keysSet.parallelStream().forEach(_id -> {
+            JSONObject jsonObject = new JSONObject();
+            columnResultMap.forEach((columnName, map) -> {
+                try {
+                    if(map.containsKey(_id)) {
+                        jsonObject.put(columnName, fieldTypeMap.get(columnName).convert(map.get(_id)));
+                    }
+                } catch (OperationException e) {
+                    e.printStackTrace();
+                }
+            });
+            jsonList.add(jsonObject);
+        });
+
+        resultMap.put("_master_", jsonList);
+    }
+
+    private void populateOnlyColumnsResultDistinct(final String ds, final String collection, final Set<String> columnNames, final Map<String, List<JSONObject>> resultMap) throws OperationException {
+        if (resultMap.containsKey("_master_")) {
+            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "SELECT query execution encountered an internal error. SelectExecutor.populateSingleColumnDistinct() wrongly invoked");
+        }
+
+        final Map<String, Map<String, String>> columnResultMap = new HashMap<>();
+        final Set<String> keysSet = new ConcurrentHashSet<>();
+        final Map<String, FieldType> fieldTypeMap = new HashMap<>();
+        final List<JSONObject> jsonList = new ArrayList<>();
+
+        columnNames.parallelStream().forEach(ConsumerUtil.throwsException(columnName -> {
+            Map<String, String> keyValueMap = new HashMap<>();
+            Set<String> internalKeysSet = new HashSet<>();
+            fieldTypeMap.put(columnName, schemaStore.getSchema(ds, collection).getColumn(columnName).getFieldType());
+
+            indexManager.getCardinals(ds, collection, columnName).forEachRemaining(ConsumerUtil.throwsException(cardinal -> {
+                indexManager.readIndexStream(ds, collection, columnName, cardinal).forEachRemaining(ConsumerUtil.throwsException(_id -> {
+                    keyValueMap.put(_id, cardinal);
+                    keysSet.add(_id);
+                }, OperationException.class));
+            }, OperationException.class));
+            columnResultMap.put(columnName, keyValueMap);
+            keysSet.addAll(internalKeysSet);
+        }, OperationException.class));
+
+        final Set<String> distinctSet = new HashSet<>();
 
         keysSet.parallelStream().forEach(_id -> {
             JSONObject jsonObject = new JSONObject();
@@ -943,6 +1048,7 @@ public class SelectExecutor {
         JSONObject responseJson = ack1();
         responseJson.put(BQueryParameters.PAYLOAD, jsonArray);
         responseJson.put(BQueryParameters.TIME, (System.currentTimeMillis() - startTime));
+        responseJson.put(BQueryParameters.ROWS, jsonArray.length());
         return responseJson;
     }
 }

@@ -35,6 +35,7 @@ import org.springframework.scheduling.annotation.Scheduled;
  * @author sanketsarang
  */
 @Component
+@Deprecated
 public class LicenseBean {
 
     private static final Logger logger = LoggerFactory.getLogger(LicenseBean.class);

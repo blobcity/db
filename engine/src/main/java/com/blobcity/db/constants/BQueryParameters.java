@@ -35,6 +35,6 @@ public class BQueryParameters {
     public static final String PRIMARY_KEY = "pk";
     public static final String ACK = "ack";
     public static final String COUNT = "count";
-    public static final String AFFECTED_ROWS = "rows";
+    public static final String ROWS = "rows";
     public static final String TIME = "time(ms)";
 }
