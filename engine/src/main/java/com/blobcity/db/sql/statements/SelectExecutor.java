@@ -16,6 +16,7 @@
 
 package com.blobcity.db.sql.statements;
 
+import com.blobcity.db.billing.SelectActivityLog;
 import com.blobcity.db.bsql.BSqlDataManager;
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.bsql.BSqlIndexManager;
@@ -103,6 +104,8 @@ public class SelectExecutor {
     @Autowired
     @Lazy
     private QueryResultCache queryResultCache;
+    @Autowired
+    private SelectActivityLog selectActivityLog;
 
     private boolean inMemory = false;
 
@@ -341,6 +344,12 @@ public class SelectExecutor {
         if(LicenseRules.QUERY_RESULT_CACHING) {
             queryResultCache.cache(ds, collection, sqlQuery, resultString);
         }
+
+        /* Register the number of rows selected for cloud billing purposes */
+        if(!ds.equals(".systemdb")) {
+            selectActivityLog.registerActivity(ds, result.size());
+        }
+
         return resultString;
     }
 
@@ -984,7 +993,7 @@ public class SelectExecutor {
     private boolean jsonListContains(List<JSONObject> list, final JSONObject jsonObject) {
         final boolean []array = new boolean[1];
         array[0] = false;
-        list.parallelStream().forEach(json -> {
+        list.forEach(json -> {
             if(!array[0] && JSON.areEqual(json, jsonObject)) {
                 array[0] = true;
             }

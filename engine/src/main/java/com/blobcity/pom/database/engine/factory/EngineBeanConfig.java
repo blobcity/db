@@ -18,6 +18,8 @@ package com.blobcity.pom.database.engine.factory;
 
 import com.blobcity.code.ExportServiceRouter;
 import com.blobcity.code.WebServiceExecutor;
+import com.blobcity.db.billing.BillingCron;
+import com.blobcity.db.billing.SelectActivityLog;
 import com.blobcity.db.bquery.*;
 import com.blobcity.db.bsql.*;
 import com.blobcity.db.cache.QueryResultCache;
@@ -225,6 +227,13 @@ public class EngineBeanConfig {
         logger.trace("Creating an instance of SpamDetector");
 
         return new SpamDetector();
+    }
+
+    @Bean(name = "BillingCron")
+    public BillingCron billingCron() {
+        logger.trace("Creating an instance of BillingCron");
+
+        return new BillingCron();
     }
 
     /*
@@ -1328,6 +1337,14 @@ public class EngineBeanConfig {
         logger.trace("Creating an instance of ExportServiceRouter");
 
         return new ExportServiceRouterBean();
+    }
+
+    @Bean(name = "SelectActivityLog")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public SelectActivityLog selectActivityLog() {
+        logger.trace("Creating an instance of SelectActivityLog");
+
+        return new SelectActivityLog();
     }
 
     /*

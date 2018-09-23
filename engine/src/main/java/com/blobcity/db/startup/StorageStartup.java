@@ -93,6 +93,12 @@ public class StorageStartup {
 
         systemDBService.createStoredProcedureJarsTable();
         logger.info("SPJars table created successfully");
+
+        systemDBService.createSelectActivityLogTable();
+        logger.info("QueryActivity table created successfully");
+
+        systemDBService.createBillingUsageTable();
+        logger.info("BillingUsage table created successfully");
     }
 
     /**

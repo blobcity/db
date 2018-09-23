@@ -146,6 +146,33 @@ public class SystemDBService {
         }
     }
 
+    public synchronized void createSelectActivityLogTable(){
+        String sql = "CREATE TABLE `SelectActivityLog` ("
+                + "`ds` VARCHAR(255) NOT NULL,"
+                + "`rows` BIGINT"
+                + ")";
+        String output = sqlExecutor.executePrivileged(".systemdb", sql);
+        JSONObject json = new JSONObject(output);
+        if (!json.getString("ack").equals("1")) {
+            logger.error("Failed to create SelectActivityLog table");
+            throw new DbRuntimeException("Failed to create SelectActivityLog table");
+        }
+    }
+
+    public synchronized void createBillingUsageTable() {
+        String sql = "CREATE TABLE `BillingUsage` ("
+                + "`ds`     VARCHAR(255) NOT NULL,"
+                + "`my`     VARCHAR(255),"
+                + "`rows`     BIGINT"
+                + ")";
+        String output = sqlExecutor.executePrivileged(".systemdb", sql);
+        JSONObject json = new JSONObject(output);
+        if (!json.getString("ack").equals("1")) {
+            logger.error("Failed to create BillingUsage table");
+            throw new DbRuntimeException("Failed to create BillingUsage table");
+        }
+    }
+
     /**
      * Adds a default user with the username and password as 'root'
      */
