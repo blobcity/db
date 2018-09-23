@@ -149,6 +149,11 @@ public class BSqlCollectionManager {
             throw new OperationException(ErrorCode.APP_INVALID, "Required credentails not set when trying to check if a table isPresent");
         }
 
+        if (!new File(PathUtil.databaseFolder(datastore)).exists()) {
+            logger.warn("Cannot create table in an in-existent datastore. ds = {}", new Object[]{datastore});
+            throw new OperationException(ErrorCode.DATASTORE_INVALID, "Cannot create table in an in-existent datastore. ds = " + datastore);
+        }
+
         /* Check whether table with given name is already present */
         absolutePath = PathUtil.tableFolderPath(datastore, collection);
         file = new File(absolutePath);
