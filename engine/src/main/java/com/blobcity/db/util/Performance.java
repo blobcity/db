@@ -26,7 +26,7 @@ public class Performance {
     public static final int HASH_BUCKET = 1000000; //1 million records per memory hash set
 
     static {
-        PROCESSING_BATCH = Runtime.getRuntime().availableProcessors() * 2 * 10000;
-        THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
+        PROCESSING_BATCH = Runtime.getRuntime().availableProcessors() * 10000;
+        THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
     }
 }
