@@ -15,7 +15,6 @@
  */
 
 package com.blobcity.db.code.triggers;
-
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.code.LoaderStore;
 import com.blobcity.db.code.ManifestParserBean;
@@ -23,6 +22,7 @@ import com.blobcity.db.code.RestrictedClassLoader;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.functions.Triggerable;
+import com.blobcity.db.sp.annotations.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -379,7 +379,7 @@ public class TriggerStoreBean {
      * @param triggerClass
      * @throws OperationException
      */
-    private void processClass(final String datastore, final Class triggerClass) throws OperationException{
+    private void processClass(final String datastore, final Class triggerClass) throws OperationException {
 
         // checking if interface is implemented or not.
         if( !Triggerable.class.isAssignableFrom(triggerClass)) {
@@ -401,7 +401,7 @@ public class TriggerStoreBean {
         // checking for 'trigger' annotation
         final Annotation[] annotations = triggerClass.getAnnotations();
         for(Annotation annotation: annotations){
-            if( "com.blobcity.db.annotations.Trigger".equals(annotation.annotationType().getCanonicalName()) ){
+            if( "com.blobcity.db.sp.annotations.Trigger".equals(annotation.annotationType().getCanonicalName()) ){
                 if(triggerTableName == null){
                     logger.info(annotation.toString());
                     if(!annotation.toString().contains("sequence")){
@@ -411,6 +411,8 @@ public class TriggerStoreBean {
                         logger.debug("{} found annotation TriggerStoreBean[collection={}] with no sequence number", new Object[]{triggerClass.getCanonicalName(), triggerTableName});
                     }
                     else{
+                        Trigger triggerAnnotation = (Trigger) annotation;
+
                         String triggerAnno = annotation.toString();
                         Integer commaIndex = triggerAnno.indexOf(",");
                         Integer sequenceIndex = triggerAnno.indexOf("sequence=");

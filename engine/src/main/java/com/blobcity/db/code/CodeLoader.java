@@ -24,7 +24,10 @@ import com.blobcity.db.code.procedures.ProcedureStoreBean;
 import com.blobcity.db.code.triggers.TriggerStoreBean;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
+import com.blobcity.db.sp.DeleteTrigger;
+import com.blobcity.db.sp.InsertTrigger;
 import com.blobcity.db.sp.RestWebService;
+import com.blobcity.db.sp.UpdateTrigger;
 import com.blobcity.db.sp.annotations.Named;
 import com.blobcity.db.sp.annotations.Rest;
 import com.blobcity.db.sql.util.PathUtil;
@@ -268,6 +271,12 @@ public class CodeLoader {
                         } catch (OperationException e) {
                             e.printStackTrace();
                         }
+                        return;
+                    } else if(instance instanceof InsertTrigger) {
+                        return;
+                    } else if(instance instanceof UpdateTrigger) {
+                        return;
+                    } else if(instance instanceof DeleteTrigger) {
                         return;
                     }
 
