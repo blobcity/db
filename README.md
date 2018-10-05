@@ -1,25 +1,3 @@
-```
-                       ___
-                    .-'   `'.
-                   /         \
-                   |         ;
-                   |         |           ___.--,
-          _.._     |0) ~ (0) |    _.---'`__.-( (_.
-   __.--'`_.. '.__.\    '--. \_.-' ,.--'`     `""`
-  ( ,.--'`   ',__ /./;   ;, '.__.'`    __
-  _`) )  .---.__.' / |   |\   \__..--""  """--.,_
- `---' .'.''-._.-'`_./  /\ '.  \ _.-~~~````~~~-._`-.__.'
-       | |  .'R_.-' |  |  \K \  '.               `~---`
-        \K\/ .'     \  \   '. '-._)
-         \/ /        \  \    `=.__`~-.
-         / /\         `) )    /E/ `"".`\
-   , _.-'.'\ \        /A/    ( (     /N/
-    `--~`   ) )    .-'.'      '.'.  | (
-           (/`    ( (`          ) )  '-;
-            `      '-;         (-'
-```
-Kraken was our internal project code name until open sourcing.  
-
 # Description
 
 This project contains source code of the BlobCity Database. The database offers disk based storage suitable for replacing Hadoop based Data Lakes and a separate in-memory storage engine designed to meet all real-time analytics requirements.
@@ -68,3 +46,25 @@ BlobCity DB was created by [Sanket Sarang](https://www.linkedin.com/in/sanketsar
 
 GNU Affero General Public License v3.0
 
+# Kraken
+```
+                       ___
+                    .-'   `'.
+                   /         \
+                   |         ;
+                   |         |           ___.--,
+          _.._     |0) ~ (0) |    _.---'`__.-( (_.
+   __.--'`_.. '.__.\    '--. \_.-' ,.--'`     `""`
+  ( ,.--'`   ',__ /./;   ;, '.__.'`    __
+  _`) )  .---.__.' / |   |\   \__..--""  """--.,_
+ `---' .'.''-._.-'`_./  /\ '.  \ _.-~~~````~~~-._`-.__.'
+       | |  .'R_.-' |  |  \K \  '.               `~---`
+        \K\/ .'     \  \   '. '-._)
+         \/ /        \  \    `=.__`~-.
+         / /\         `) )    /E/ `"".`\
+   , _.-'.'\ \        /A/    ( (     /N/
+    `--~`   ) )    .-'.'      '.'.  | (
+           (/`    ( (`          ) )  '-;
+            `      '-;         (-'
+```
+Kraken was our internal project code name until open sourcing. You may still find some mentions of it in the code docs.
