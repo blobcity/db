@@ -49,6 +49,8 @@ public interface IndexingStrategy {
 
     public Iterator<String> loadIndexStream(String app, String table, String column, OperatorFileFilter filter) throws OperationException;
 
+    public long getIndexCount(String app, String table, String column, String columnValue) throws OperationException;
+
     /**
      * Applies an indexing on all records of the specified column only if no initializeIndexing currently is present for
      * this column. The indexing process is asynchronous so a tracking id for the indexing operation is returned for

@@ -260,24 +260,24 @@ public class MemoryTable {
      * @throws OperationException
      */
     public void insert(final Object key, final JSONObject json) throws OperationException {
-        data.insert(key, json);
-        MemoryRow row = new MemoryRow();
-        row.insert((Object)json, "");
-        rowStore.put(key, (Object)row);
-        
-        finalJson = JsonUtil.getHierarchicalJson(json, "");
-        logger.debug("1-finalJson: " +finalJson.toString());
-        Iterator<Object> keys = finalJson.keys();
-        while (keys.hasNext()) {
-            String colName = keys.next().toString();
-            dataCube.createColumn(colName, name);
-            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
-                dataCube.buildIndexForCol(colName);
-            }
-            if(dataCube.getColumn(colName).indexBuilt() == true) {
-                 dataCube.getColumn(colName).insertJson(json, key);
-            }
-        }
+//        data.insert(key, json);
+//        MemoryRow row = new MemoryRow();
+//        row.insert((Object)json, "");
+//        rowStore.put(key, (Object)row);
+//
+//        finalJson = JsonUtil.getHierarchicalJson(json, "");
+//        logger.debug("1-finalJson: " +finalJson.toString());
+//        Iterator<Object> keys = finalJson.keys();
+//        while (keys.hasNext()) {
+//            String colName = keys.next().toString();
+//            dataCube.createColumn(colName, name);
+//            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
+//                dataCube.buildIndexForCol(colName);
+//            }
+//            if(dataCube.getColumn(colName).indexBuilt() == true) {
+//                 dataCube.getColumn(colName).insertJson(json, key);
+//            }
+//        }
     }
     
     /**
@@ -329,53 +329,53 @@ public class MemoryTable {
      * @throws OperationException
      */
     public void insert(final Object key, final Object json, final Map<String, String> viewableToInternal) throws OperationException {
-        data.insert(key, json);
-        
-        MemoryRow row = new MemoryRow();
-        row.insert((Object)json, "");
-        rowStore.put(key, (Object)row);
-        
-        Iterator<Object> keys = ((JSONObject)json).keys();
-        while (keys.hasNext()) {
-            String colName = keys.next().toString();
-//            logger.debug("11-col: " + colName + " internal-name: " + viewableToInternal.get(colName));
-            dataCube.createColumn(colName, name);
-            dataCube.getColumn(colName).setColInternalName(viewableToInternal.get(colName));
-            dataCube.getColumn(colName).setColViewableName(colName);
-            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
-                dataCube.buildIndexForCol(colName);
-            }
-        }
-        
-        if(json instanceof JSONObject) {
-            finalJson = JsonUtil.getHierarchicalJson(json, "");
-        }
-        else if(json instanceof JSONArray) {
-            finalJson = JsonUtil.getHierarchicalJsonFromArray(json, "");
-        }
-        Iterator<Object> keys1 = ((JSONObject) finalJson).keys();
-        while (keys1.hasNext()) {
-            String colName = keys1.next().toString();
-            dataCube.createColumn(colName, name);
-            
-            if (colName.contains(".")) {
-                String[] colNameParts = colName.split("\\.");
-                String extensionRemoved = colNameParts[0];
-                for (int i = 1; ((i < colNameParts.length) && (viewableToInternal.get(extensionRemoved) == null)); i++) {
-                    extensionRemoved = extensionRemoved + "." + colNameParts[i];
-                }
-                logger.debug("11-col: " + colName + " internal: " + viewableToInternal.get(extensionRemoved));
-                dataCube.getColumn(colName).setColInternalName(viewableToInternal.get(extensionRemoved));
-                dataCube.getColumn(colName).setColViewableName(extensionRemoved);
-            }
-            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
-                dataCube.buildIndexForCol(colName);
-            }
-            if(dataCube.getColumn(colName).indexBuilt() == true) {
-                logger.debug("1-inserting into col: " +colName);
-                 dataCube.getColumn(colName).insertJson(json, key);
-            }
-        }
+//        data.insert(key, json);
+//
+//        MemoryRow row = new MemoryRow();
+//        row.insert((Object)json, "");
+//        rowStore.put(key, (Object)row);
+//
+//        Iterator<Object> keys = ((JSONObject)json).keys();
+//        while (keys.hasNext()) {
+//            String colName = keys.next().toString();
+////            logger.debug("11-col: " + colName + " internal-name: " + viewableToInternal.get(colName));
+//            dataCube.createColumn(colName, name);
+//            dataCube.getColumn(colName).setColInternalName(viewableToInternal.get(colName));
+//            dataCube.getColumn(colName).setColViewableName(colName);
+//            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
+//                dataCube.buildIndexForCol(colName);
+//            }
+//        }
+//
+//        if(json instanceof JSONObject) {
+//            finalJson = JsonUtil.getHierarchicalJson(json, "");
+//        }
+//        else if(json instanceof JSONArray) {
+//            finalJson = JsonUtil.getHierarchicalJsonFromArray(json, "");
+//        }
+//        Iterator<Object> keys1 = ((JSONObject) finalJson).keys();
+//        while (keys1.hasNext()) {
+//            String colName = keys1.next().toString();
+//            dataCube.createColumn(colName, name);
+//
+//            if (colName.contains(".")) {
+//                String[] colNameParts = colName.split("\\.");
+//                String extensionRemoved = colNameParts[0];
+//                for (int i = 1; ((i < colNameParts.length) && (viewableToInternal.get(extensionRemoved) == null)); i++) {
+//                    extensionRemoved = extensionRemoved + "." + colNameParts[i];
+//                }
+//                logger.debug("11-col: " + colName + " internal: " + viewableToInternal.get(extensionRemoved));
+//                dataCube.getColumn(colName).setColInternalName(viewableToInternal.get(extensionRemoved));
+//                dataCube.getColumn(colName).setColViewableName(extensionRemoved);
+//            }
+//            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
+//                dataCube.buildIndexForCol(colName);
+//            }
+//            if(dataCube.getColumn(colName).indexBuilt() == true) {
+//                logger.debug("1-inserting into col: " +colName);
+//                 dataCube.getColumn(colName).insertJson(json, key);
+//            }
+//        }
     }
     
     public void dump_row_store() {
@@ -399,58 +399,58 @@ public class MemoryTable {
      * @throws OperationException
      */
     public void insert(final Object key, final Object jsonWithInternalSchema, final Object json, final Map<String, String> viewableToInternal) throws OperationException {
-        data.insert(key, jsonWithInternalSchema);
-        
-        MemoryRow row = new MemoryRow();
-        row.insert((Object)json, "");
-        rowStore.put(key, (Object)row);
-        
-        Iterator<Object> keys = ((JSONObject)json).keys();
-        while (keys.hasNext()) {
-            String colName = keys.next().toString();
-            dataCube.createColumn(colName, name);
-            logger.debug("22-col: " + colName + " internal-name: " + viewableToInternal.get(colName));
-            dataCube.getColumn(colName).setColInternalName(viewableToInternal.get(colName));
-            dataCube.getColumn(colName).setColViewableName(colName);
-            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
-                dataCube.buildIndexForCol(colName);
-            }
-        }
-        
-        if(json instanceof JSONObject) {
-            finalJson = JsonUtil.getHierarchicalJson(json, "");
-        }
-        else if(json instanceof JSONArray) {
-            finalJson = JsonUtil.getHierarchicalJsonFromArray(json, "");
-        }
-        Iterator<Object> keys1 = ((JSONObject) finalJson).keys();
-        while (keys1.hasNext()) {
-            String colName = keys1.next().toString();
-            dataCube.createColumn(colName, name);
-  
-            if (colName.contains(".")) {
-                String[] colNameParts = colName.split("\\.");
-                String extensionRemoved = colNameParts[0];
-                for (int i = 1; ((i < colNameParts.length) && (viewableToInternal.get(extensionRemoved) == null)); i++) {
-                    extensionRemoved = extensionRemoved + "." + colNameParts[i];
-                }
-                logger.debug("22-col: " + colName + " internal-name: " + viewableToInternal.get(extensionRemoved));
-                dataCube.getColumn(colName).setColInternalName(viewableToInternal.get(extensionRemoved));
-                dataCube.getColumn(colName).setColViewableName(extensionRemoved);
-            }
-            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
-                dataCube.buildIndexForCol(colName);
-            }
-            if(dataCube.getColumn(colName).indexBuilt() == true) {
-                logger.debug("22-inserting into col: " +colName);
-                dataCube.getColumn(colName).insertJson(json, key);
-            }
-            else {
-                logger.debug("22-indexBuilt for col: " +colName + " returned false");
-            }
-        }
-        
-        dump_row_store();
+//        data.insert(key, jsonWithInternalSchema);
+//
+//        MemoryRow row = new MemoryRow();
+//        row.insert((Object)json, "");
+//        rowStore.put(key, (Object)row);
+//
+//        Iterator<Object> keys = ((JSONObject)json).keys();
+//        while (keys.hasNext()) {
+//            String colName = keys.next().toString();
+//            dataCube.createColumn(colName, name);
+//            logger.debug("22-col: " + colName + " internal-name: " + viewableToInternal.get(colName));
+//            dataCube.getColumn(colName).setColInternalName(viewableToInternal.get(colName));
+//            dataCube.getColumn(colName).setColViewableName(colName);
+//            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
+//                dataCube.buildIndexForCol(colName);
+//            }
+//        }
+//
+//        if(json instanceof JSONObject) {
+//            finalJson = JsonUtil.getHierarchicalJson(json, "");
+//        }
+//        else if(json instanceof JSONArray) {
+//            finalJson = JsonUtil.getHierarchicalJsonFromArray(json, "");
+//        }
+//        Iterator<Object> keys1 = ((JSONObject) finalJson).keys();
+//        while (keys1.hasNext()) {
+//            String colName = keys1.next().toString();
+//            dataCube.createColumn(colName, name);
+//
+//            if (colName.contains(".")) {
+//                String[] colNameParts = colName.split("\\.");
+//                String extensionRemoved = colNameParts[0];
+//                for (int i = 1; ((i < colNameParts.length) && (viewableToInternal.get(extensionRemoved) == null)); i++) {
+//                    extensionRemoved = extensionRemoved + "." + colNameParts[i];
+//                }
+//                logger.debug("22-col: " + colName + " internal-name: " + viewableToInternal.get(extensionRemoved));
+//                dataCube.getColumn(colName).setColInternalName(viewableToInternal.get(extensionRemoved));
+//                dataCube.getColumn(colName).setColViewableName(extensionRemoved);
+//            }
+//            if ((colsToIndex != null) && (colsToIndex.contains(colName))) {
+//                dataCube.buildIndexForCol(colName);
+//            }
+//            if(dataCube.getColumn(colName).indexBuilt() == true) {
+//                logger.debug("22-inserting into col: " +colName);
+//                dataCube.getColumn(colName).insertJson(json, key);
+//            }
+//            else {
+//                logger.debug("22-indexBuilt for col: " +colName + " returned false");
+//            }
+//        }
+//
+//        dump_row_store();
     }
     
     /**
@@ -461,34 +461,34 @@ public class MemoryTable {
      */
     public void save(final Object pk, final Object json) throws OperationException {
 
-        JSONObject oldObject = new JSONObject(data.getRecord(pk).toString());
-        data.save(pk, json);
-
-        Set<Object> keys = ((JSONObject) json).keySet();
-        for (Object oldColName : keys) {
-            String oldValue = oldObject.getString(oldColName.toString());
-            if (dataCube.indexBuilt(oldColName.toString())) {
-                try {
-                    dataCube.insert(oldColName.toString(), (Object) oldValue, pk);
-                } catch (OperationException ex) {
-                    java.util.logging.Logger.getLogger(MemoryTable.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-        finalJson = JsonUtil.getHierarchicalJson(json, "");
-        Set<Object> keys1 = ((JSONObject) finalJson).keySet();
-
-        for (Object colName : keys1) {
-            String colValue = finalJson.getString(colName.toString());
-            if (dataCube.indexBuilt(colName)) {
-                try {
-                    dataCube.insert(colName.toString(), (Object) colValue, pk);
-                } catch (OperationException ex) {
-                    java.util.logging.Logger.getLogger(MemoryTable.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+//        JSONObject oldObject = new JSONObject(data.getRecord(pk).toString());
+//        data.save(pk, json);
+//
+//        Set<Object> keys = ((JSONObject) json).keySet();
+//        for (Object oldColName : keys) {
+//            String oldValue = oldObject.getString(oldColName.toString());
+//            if (dataCube.indexBuilt(oldColName.toString())) {
+//                try {
+//                    dataCube.insert(oldColName.toString(), (Object) oldValue, pk);
+//                } catch (OperationException ex) {
+//                    java.util.logging.Logger.getLogger(MemoryTable.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
+//
+//        finalJson = JsonUtil.getHierarchicalJson(json, "");
+//        Set<Object> keys1 = ((JSONObject) finalJson).keySet();
+//
+//        for (Object colName : keys1) {
+//            String colValue = finalJson.getString(colName.toString());
+//            if (dataCube.indexBuilt(colName)) {
+//                try {
+//                    dataCube.insert(colName.toString(), (Object) colValue, pk);
+//                } catch (OperationException ex) {
+//                    java.util.logging.Logger.getLogger(MemoryTable.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
     }
 
     /**

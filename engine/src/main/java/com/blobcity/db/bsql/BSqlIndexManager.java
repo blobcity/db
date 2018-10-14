@@ -385,6 +385,27 @@ public class BSqlIndexManager {
         return strategy.loadIndexStream(app, table, columnName, columnValue.toString());
     }
 
+    public long getIndexCount(final String app, final String table, final String columnName, final Object columnValue) throws OperationException {
+        Schema schema = schemaStore.getSchema(app, table);
+        Column column = schema.getColumn(columnName);
+        IndexingStrategy strategy = indexFactory.getStrategy(column.getIndexType());
+        if(strategy == null) {
+            final String opid = index(app, table, columnName, IndexTypes.BTREE, OperationLogLevel.ERROR);
+
+            /**
+             * The below semaphore mechanism is required in future when the operation is started in async manner
+             */
+//            Semaphore semaphore = new Semaphore(1);
+//            semaphore.acquireUninterruptibly();
+//            globalLiveStore.registerNotification(opid, semaphore);
+//            semaphore.acquireUninterruptibly();
+
+            column = schemaStore.getSchema(app, table).getColumn(columnName);
+            strategy = indexFactory.getStrategy(column.getIndexType());
+        }
+        return strategy.getIndexCount(app, table, columnName, columnValue.toString());
+    }
+
     public Iterator<String> readIndexStreamWithFilter(final String app, final String table, final String columnName, final OperatorFileFilter filter) throws OperationException {
         Schema schema = schemaStore.getSchema(app, table);
         Column column = schema.getColumn(columnName);

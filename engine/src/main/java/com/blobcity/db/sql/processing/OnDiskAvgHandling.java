@@ -64,9 +64,8 @@ public class OnDiskAvgHandling {
             validateNumeric(fieldType);
             Aggregate<Number> average = new Aggregate<>();
             indexManager.getCardinals(ds, collection, columnName).forEachRemaining(ConsumerUtil.throwsException(cardinal -> {
-                    Iterator<String> streams = indexManager.readIndexStream(ds, collection, columnName, cardinal);
+                    final long size = indexManager.getIndexCount(ds, collection, columnName, cardinal);
                     Number value = (Number) fieldType.convert(cardinal);
-                    double size = Iterators.size(streams);
                     average.addCount(new Double(size));
                     average.add(new Double(value.doubleValue() * size));
             }, OperationException.class));
