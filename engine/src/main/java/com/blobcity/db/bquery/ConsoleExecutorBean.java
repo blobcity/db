@@ -422,6 +422,9 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                 case "set-log-level":
                     response = setLogLevel(elements);
                     break;
+                case "row-count":
+                    response = rowCount(elements);
+                    break;
 
                 case "set-interpreters":
                     response = setInterpreters(elements);
@@ -1018,8 +1021,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
 
     private String nodeId(String[] elements) throws OperationException {
         if (elements.length == 1) {
-            return com.blobcity.license.License.getNodeId();
-//            return configBean.getStringProperty(ConfigProperties.NODE_ID); //to remove
+//                return com.blobcity.license.License.getNodeId();
+                return "default"; //temp code until removal of licensing module
         } else if (elements.length == 2) {
             final String ip = elements[1];
             return "Getting node-id by IP is not yet supported";
@@ -1733,6 +1736,24 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         }
 
         return "Logging level has been set to " + logLevel.toUpperCase() + " successfully";
+    }
+
+    private String rowCount(String []elements) throws OperationException {
+        if(elements.length < 2){
+            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Insufficient number of arguments provided");
+        }
+
+        final String datastoreAndCollection = elements[1];
+        if (!datastoreAndCollection.contains(".")) {
+            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Datastore and collection should be specified in format: datastoreName.collectionName");
+        }
+
+        final String datastore = datastoreAndCollection.substring(0, datastoreAndCollection.indexOf("."));
+        final String collection = datastoreAndCollection.substring(datastoreAndCollection.indexOf(".") + 1, datastoreAndCollection.length());
+
+        final long count = dataManager.getRowCount(datastore, collection);
+
+        return count + " rows";
     }
 
 

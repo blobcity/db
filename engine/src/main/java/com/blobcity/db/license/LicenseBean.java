@@ -118,6 +118,8 @@ public class LicenseBean {
             //default to free edition features
             logger.trace("No license file found at " + BSql.NODE_LICENSE_FILE + ". Product will operate with features of free edition.");
             setLicenseToFreeEdition();
+        } catch (Exception ex) {
+            //temp catch block until licensing module is removed
         }
         lastChecked = System.currentTimeMillis();
     }

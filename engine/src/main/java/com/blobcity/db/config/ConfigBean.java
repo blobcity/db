@@ -150,7 +150,8 @@ public class ConfigBean {
             logger.error("Unable to parse config file contents as JSON", ex);
         }
 
-        configMap.put(ConfigProperties.NODE_ID, License.getNodeId()); //replace any config node-id with the new licensing logic node-id
+//            configMap.put(ConfigProperties.NODE_ID, License.getNodeId());
+            configMap.put(ConfigProperties.NODE_ID, "default"); //temp code until remove of licensing module
     }
 
     private boolean configurationExists() {

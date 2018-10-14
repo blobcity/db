@@ -42,6 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
+import com.blobcity.util.lambda.Counter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,6 +128,23 @@ public class BSqlFileManager {
             });
 
             return list;
+        } catch (IOException ex) {
+            logger.trace(null, ex);
+            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);
+        }
+    }
+
+    public long rowCount(final String ds, final String collection) throws OperationException {
+        try (DirectoryStream directoryStream = Files.newDirectoryStream(FileSystems.getDefault().getPath(PathUtil.dataFolderPath(ds, collection)))) {
+
+
+            final Counter counter = new Counter();
+            Iterator<Path> iterator = directoryStream.iterator();
+            iterator.forEachRemaining(path -> {
+                counter.increment();
+            });
+
+            return counter.getCount();
         } catch (IOException ex) {
             logger.trace(null, ex);
             throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);

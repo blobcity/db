@@ -20,6 +20,7 @@ import com.blobcity.db.bsql.filefilters.EQFilenameFilter;
 import com.blobcity.db.bsql.filefilters.OperatorFileFilter;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
+import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.sql.util.PathUtil;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -35,6 +36,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.blobcity.util.lambda.Counter;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -473,5 +476,10 @@ public class OnDiskHashedIndex implements IndexingStrategy {
     @Override
     public String getAnyCardinalEntry(final String ds, final String collection, final String column, final String columnValue) throws OperationException {
         throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Fetching single cardinal entry on OnDisk Hashed index is not supported");
+    }
+
+    @Override
+    public long getIndexCount(String app, String table, String column, String columnValue) throws OperationException {
+        throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Requested operation not supported with index type of column: " + column);
     }
 }

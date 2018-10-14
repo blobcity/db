@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author sanketsarang
  */
+@Deprecated
 public class DataCubeColumn {
 
      private static final Logger logger = LoggerFactory.getLogger(DataCubeColumn.class);
@@ -435,93 +436,93 @@ public class DataCubeColumn {
     public void insertJson(Object jsonObj, Object pk) throws OperationException
     {
         
-        if (name.contains(".") && (nameParts == null)) {
-            nameParts = name.split("\\.");
-            namePartsExceptLast = nameParts[0];
-            for (int i = 1; i < nameParts.length - 1; i++) {
-                namePartsExceptLast = namePartsExceptLast + "." + nameParts[i];
-            }
-
-            if (colViewableName.contains(".")) {
-                String[] colViewableParts = colViewableName.split("\\.");
-                viewableExtensionRemoved = colViewableParts[0];
-                for (int i = 1; i < colViewableParts.length; i++) {
-                    viewableExtensionRemoved = viewableExtensionRemoved + "." + colViewableParts[i];
-                    if ((nameParts != null) && namePartsExceptLast.equals(viewableExtensionRemoved)) {
-                        matched = true;
-                        break;
-                    }
-                }
-            }
-        }
-        
-        Iterator<Object> cols = ((JSONObject)jsonObj).keys();
-        while (cols.hasNext()) {
-            String colName = cols.next().toString();
-            logger.debug("colName: " + colName + ", viewable: " + colViewableName + ", internal: " + colInternalName + ", name:" + name + "\n");
-
-            if (colName.equals(colViewableName) || colName.equals(colInternalName) || (matched) || (name.equals(colViewableName) && colName.equals(colInternalName))
-                    || ((viewableExtensionRemoved != null) && viewableExtensionRemoved.equals(colName))
-                    || ((viewableExtensionRemoved != null) && (nameParts != null) && viewableExtensionRemoved.equals(nameParts[0]))) {
-                Object val = ((JSONObject) jsonObj).get(colName);
-                logger.debug("val: " + val.toString() + "\n");
-                if (val instanceof JSONObject) {
-                    if ((colViewableName.contains(".")) || (colViewableName.equals(namePartsExceptLast))
-                            || (((viewableExtensionRemoved != null) && (nameParts != null) && viewableExtensionRemoved.equals(nameParts[0])))) {
-                        finalJson = JsonUtil.getHierarchicalJson(val, colViewableName + ".");
-                    } else if (colViewableName.equals(name)) {
-                        finalJson = JsonUtil.getHierarchicalJson(val, colViewableName);
-                    }
-                    logger.debug("val.finalJson: " + finalJson.toString() + "\n");
-                    Iterator<Object> internalCols = finalJson.keys();
-                    while (internalCols.hasNext()) {
-                        String internalColName = internalCols.next().toString();
-                        String fullColName = colName + "." + internalColName;
-                        logger.debug("internalColName: " + internalColName + ", name: " + name + ", fullColName: " + fullColName + "\n");
-                        if (internalColName.equals(name)) {
-                            Object value = finalJson.get(internalColName);
-                            logger.debug("inserting val: " + value.toString() + ", key: " + pk);
-                            if (value instanceof JSONArray) {
-                                insertJSONArray(value, pk);
-                            } else {
-                                insert(value, pk);
-                            }
-                        }
-                    }
-                } else if (val instanceof JSONArray) {
-                    if ((colViewableName.contains(".")) || (colViewableName.equals(namePartsExceptLast))
-                            || (((viewableExtensionRemoved != null) && (nameParts != null) && viewableExtensionRemoved.equals(nameParts[0])))) {
-                        finalJson = JsonUtil.getHierarchicalJsonFromArray(val, colViewableName + ".");
-                    } else if (colViewableName.equals(name)) {
-                        finalJson = JsonUtil.getHierarchicalJsonFromArray(val, colViewableName);
-                    }
-                    logger.debug("2-val.finalJson: " + finalJson.toString() + "\n");
-                    Iterator<Object> internalCols = finalJson.keys();
-                    while (internalCols.hasNext()) {
-                        String internalColName = internalCols.next().toString();
-                        String fullColName = colName + "." + internalColName;
-                        logger.debug("internalColName: " + internalColName + ", name: " + name + ", fullColName: " + fullColName + "\n");
-                        if (internalColName.equals(name)) {
-                            Object value = finalJson.get(internalColName);
-                            logger.debug("3-inserting val: " + value.toString() + ", key: " + pk);
-                            if (value instanceof List) {
-                                for (ListIterator<Object> iter1 = ((List) value).listIterator(); iter1.hasNext();) {
-                                    Object element = iter1.next();
-                                    insert(value, pk);
-                                }
-                            } else if (value instanceof JSONArray) {
-                                insertJSONArray(value, pk);
-                            } else {
-                                insert(value, pk);
-                            }
-                        }
-                    }
-                } else if (colViewableName.equals(name)) {
-                    logger.debug("2222-inserting val: " + val.toString() + ", key: " + pk);
-                    insert(val, pk);
-                }
-            }
-        }
+//        if (name.contains(".") && (nameParts == null)) {
+//            nameParts = name.split("\\.");
+//            namePartsExceptLast = nameParts[0];
+//            for (int i = 1; i < nameParts.length - 1; i++) {
+//                namePartsExceptLast = namePartsExceptLast + "." + nameParts[i];
+//            }
+//
+//            if (colViewableName.contains(".")) {
+//                String[] colViewableParts = colViewableName.split("\\.");
+//                viewableExtensionRemoved = colViewableParts[0];
+//                for (int i = 1; i < colViewableParts.length; i++) {
+//                    viewableExtensionRemoved = viewableExtensionRemoved + "." + colViewableParts[i];
+//                    if ((nameParts != null) && namePartsExceptLast.equals(viewableExtensionRemoved)) {
+//                        matched = true;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//
+//        Iterator<Object> cols = ((JSONObject)jsonObj).keys();
+//        while (cols.hasNext()) {
+//            String colName = cols.next().toString();
+//            logger.debug("colName: " + colName + ", viewable: " + colViewableName + ", internal: " + colInternalName + ", name:" + name + "\n");
+//
+//            if (colName.equals(colViewableName) || colName.equals(colInternalName) || (matched) || (name.equals(colViewableName) && colName.equals(colInternalName))
+//                    || ((viewableExtensionRemoved != null) && viewableExtensionRemoved.equals(colName))
+//                    || ((viewableExtensionRemoved != null) && (nameParts != null) && viewableExtensionRemoved.equals(nameParts[0]))) {
+//                Object val = ((JSONObject) jsonObj).get(colName);
+//                logger.debug("val: " + val.toString() + "\n");
+//                if (val instanceof JSONObject) {
+//                    if ((colViewableName.contains(".")) || (colViewableName.equals(namePartsExceptLast))
+//                            || (((viewableExtensionRemoved != null) && (nameParts != null) && viewableExtensionRemoved.equals(nameParts[0])))) {
+//                        finalJson = JsonUtil.getHierarchicalJson(val, colViewableName + ".");
+//                    } else if (colViewableName.equals(name)) {
+//                        finalJson = JsonUtil.getHierarchicalJson(val, colViewableName);
+//                    }
+//                    logger.debug("val.finalJson: " + finalJson.toString() + "\n");
+//                    Iterator<Object> internalCols = finalJson.keys();
+//                    while (internalCols.hasNext()) {
+//                        String internalColName = internalCols.next().toString();
+//                        String fullColName = colName + "." + internalColName;
+//                        logger.debug("internalColName: " + internalColName + ", name: " + name + ", fullColName: " + fullColName + "\n");
+//                        if (internalColName.equals(name)) {
+//                            Object value = finalJson.get(internalColName);
+//                            logger.debug("inserting val: " + value.toString() + ", key: " + pk);
+//                            if (value instanceof JSONArray) {
+//                                insertJSONArray(value, pk);
+//                            } else {
+//                                insert(value, pk);
+//                            }
+//                        }
+//                    }
+//                } else if (val instanceof JSONArray) {
+//                    if ((colViewableName.contains(".")) || (colViewableName.equals(namePartsExceptLast))
+//                            || (((viewableExtensionRemoved != null) && (nameParts != null) && viewableExtensionRemoved.equals(nameParts[0])))) {
+//                        finalJson = JsonUtil.getHierarchicalJsonFromArray(val, colViewableName + ".");
+//                    } else if (colViewableName.equals(name)) {
+//                        finalJson = JsonUtil.getHierarchicalJsonFromArray(val, colViewableName);
+//                    }
+//                    logger.debug("2-val.finalJson: " + finalJson.toString() + "\n");
+//                    Iterator<Object> internalCols = finalJson.keys();
+//                    while (internalCols.hasNext()) {
+//                        String internalColName = internalCols.next().toString();
+//                        String fullColName = colName + "." + internalColName;
+//                        logger.debug("internalColName: " + internalColName + ", name: " + name + ", fullColName: " + fullColName + "\n");
+//                        if (internalColName.equals(name)) {
+//                            Object value = finalJson.get(internalColName);
+//                            logger.debug("3-inserting val: " + value.toString() + ", key: " + pk);
+//                            if (value instanceof List) {
+//                                for (ListIterator<Object> iter1 = ((List) value).listIterator(); iter1.hasNext();) {
+//                                    Object element = iter1.next();
+//                                    insert(value, pk);
+//                                }
+//                            } else if (value instanceof JSONArray) {
+//                                insertJSONArray(value, pk);
+//                            } else {
+//                                insert(value, pk);
+//                            }
+//                        }
+//                    }
+//                } else if (colViewableName.equals(name)) {
+//                    logger.debug("2222-inserting val: " + val.toString() + ", key: " + pk);
+//                    insert(val, pk);
+//                }
+//            }
+//        }
     }
     
     /**
@@ -558,91 +559,91 @@ public class DataCubeColumn {
      * @throws OperationException
      */
         public void buildIndexUsingOriginalJSONObject() throws OperationException {
-        try {
-            if ((tableName == null) || (MemoryTableStore.getTable(tableName) == null)) {
-                logger.debug("Either tableName is null or table not found in memory table store");
-                return;
-            }
-            
-            Iterator<Object> iter = MemoryTableStore.getTable(tableName).getAllKeys().iterator();
-            JSONObject jsonObj;
-            Object currKey;
-            while (iter.hasNext()) {
-                currKey = iter.next();
-                jsonObj = (JSONObject)(MemoryTableStore.getTable(tableName).getData().getRecord(currKey));
-                logger.debug("jsonobj: " +jsonObj + "\n");
-                Iterator<Object> cols = jsonObj.keys();
-                String[] nameParts = null;
-                if (name.contains(".")) {
-                    nameParts = name.split("\\.");
-                }
-                 
-                while (cols.hasNext()) {
-                    String colName = cols.next().toString();
-                    logger.debug("colName: " +colName + ", viewable: " +colViewableName + ", internal: " +colInternalName + ", name:" +name + "\n");
-                    String viewableExtensionRemoved = null;
-                    
-                    
-                    if (colViewableName.contains(".")) {
-                        viewableExtensionRemoved = colViewableName.split("\\.")[0];
-                    }
-                                      
-                    if (colName.equals(colViewableName) || colName.equals(colInternalName) || ((viewableExtensionRemoved != null) && viewableExtensionRemoved.equals(colName))) {
-                        Object val = jsonObj.get(colName);
-                        logger.debug("val: " +val.toString() + "\n");
-                        if (val instanceof JSONObject) {
-                            finalJson = JsonUtil.getHierarchicalJson(val, colName + ".");
-                            logger.debug("val.finalJson: " +finalJson.toString() + "\n");
-                            Iterator<Object> internalCols = finalJson.keys();
-                            while (internalCols.hasNext()) {
-                                String fullColName = internalCols.next().toString();                               
-                                logger.debug("name: " +name + ", fullColName: " + fullColName + "\n");
-                                if(fullColName.equals(name)) {
-                                    Object value = finalJson.get(fullColName);
-                                    logger.debug("inserting val: " +value.toString() + ", key: " +currKey);
-                                    insert(value, currKey);
-                                }
-                            }
-                        }
-                        else if (val instanceof JSONArray) {
-                            finalJson = JsonUtil.getHierarchicalJsonFromArray((JSONArray)val, colName + ".");
-                            logger.debug("2-val.finalJson: " +finalJson.toString() + "\n");
-                            Iterator<Object> internalCols = finalJson.keys();
-                            while (internalCols.hasNext()) {
-                                String fullColName = internalCols.next().toString();                               
-                                logger.debug("2-name: " +name + ", fullColName: " + fullColName + "\n");
-                                if(fullColName.equals(name)) {
-                                    Object value = finalJson.get(fullColName);
-                                    logger.debug("2-inserting val: " +value.toString() + ", key: " +currKey);
-                                    if(value instanceof List) {
-                                        for (ListIterator<Object> iter1 = ((List)value).listIterator(); iter1.hasNext(); ) {
-                                            Object element = iter1.next();
-                                            insert(value, currKey);
-                                        }
-                                    }
-                                    else if(value instanceof JSONArray) {
-                                        for(int i = 0; i < ((JSONArray)value).length(); i++) {
-                                            Object arrayElement =((JSONArray)value).get(i);
-                                            insert(arrayElement, currKey);
-                                        }
-                                    }
-                                    else {
-                                        insert(value, currKey);
-                                    }
-                                }
-                            }
-                        }
-                        else if(colName.equals(name)) {
-                            logger.debug("inserting val: " +val.toString() + ", key: " +currKey);
-                            insert(val, currKey);
-                        }
-                    }
-                }
-            }
-        } catch (NullPointerException e) {
-            logger.error("Could not build column index: " +e.toString());
-            throw new OperationException(ErrorCode.INDEXING_ERROR, "Could not build column index");
-        }
+//        try {
+//            if ((tableName == null) || (MemoryTableStore.getTable(tableName) == null)) {
+//                logger.debug("Either tableName is null or table not found in memory table store");
+//                return;
+//            }
+//
+//            Iterator<Object> iter = MemoryTableStore.getTable(tableName).getAllKeys().iterator();
+//            JSONObject jsonObj;
+//            Object currKey;
+//            while (iter.hasNext()) {
+//                currKey = iter.next();
+//                jsonObj = (JSONObject)(MemoryTableStore.getTable(tableName).getData().getRecord(currKey));
+//                logger.debug("jsonobj: " +jsonObj + "\n");
+//                Iterator<Object> cols = jsonObj.keys();
+//                String[] nameParts = null;
+//                if (name.contains(".")) {
+//                    nameParts = name.split("\\.");
+//                }
+//
+//                while (cols.hasNext()) {
+//                    String colName = cols.next().toString();
+//                    logger.debug("colName: " +colName + ", viewable: " +colViewableName + ", internal: " +colInternalName + ", name:" +name + "\n");
+//                    String viewableExtensionRemoved = null;
+//
+//
+//                    if (colViewableName.contains(".")) {
+//                        viewableExtensionRemoved = colViewableName.split("\\.")[0];
+//                    }
+//
+//                    if (colName.equals(colViewableName) || colName.equals(colInternalName) || ((viewableExtensionRemoved != null) && viewableExtensionRemoved.equals(colName))) {
+//                        Object val = jsonObj.get(colName);
+//                        logger.debug("val: " +val.toString() + "\n");
+//                        if (val instanceof JSONObject) {
+//                            finalJson = JsonUtil.getHierarchicalJson(val, colName + ".");
+//                            logger.debug("val.finalJson: " +finalJson.toString() + "\n");
+//                            Iterator<Object> internalCols = finalJson.keys();
+//                            while (internalCols.hasNext()) {
+//                                String fullColName = internalCols.next().toString();
+//                                logger.debug("name: " +name + ", fullColName: " + fullColName + "\n");
+//                                if(fullColName.equals(name)) {
+//                                    Object value = finalJson.get(fullColName);
+//                                    logger.debug("inserting val: " +value.toString() + ", key: " +currKey);
+//                                    insert(value, currKey);
+//                                }
+//                            }
+//                        }
+//                        else if (val instanceof JSONArray) {
+//                            finalJson = JsonUtil.getHierarchicalJsonFromArray((JSONArray)val, colName + ".");
+//                            logger.debug("2-val.finalJson: " +finalJson.toString() + "\n");
+//                            Iterator<Object> internalCols = finalJson.keys();
+//                            while (internalCols.hasNext()) {
+//                                String fullColName = internalCols.next().toString();
+//                                logger.debug("2-name: " +name + ", fullColName: " + fullColName + "\n");
+//                                if(fullColName.equals(name)) {
+//                                    Object value = finalJson.get(fullColName);
+//                                    logger.debug("2-inserting val: " +value.toString() + ", key: " +currKey);
+//                                    if(value instanceof List) {
+//                                        for (ListIterator<Object> iter1 = ((List)value).listIterator(); iter1.hasNext(); ) {
+//                                            Object element = iter1.next();
+//                                            insert(value, currKey);
+//                                        }
+//                                    }
+//                                    else if(value instanceof JSONArray) {
+//                                        for(int i = 0; i < ((JSONArray)value).length(); i++) {
+//                                            Object arrayElement =((JSONArray)value).get(i);
+//                                            insert(arrayElement, currKey);
+//                                        }
+//                                    }
+//                                    else {
+//                                        insert(value, currKey);
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        else if(colName.equals(name)) {
+//                            logger.debug("inserting val: " +val.toString() + ", key: " +currKey);
+//                            insert(val, currKey);
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (NullPointerException e) {
+//            logger.error("Could not build column index: " +e.toString());
+//            throw new OperationException(ErrorCode.INDEXING_ERROR, "Could not build column index");
+//        }
     }
 
     /**

@@ -100,7 +100,8 @@ public final class BSql {
 
 
     /* License files */
-    public static final String NODE_LICENSE_FILE = BSQL_BASE_FOLDER + License.getNodeId() + ".lic";
+//    public static final String NODE_LICENSE_FILE = BSQL_BASE_FOLDER + License.getNodeId() + ".lic";
+    public static final String NODE_LICENSE_FILE = BSQL_BASE_FOLDER + "default.lic";
     public static final String LICENSE_PUBLIC_KEY_FILE_NAME = "public.key";
     public static final String LICENSE_PUBLIC_KEY_FOLDER = "lic";
     public static final String LICENSE_PUBLIC_KEY_FILE = BSQL_BASE_FOLDER + RESOURCES + SEPERATOR
