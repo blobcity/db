@@ -29,6 +29,8 @@ import org.springframework.context.ApplicationContext;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.*;
 
 /**
  * Multiformat export service. The endpoints must route to a stored procedure that is designed to export data of the
@@ -69,11 +71,55 @@ public class ExportService {
 
         ExportType exportType = ExportType.fromTypeString(exportTypeString);
 
-        if(exportType == null) {
-            return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "error.txt").entity(exportTypeString + " not a recognisable export type").build();
+//        if(exportType == null) {
+//            return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "error.txt").entity(exportTypeString + " not a recognisable export type").build();
+//        }
+//
+//        return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "text.csv").entity("This is a test string. Params are: " + pathPayload + " | " + queryPayload).build();
+
+        try {
+            InputStream is = new FileInputStream(new File("/Users/sanketsarang/Desktop/test.xlsx"));
+
+            StreamingOutput output = new StreamingOutput() {
+                @Override
+                public void write(OutputStream out) throws IOException, WebApplicationException {
+                    int length;
+                    byte[] buffer = new byte[1024];
+                    while((length = is.read(buffer)) != -1) {
+                        out.write(buffer, 0, length);
+                    }
+                    out.flush();
+                    is.close();
+                }
+            };
+
+            return Response.ok(output).header(
+                    "Content-Disposition", "attachment, filename=\"test.xlsx\"").build();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
 
-        return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "text.csv").entity("This is a test string. Params are: " + pathPayload + " | " + queryPayload).build();
+        return Response.ok().build();
+
+//        Client client = ClientBuilder.newClient();
+//        final InputStream responseStream = client.target(url).request().get(InputStream.class);
+//        System.out.println(responseStream.getClass());
+//        StreamingOutput output = new StreamingOutput() {
+//            @Override
+//            public void write(OutputStream out) throws IOException, WebApplicationException {
+//                int length;
+//                byte[] buffer = new byte[1024];
+//                while((length = responseStream.read(buffer)) != -1) {
+//                    out.write(buffer, 0, length);
+//                }
+//                out.flush();
+//                responseStream.close();
+//            }
+//        };
+//        return Response.ok(output).header(
+//                "Content-Disposition", "attachment, filename=\"...\"").build();
+
     }
 
 

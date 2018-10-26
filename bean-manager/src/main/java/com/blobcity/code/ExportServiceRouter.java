@@ -24,5 +24,5 @@ import com.blobcity.lib.export.GenericExportResponse;
  */
 public interface ExportServiceRouter {
 
-    public GenericExportResponse export(final String spName, final ExportType exportType);
+    public GenericExportResponse export(final String ds, final String spName, final ExportType exportType, final String param);
 }

@@ -24,14 +24,14 @@ import com.blobcity.db.code.procedures.ProcedureStoreBean;
 import com.blobcity.db.code.triggers.TriggerStoreBean;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.sp.DeleteTrigger;
-import com.blobcity.db.sp.InsertTrigger;
-import com.blobcity.db.sp.RestWebService;
-import com.blobcity.db.sp.UpdateTrigger;
+import com.blobcity.db.export.ExportProcedureStore;
+import com.blobcity.db.sp.*;
+import com.blobcity.db.sp.annotations.Export;
 import com.blobcity.db.sp.annotations.Named;
 import com.blobcity.db.sp.annotations.Rest;
 import com.blobcity.db.sql.util.PathUtil;
 import com.blobcity.db.code.webservices.WebServiceStore;
+import com.google.api.client.util.Data;
 import org.json.HTTPTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +76,8 @@ public class CodeLoader {
     private TriggerStoreBean triggerStore;
     @Autowired
     private WebServiceStore webServiceStore;
+    @Autowired
+    private ExportProcedureStore exportProcedureStore;
 
     /**
      * activate trigger/triggers specified related to specified dsSet and collection
@@ -255,7 +257,8 @@ public class CodeLoader {
                     Class loadedClazz = loader.loadClass(clazz);
                     Object instance;
                     try {
-                        if(loadedClazz.isAnnotationPresent(Rest.class) || loadedClazz.isAnnotationPresent(Named.class)){
+                        if(loadedClazz.isAnnotationPresent(Rest.class) || loadedClazz.isAnnotationPresent(Named.class)
+                                || loadedClazz.isAnnotationPresent(Export.class)){
                             instance = loadedClazz.newInstance();
                         } else {
                             return;
@@ -278,6 +281,8 @@ public class CodeLoader {
                         return;
                     } else if(instance instanceof DeleteTrigger) {
                         return;
+                    } else if(instance instanceof DataExporter) {
+                        exportProcedureStore.loadExporter(datastore, loadedClazz);
                     }
 
                     Method []methods = loadedClazz.getMethods();
