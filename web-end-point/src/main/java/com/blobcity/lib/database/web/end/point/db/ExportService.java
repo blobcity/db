@@ -23,6 +23,7 @@ import com.blobcity.lib.database.bean.manager.interfaces.engine.BQueryExecutor;
 import com.blobcity.lib.database.bean.manager.interfaces.engine.RequestStore;
 import com.blobcity.lib.database.bean.manager.interfaces.security.SecurityManager;
 import com.blobcity.lib.export.ExportType;
+import com.blobcity.lib.export.GenericExportResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -70,71 +71,73 @@ public class ExportService {
         logger.debug("Export service called [GET]: ds={}, sp-name:{}, export-type: {}", datastore, spName, exportTypeString);
 
         ExportType exportType = ExportType.fromTypeString(exportTypeString);
-
-//        if(exportType == null) {
-//            return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "error.txt").entity(exportTypeString + " not a recognisable export type").build();
-//        }
-//
-//        return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "text.csv").entity("This is a test string. Params are: " + pathPayload + " | " + queryPayload).build();
-
-        try {
-            InputStream is = new FileInputStream(new File("/Users/sanketsarang/Desktop/test.xlsx"));
-
-            StreamingOutput output = new StreamingOutput() {
-                @Override
-                public void write(OutputStream out) throws IOException, WebApplicationException {
-                    int length;
-                    byte[] buffer = new byte[1024];
-                    while((length = is.read(buffer)) != -1) {
-                        out.write(buffer, 0, length);
-                    }
-                    out.flush();
-                    is.close();
-                }
-            };
-
-            return Response.ok(output).header(
-                    "Content-Disposition", "attachment, filename=\"test.xlsx\"").build();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if(exportType == null) {
+            return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "error.txt").entity(exportTypeString + " not a recognisable export type").build();
         }
 
-        return Response.ok().build();
+        GenericExportResponse ger;
+        if(queryPayload == null || queryPayload.isEmpty()) {
+            ger = exportServiceRouter.export(datastore, spName, exportType, pathPayload);
+        } else {
+            ger = exportServiceRouter.export(datastore, spName, exportType, queryPayload);
+        }
 
-//        Client client = ClientBuilder.newClient();
-//        final InputStream responseStream = client.target(url).request().get(InputStream.class);
-//        System.out.println(responseStream.getClass());
-//        StreamingOutput output = new StreamingOutput() {
-//            @Override
-//            public void write(OutputStream out) throws IOException, WebApplicationException {
-//                int length;
-//                byte[] buffer = new byte[1024];
-//                while((length = responseStream.read(buffer)) != -1) {
-//                    out.write(buffer, 0, length);
-//                }
-//                out.flush();
-//                responseStream.close();
-//            }
-//        };
-//        return Response.ok(output).header(
-//                "Content-Disposition", "attachment, filename=\"...\"").build();
+        InputStream is = ger.getInputStream();
+        StreamingOutput output = new StreamingOutput() {
+            @Override
+            public void write(OutputStream out) throws IOException, WebApplicationException {
+                int length;
+                byte[] buffer = new byte[1024];
+                while((length = is.read(buffer)) != -1) {
+                    out.write(buffer, 0, length);
+                }
+                out.flush();
+                is.close();
+            }
+        };
 
+        return Response.ok(output).header(
+                "Content-Disposition", "attachment, filename=\"" + ger.getFilename() + "\"").build();
     }
 
 
-//    @POST
-//    @Produces("application/json")
-//    public Response handlePost(
-//            @PathParam(value ="ds") final String datastore,
-//            @PathParam(value = "version") final String version,
-//            @PathParam(value = "url") final String url,
-//            @QueryParam(value = "json") final String queryJson,
-//            @FormParam(value = "json") final String formJson
-//    ) {
-//        final String wsPath = "/" + version + "/" + url;
-//        logger.debug("Webservice called [POST]: " + wsPath);
-//        JSONObject jsonRequest = queryJson != null ? new JSONObject(queryJson) : formJson != null ? new JSONObject(formJson) : new JSONObject();
-//        return Response.ok().header("Access-Control-Allow-Origin", "*").entity(webServiceExecutor.executeGet(datastore, wsPath, jsonRequest).toString()).build();
-//    }
+    @POST
+    @Produces("application/json")
+    public Response handlePost(
+            @PathParam(value ="ds") final String datastore,
+            @PathParam(value = "sp-name") final String spName,
+            @PathParam(value = "export-type") final String exportTypeString,
+            @QueryParam(value = "json") final String queryJson,
+            @FormParam(value = "json") final String formJson
+    ) {
+        logger.debug("Export Service called [POST]: " + spName);
+        ExportType exportType = ExportType.fromTypeString(exportTypeString);
+        if(exportType == null) {
+            return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "error.txt").entity(exportTypeString + " not a recognisable export type").build();
+        }
+
+        GenericExportResponse ger;
+        if(queryJson == null || queryJson.isEmpty()) {
+            ger = exportServiceRouter.export(datastore, spName, exportType, formJson);
+        } else {
+            ger = exportServiceRouter.export(datastore, spName, exportType, queryJson);
+        }
+
+        InputStream is = ger.getInputStream();
+        StreamingOutput output = new StreamingOutput() {
+            @Override
+            public void write(OutputStream out) throws IOException, WebApplicationException {
+                int length;
+                byte[] buffer = new byte[1024];
+                while((length = is.read(buffer)) != -1) {
+                    out.write(buffer, 0, length);
+                }
+                out.flush();
+                is.close();
+            }
+        };
+
+        return Response.ok(output).header(
+                "Content-Disposition", "attachment, filename=\"" + ger.getFilename() + "\"").build();
+    }
 }
