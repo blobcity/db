@@ -24,6 +24,7 @@ import com.blobcity.db.bquery.*;
 import com.blobcity.db.bsql.*;
 import com.blobcity.db.cache.QueryResultCache;
 import com.blobcity.db.code.webservices.WebServiceExecutorBean;
+import com.blobcity.db.export.ExportProcedureStore;
 import com.blobcity.db.export.ExportServiceRouterBean;
 import com.blobcity.db.ftp.FtpServerManager;
 import com.blobcity.db.ftp.FtpServiceManager;
@@ -638,6 +639,14 @@ public class EngineBeanConfig {
         logger.trace("Creating an instance of " + QueryResultCache.class.getSimpleName());
 
         return new QueryResultCache();
+    }
+
+    @Bean
+    @Lazy
+    public ExportProcedureStore exportProcedureStore() {
+        logger.trace("Creating an instance of " + ExportProcedureStore.class.getSimpleName());
+
+        return new ExportProcedureStore();
     }
 
     /*

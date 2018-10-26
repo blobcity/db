@@ -143,7 +143,7 @@ public class LicenseBean {
         LicenseRules.DATA_LIMIT = -1; // -1 means unlimited data. Limit is otherwise specified in GB's and applies to whole cluster this node is a part of
         LicenseRules.EXPIRES = -1;
         LicenseRules.GEO_REP = false;
-        LicenseRules.STORED_PROCEDURES = false;
+        LicenseRules.STORED_PROCEDURES = true;
     }
 
     /**
