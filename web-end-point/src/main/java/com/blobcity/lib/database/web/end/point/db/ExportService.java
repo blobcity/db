@@ -107,8 +107,8 @@ public class ExportService {
             @PathParam(value ="ds") final String datastore,
             @PathParam(value = "sp-name") final String spName,
             @PathParam(value = "export-type") final String exportTypeString,
-            @QueryParam(value = "json") final String queryJson,
-            @FormParam(value = "json") final String formJson
+            @QueryParam(value = "p") final String queryJson,
+            @FormParam(value = "p") final String formJson
     ) {
         logger.debug("Export Service called [POST]: " + spName);
         ExportType exportType = ExportType.fromTypeString(exportTypeString);
