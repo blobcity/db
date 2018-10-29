@@ -138,7 +138,7 @@ public class ExportService {
             }
         };
 
-        return Response.ok(output, MediaType.APPLICATION_OCTET_STREAM).header("Access-Control-Allow-Origin", "*").header(
+        return Response.ok(output).header("Access-Control-Allow-Origin", "*").header(
                 "Content-Disposition", "attachment, filename=\"" + ger.getFilename() + "\"").build();
     }
 }
