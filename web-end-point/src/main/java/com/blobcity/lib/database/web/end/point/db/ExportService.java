@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
@@ -137,7 +138,7 @@ public class ExportService {
             }
         };
 
-        return Response.ok(output).header("Access-Control-Allow-Origin", "*").header(
+        return Response.ok(output, MediaType.APPLICATION_OCTET_STREAM).header("Access-Control-Allow-Origin", "*").header(
                 "Content-Disposition", "attachment, filename=\"" + ger.getFilename() + "\"").build();
     }
 }
