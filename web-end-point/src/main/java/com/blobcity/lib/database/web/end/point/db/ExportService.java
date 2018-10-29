@@ -102,7 +102,7 @@ public class ExportService {
 
 
     @POST
-    @Produces("application/json")
+    @Produces("application/octet-stream")
     public Response handlePost(
             @PathParam(value ="ds") final String datastore,
             @PathParam(value = "sp-name") final String spName,
