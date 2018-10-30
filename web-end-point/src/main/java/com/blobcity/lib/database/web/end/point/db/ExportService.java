@@ -73,7 +73,7 @@ public class ExportService {
 
         ExportType exportType = ExportType.fromTypeString(exportTypeString);
         if(exportType == null) {
-            return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "error.txt").entity(exportTypeString + " not a recognisable export type").build();
+            return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=\"error.txt\"").entity(exportTypeString + " not a recognisable export type").build();
         }
 
         GenericExportResponse ger;
@@ -98,7 +98,7 @@ public class ExportService {
         };
 
         return Response.ok(output).header(
-                "Content-Disposition", "attachment, filename=\"" + ger.getFilename() + "\"").build();
+                "Content-Disposition", "attachment; filename=\"" + ger.getFilename() + "\"").build();
     }
 
 
@@ -114,7 +114,7 @@ public class ExportService {
         logger.debug("Export Service called [POST]: " + spName);
         ExportType exportType = ExportType.fromTypeString(exportTypeString);
         if(exportType == null) {
-            return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=" + "error.txt").entity(exportTypeString + " not a recognisable export type").build();
+            return Response.ok().header("Access-Control-Allow-Origin", "*").header("Content-disposition", "attachment; filename=\"error.txt\"").entity(exportTypeString + " not a recognisable export type").build();
         }
 
         GenericExportResponse ger;
@@ -139,6 +139,6 @@ public class ExportService {
         };
 
         return Response.ok(output).header("Access-Control-Allow-Origin", "*").header(
-                "Content-Disposition", "attachment, filename=\"" + ger.getFilename() + "\"").build();
+                "Content-Disposition", "attachment; filename=\"" + ger.getFilename() + "\"").build();
     }
 }
