@@ -496,7 +496,7 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
     }
 
     private String shutdown() {
-        System.exit(1);
+        Runtime.getRuntime().halt(1);
         return "Shutdown";
     }
 
