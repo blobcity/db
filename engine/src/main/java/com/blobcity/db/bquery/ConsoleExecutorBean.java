@@ -513,7 +513,7 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         verifyDCInfo(database, table);
         codeLoader.activateTrigger(database, table, elements[2]);
         if ("*".equals(elements[2])) {
-            return "All triggers have been succesfully activated";
+            return "All triggers have been successfully activated";
         }
         return "Trigger " + elements[2] + " successfully activated";
     }
