@@ -210,6 +210,9 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                 case "cluster-status":
                     response = clusterStatus();
                     break;
+                case "shutdown":
+                    response = shutdown();
+                    break;
 
             /* indexing related commands */
                 case "create-index":
@@ -490,6 +493,11 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             if (!collectionManager.exists(datastore, collection[0]))
                 throw new OperationException(ErrorCode.COLLECTION_INVALID);
         }
+    }
+
+    private String shutdown() {
+        System.exit(1);
+        return "Shutdown";
     }
 
     private String activateTrigger(String[] elements) throws OperationException {
