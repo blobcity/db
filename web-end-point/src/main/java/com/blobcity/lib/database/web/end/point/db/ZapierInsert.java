@@ -41,7 +41,7 @@ public class ZapierInsert {
 //    private final com.blobcity.db.requests.RequestHandlingBean requestHandlingBean;
 
     public ZapierInsert() {
-        this.logger = LoggerFactory.getLogger(ZapierInsert.class.getName() + ":" + System.currentTimeMillis());
+        this.logger = LoggerFactory.getLogger(ZapierInsert.class.getName());
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.bQueryExecutor = (BQueryExecutor) context.getBean("BQueryExecutorBean");
         this.requestStore = (RequestStore) context.getBean("RequestStoreBean");

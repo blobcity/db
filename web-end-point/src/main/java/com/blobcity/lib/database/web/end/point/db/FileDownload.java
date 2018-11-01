@@ -46,7 +46,7 @@ public class FileDownload {
     private final WebServiceExecutor webServiceExecutor;
 
     public FileDownload() {
-        this.logger = LoggerFactory.getLogger(FileDownload.class.getName() + ":" + System.currentTimeMillis());
+        this.logger = LoggerFactory.getLogger(FileDownload.class.getName());
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.bQueryExecutor = (BQueryExecutor) context.getBean("BQueryExecutorBean");
         this.requestStore = (RequestStore) context.getBean("RequestStoreBean");

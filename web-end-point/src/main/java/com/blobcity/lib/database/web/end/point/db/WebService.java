@@ -45,7 +45,7 @@ public class WebService {
     private final WebServiceExecutor webServiceExecutor;
 
     public WebService() {
-        this.logger = LoggerFactory.getLogger(WebService.class.getName() + ":" + System.currentTimeMillis());
+        this.logger = LoggerFactory.getLogger(WebService.class.getName());
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.bQueryExecutor = (BQueryExecutor) context.getBean("BQueryExecutorBean");
         this.requestStore = (RequestStore) context.getBean("RequestStoreBean");

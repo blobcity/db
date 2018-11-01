@@ -45,7 +45,7 @@ public class BQueryResource {
     private final RequestStore requestStore;
 
     public BQueryResource() {
-        this.logger = LoggerFactory.getLogger(BQueryResource.class.getName() + ":" + System.currentTimeMillis());
+        this.logger = LoggerFactory.getLogger(BQueryResource.class.getName());
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.bQueryExecutor = (BQueryExecutor) context.getBean("BQueryExecutorBean");
         this.requestStore = (RequestStore) context.getBean("RequestStoreBean");
