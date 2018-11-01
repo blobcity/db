@@ -46,7 +46,7 @@ public class SqlResource {
     private final Logger logger;
 
     public SqlResource() {
-        this.logger = LoggerFactory.getLogger(SqlResource.class.getName() + ":" + System.currentTimeMillis());
+        this.logger = LoggerFactory.getLogger(SqlResource.class.getName());
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.sqlExecutorBean = context.getBean(SqlExecutor.class);
         this.requestStore = (RequestStore) context.getBean("RequestStoreBean");
