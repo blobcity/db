@@ -20,9 +20,9 @@ import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.sp.DataExporter;
 import com.blobcity.db.sp.annotations.Export;
-import com.blobcity.db.sp.annotations.Rest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +32,7 @@ import java.util.Map;
  */
 @Component
 public class ExportProcedureStore {
+    private static final Logger logger = LoggerFactory.getLogger(ExportProcedureStore.class.getName());
 
     private final Map<String, Map<String, Class>> exporters = new HashMap<>();
 
@@ -90,7 +91,7 @@ public class ExportProcedureStore {
         try {
             return (DataExporter) getExporter(ds, name).newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("Error occurred instantiating Export procedure", e);
             throw new OperationException(ErrorCode.STORED_PROCEDURE_EXECUTION_ERROR, "Unable to create instance of " + name);
         }
     }
