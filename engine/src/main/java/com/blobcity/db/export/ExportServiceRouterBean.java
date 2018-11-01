@@ -43,7 +43,7 @@ public class ExportServiceRouterBean implements ExportServiceRouter{
         try {
             dataExporter = exportProcedureStore.newInstance(ds, spName);
         } catch (OperationException e) {
-            return new GenericExportResponse("error.txt", new ByteArrayInputStream("Error occurred loading exporter".getBytes()));
+            return new GenericExportResponse("error.txt", new ByteArrayInputStream(("Error occurred loading exporter in: " + ds + " with name: " + spName + " and export type: " + exportType).getBytes()));
         }
 
         switch(exportType) {
