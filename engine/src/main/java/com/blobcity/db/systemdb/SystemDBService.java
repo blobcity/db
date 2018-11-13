@@ -16,6 +16,7 @@
 
 package com.blobcity.db.systemdb;
 
+import com.blobcity.db.constants.BSql;
 import com.blobcity.db.security.User;
 import com.blobcity.db.bquery.SQLExecutorBean;
 import com.blobcity.db.exceptions.DbRuntimeException;
@@ -27,6 +28,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
+import java.io.*;
+import java.util.UUID;
 
 /**
  *
@@ -179,13 +183,22 @@ public class SystemDBService {
     public synchronized void addDefaultUser() {
         User user = new User();
         user.setUsername("root");
-        user.setPassword("root");
+        final String password = randomPassword();
+        user.setPassword(password);
         user.setDefaultRole("");
         try {
             userManager.addUser(user);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(BSql.INITIAL_CREDENTIALS_FILE))));
+            writer.write(password);
+            writer.newLine();
+            writer.close();
         } catch (OperationException ex) {
             logger.error("Failed to add default user", ex);
             throw new DbRuntimeException(ex);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -214,4 +227,9 @@ public class SystemDBService {
         }
     }
 
+    private String randomPassword() {
+        String uuid = UUID.randomUUID().toString();
+        uuid = uuid.replaceAll("-", "");
+        return uuid.substring(4, 14);
+    }
 }
