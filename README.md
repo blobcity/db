@@ -1,8 +1,8 @@
 # Description
 
-This project contains source code of the BlobCity Database. The database offers disk based storage suitable for replacing Hadoop based Data Lakes and a separate in-memory storage engine designed to meet all real-time analytics requirements.
+BlobCity DB is an All-in-One Database. It offers support for natively storing 17 different formats of data, including JSON, XML, CSV, PDF, Word, Excel, Log, GIS, Image amongst others. It run two full feature storage engines. One that stores data in memory and the other that stores data on disk. In-memeory storage offers sheer performance for real-time analytics, while the disk storage make BlobCity an excellent alternative for DataLakes.
 
-This product is a Gartner Cool Vendor 2016. [View Report](https://www.gartner.com/doc/3288923) 
+BlobCity DB is a Gartner Cool Vendor 2016. [View Report](https://www.gartner.com/doc/3288923) 
 
 # Sub Projects
 
