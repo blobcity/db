@@ -319,6 +319,21 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                 case "drop-user":
                     response = dropUser(elements);
                     break;
+                case "create-master-key":
+                    response = createMasterKey();
+                    break;
+                case "create-ds-key":
+                    response = createDsKey(elements);
+                    break;
+                case "list-api-keys":
+                    response = listApiKeys();
+                    break;
+                case "list-ds-api-keys":
+                    response = listDsApiKeys(elements);
+                    break;
+                case "drop-api-key":
+                    response = dropApiKey(elements);
+                    break;
 
             /* user group related commands */
                 case "create-group":
@@ -1986,5 +2001,38 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         collectionManager.changeDataType(datastore, collection, columnName, fieldType);
 
         return "Column type successfully updated in schema";
+    }
+
+    private String createMasterKey() throws OperationException {
+        return securityManager.createMasterKey();
+    }
+
+    private String createDsKey(final String []elements) throws OperationException {
+        if(elements.length != 2) {
+            return "Required format: create-ds-key {ds}";
+        }
+        final String ds = elements[1];
+        return securityManager.createDsKey(ds);
+    }
+
+    private String listApiKeys() throws OperationException {
+        return String.join("\n", securityManager.getApiKeys());
+    }
+
+    private String listDsApiKeys(final String []elements) throws OperationException {
+        if(elements.length != 2) {
+            return "Required format: create-ds-key {ds}";
+        }
+        final String ds = elements[1];
+        return String.join("\n", securityManager.getDsApiKeys(ds));
+    }
+
+    private String dropApiKey(final String []elements) throws OperationException {
+        if(elements.length != 2) {
+            return "Required format: drop-api-key {key}";
+        }
+
+        securityManager.dropApiKey(elements[1]);
+        return "API key successfully dropped";
     }
 }
