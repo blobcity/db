@@ -99,6 +99,9 @@ public class StorageStartup {
 
         systemDBService.createBillingUsageTable();
         logger.info("BillingUsage table created successfully");
+
+        systemDBService.createApiKeysTable();
+        logger.info("ApiKeys table created successfully");
     }
 
     /**

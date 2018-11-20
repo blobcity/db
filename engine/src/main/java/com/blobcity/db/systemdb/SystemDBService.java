@@ -177,6 +177,19 @@ public class SystemDBService {
         }
     }
 
+    public synchronized void createApiKeysTable() {
+        String sql = "CREATE TABLE `ApiKeys` ("
+                + "`key`     VARCHAR(255) NOT NULL,"
+                + "`ds`     VARCHAR(255)"
+                + ")";
+        String output = sqlExecutor.executePrivileged(".systemdb", sql);
+        JSONObject json = new JSONObject(output);
+        if (!json.getString("ack").equals("1")) {
+            logger.error("Failed to create ApiKeys table");
+            throw new DbRuntimeException("Failed to create ApiKeys table");
+        }
+    }
+
     /**
      * Adds a default user with the username and password as 'root'
      */

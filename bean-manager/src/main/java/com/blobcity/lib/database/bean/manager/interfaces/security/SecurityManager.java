@@ -20,7 +20,6 @@ package com.blobcity.lib.database.bean.manager.interfaces.security;
  * Interface for the bean which handles all the security for the database 
  * 
  * @author sanketsarang
- * @author Prikshit Kumar
  */
 public interface SecurityManager {
     
@@ -31,5 +30,14 @@ public interface SecurityManager {
      * @param password
      * @return true if user is authentic, false otherwise
      */ 
-    boolean verifyCredentials(final String username, final String password);
+    public boolean verifyCredentials(final String username, final String password);
+
+    /**
+     * Checks if the specified api key has access. This function can be used to validator master keys as well as ds
+     * level keys.
+     * @param apiKey the api key to check
+     * @return <code>true</code> if the key is valid; <code>false</code> otherwise
+     */
+    public boolean verifyKey(final String apiKey);
+
 }

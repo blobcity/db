@@ -42,6 +42,7 @@ import com.blobcity.db.opennlp.NLP;
 import com.blobcity.db.opennlp.NLPModelsStore;
 import com.blobcity.db.processors.ProcessorStore;
 import com.blobcity.db.requests.RequestHandlingBean;
+import com.blobcity.db.security.ApiKeyManager;
 import com.blobcity.db.spamdetect.SpamDetector;
 import com.blobcity.db.sql.processing.*;
 import com.blobcity.db.sql.statements.*;
@@ -1354,6 +1355,14 @@ public class EngineBeanConfig {
         logger.trace("Creating an instance of SelectActivityLog");
 
         return new SelectActivityLog();
+    }
+
+    @Bean(name = "ApiKeyManager")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ApiKeyManager apiKeyManager() {
+        logger.trace("Creating an instance of ApiKeyManager");
+
+        return new ApiKeyManager();
     }
 
     /*
