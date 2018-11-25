@@ -273,6 +273,8 @@ public class RequestHandlingBean {
         } catch (InterruptedException | ExecutionException e) {
             masterExecutable.rollback();
             return new Query().ackFailure();
+        } finally {
+            masterStore.unregister(query.getRequestId());
         }
     }
 }
