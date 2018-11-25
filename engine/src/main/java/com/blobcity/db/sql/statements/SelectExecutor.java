@@ -214,8 +214,13 @@ public class SelectExecutor {
             if (!inMemory) {
                 /* OnDisk special case handling */
 
+                /* SELECT COUNT(*) from table */
+                if (sqlString.trim().toLowerCase().startsWith("select count(*) from") && whereClause == null && groupByColumns.size() == 0) {
+                    return produceCountStarResult((int)onDiskAggregateHandling.computeAgg(appId, tableName, aggOperations.get(0)), startTime).toString();
+                }
+
                 /* SELECT DISTINCT Col1 FROM table */
-                if (selectNode.isDistinct() && whereClause == null && aggOperations.size() == 0 && resultColumns.size() == 1
+                else if (selectNode.isDistinct() && whereClause == null && aggOperations.size() == 0 && resultColumns.size() == 1
                         && resultColumns.getColumnNames()[0] != null && groupByColumns.size() == 0) {
                     populateSingleColumnDistinct(appId, tableName, resultColumns.getColumnNames()[0], resultMap);
                     if(orderByList != null) {
@@ -982,6 +987,18 @@ public class SelectExecutor {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
         aggMap.forEach((aggNode, value) -> jsonObject.put(aggNode.getAggregateName() + "(" + ((ColumnReference) aggNode.getOperand()).getColumnName() + ")", value));
+        jsonArray.put(jsonObject);
+        JSONObject responseJson = ack1();
+        responseJson.put(BQueryParameters.PAYLOAD, jsonArray);
+        responseJson.put(BQueryParameters.TIME, (System.currentTimeMillis() - startTime));
+        responseJson.put(BQueryParameters.ROWS, jsonArray.length());
+        return responseJson;
+    }
+
+    private JSONObject produceCountStarResult(int count, long startTime) {
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("COUNT(*)", count);
         jsonArray.put(jsonObject);
         JSONObject responseJson = ack1();
         responseJson.put(BQueryParameters.PAYLOAD, jsonArray);

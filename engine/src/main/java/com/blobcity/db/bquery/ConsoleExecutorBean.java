@@ -1774,7 +1774,7 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         final String datastore = datastoreAndCollection.substring(0, datastoreAndCollection.indexOf("."));
         final String collection = datastoreAndCollection.substring(datastoreAndCollection.indexOf(".") + 1, datastoreAndCollection.length());
 
-        final long count = dataManager.getRowCount(datastore, collection);
+        final int count = dataManager.getRowCount(datastore, collection);
 
         return count + " rows";
     }
