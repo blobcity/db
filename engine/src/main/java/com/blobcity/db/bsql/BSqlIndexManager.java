@@ -276,26 +276,43 @@ public class BSqlIndexManager {
      * @throws OperationException if an operation error occurs
      */
     public void addIndex(final String app, final String table, final String pk, JSONObject jsonObject) throws OperationException {
-        Schema schema = schemaManager.readSchema(app, table);
-        IndexingStrategy indexingStrategy;
+        final Schema schema = schemaManager.readSchema(app, table);
         if (schema.isIndexingNeeded()) {
-            for (Column column : schema.getColumnMap().values()) {
+
+            //new code start
+            schema.getColumnMap().values().parallelStream().forEach(column -> {
                 if (column.getName().equals(schema.getPrimary())) {
-                    continue;
+                    return;
                 }
 
                 if (column.getIndexType() != IndexTypes.NONE) {
-                    indexingStrategy = indexFactory.getStrategy(column.getIndexType());
                     try {
-                        indexingStrategy.index(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
-                    } catch (JSONException ex) {
-
-                        //TODO: Notify admin
-                        logger.error(null, ex);
-                        throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occurred. Unable to add index value for column: " + column.getName() + " in table: " + table);
+                        indexFactory.getStrategy(column.getIndexType()).index(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
+                    } catch (JSONException | OperationException ex) {
+                        //do nothing
                     }
                 }
-            }
+            });
+            //new code end
+
+            //TODO: Remove this code if index works perfectly with new implementation
+//            for (Column column : schema.getColumnMap().values()) {
+//                if (column.getName().equals(schema.getPrimary())) {
+//                    continue;
+//                }
+//
+//                if (column.getIndexType() != IndexTypes.NONE) {
+//                    indexingStrategy = indexFactory.getStrategy(column.getIndexType());
+//                    try {
+//                        indexingStrategy.index(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
+//                    } catch (JSONException ex) {
+//
+//                        //TODO: Notify admin
+//                        logger.error(null, ex);
+//                        throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occurred. Unable to add index value for column: " + column.getName() + " in table: " + table);
+//                    }
+//                }
+//            }
         }
     }
 
