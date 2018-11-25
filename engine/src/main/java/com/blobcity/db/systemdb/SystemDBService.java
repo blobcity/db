@@ -16,6 +16,8 @@
 
 package com.blobcity.db.systemdb;
 
+import com.blobcity.db.bsql.BSqlCollectionManager;
+import com.blobcity.db.bsql.BSqlDatastoreManager;
 import com.blobcity.db.constants.BSql;
 import com.blobcity.db.security.User;
 import com.blobcity.db.bquery.SQLExecutorBean;
@@ -48,6 +50,8 @@ public class SystemDBService {
     private SQLExecutorBean sqlExecutor;
     @Autowired @Lazy
     private UserManager userManager;
+    @Autowired @Lazy
+    private BSqlCollectionManager collectionManager;
 
     
     /**
@@ -67,6 +71,10 @@ public class SystemDBService {
      * Creates a User table
      */
     public synchronized void createUserTable() {
+        if(collectionManager.exists(".systemdb", "user")) {
+            return;
+        }
+
         String sql = "CREATE TABLE `user` ("
                 + "username    VARCHAR(255) NOT NULL,"
                 + "password    VARCHAR(255) NOT NULL,"
@@ -85,6 +93,10 @@ public class SystemDBService {
      * Creates a Nodes table
      */
     public synchronized void createNodesTable() {
+        if(collectionManager.exists(".systemdb", "nodes")) {
+            return;
+        }
+
         String sql = "CREATE TABLE `nodes` ("
                 + "nodeId   VARCHAR(255) NOT NULL,"
                 + "ip       VARCHAR(255),"
@@ -103,6 +115,10 @@ public class SystemDBService {
      * Creates a User Groups Table
      */
     public synchronized void createUserGroupsTable(){
+        if(collectionManager.exists(".systemdb", "usergroups")) {
+            return;
+        }
+
         String sql = "CREATE TABLE `usergroups` ("
                 + "name     VARCHAR(255) NOT NULL,"
                 + "users    VARCHAR(255),"
@@ -122,6 +138,10 @@ public class SystemDBService {
      * TODO: define the proper schema here
      */
     public synchronized void createWatchServiceTable(){
+        if(collectionManager.exists(".systemdb", "watchservice")) {
+            return;
+        }
+
         String sql = "CREATE TABLE `watchservice` ("
                 + "path     VARCHAR(255),"
                 + "file-list    VARCHAR(255)"
@@ -139,6 +159,10 @@ public class SystemDBService {
      * TODO: define the proper schema here
      */
     public synchronized void createSettingsTable(){
+        if(collectionManager.exists(".systemdb", "settings")) {
+            return;
+        }
+
         String sql = "CREATE TABLE `settings` ("
                 + "value     VARCHAR(255)"
                 + ")";
@@ -151,6 +175,10 @@ public class SystemDBService {
     }
 
     public synchronized void createSelectActivityLogTable(){
+        if(collectionManager.exists(".systemdb", "SelectActivityLog")) {
+            return;
+        }
+
         String sql = "CREATE TABLE `SelectActivityLog` ("
                 + "`ds` VARCHAR(255) NOT NULL,"
                 + "`rows` BIGINT"
@@ -164,6 +192,10 @@ public class SystemDBService {
     }
 
     public synchronized void createBillingUsageTable() {
+        if(collectionManager.exists(".systemdb", "BillingUsage")) {
+            return;
+        }
+
         String sql = "CREATE TABLE `BillingUsage` ("
                 + "`ds`     VARCHAR(255) NOT NULL,"
                 + "`my`     VARCHAR(255),"
@@ -178,6 +210,10 @@ public class SystemDBService {
     }
 
     public synchronized void createApiKeysTable() {
+        if(collectionManager.exists(".systemdb", "ApiKeys")) {
+            return;
+        }
+
         String sql = "CREATE TABLE `ApiKeys` ("
                 + "`key`     VARCHAR(255) NOT NULL,"
                 + "`ds`     VARCHAR(255)"
@@ -228,6 +264,10 @@ public class SystemDBService {
      * The information is saved on a per datastores basis. It is at max one jar per datastore
      */
     public synchronized void createStoredProcedureJarsTable(){
+        if(collectionManager.exists(".systemdb", "SPJars")) {
+            return;
+        }
+
         String sql = "CREATE TABLE `SPJars` ("
                 + "ds     VARCHAR(255),"
                 + "jar     VARCHAR(255)"
