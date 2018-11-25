@@ -16,6 +16,7 @@
 
 package com.blobcity.db.sql.processing;
 
+import com.blobcity.db.bsql.BSqlDataManager;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.schema.Column;
@@ -51,6 +52,8 @@ public class OnDiskCountHandling {
     @Autowired
     @Lazy
     private SchemaManager schemaManager;
+    @Autowired @Lazy
+    private BSqlDataManager dataManager;
 
     public Object computeCount(final String ds, final String collection, final AggregateNode aggregateNode) throws OperationException {
 
@@ -74,6 +77,9 @@ public class OnDiskCountHandling {
 
         } else if (operand instanceof ConstantNode) {
             System.out.println("Constant found: " + ((ConstantNode) operand).getValue());
+        } else if (operand == null){
+            //count(*) operation
+            return dataManager.getRowCount(ds, collection);
         }
 
         throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED);

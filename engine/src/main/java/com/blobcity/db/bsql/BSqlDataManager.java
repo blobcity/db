@@ -1404,7 +1404,7 @@ public class BSqlDataManager {
         }
     }
 
-    public long getRowCount(final String ds, final String collection) throws OperationException {
+    public int getRowCount(final String ds, final String collection) throws OperationException {
         if(collectionManager.isInMemory(ds, collection)) {
             throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Operation not yet supported");
         } else {
