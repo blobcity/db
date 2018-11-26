@@ -263,10 +263,10 @@ public class RequestHandlingBean {
             return new Query().ackFailure().errorCode(ex.getErrorCode().getErrorCode());
         }
 
-        masterStore.register(query.getRequestId(), masterExecutable);
-        Future<Query> futureResponse = MasterExecutorService.getInstance().submit(masterExecutable);
-
         try {
+            masterStore.register(query.getRequestId(), masterExecutable);
+            Future<Query> futureResponse = MasterExecutorService.getInstance().submit(masterExecutable);
+
             Query response = futureResponse.get();
             logger.info("Response for requestId: {}, response: {}", query.getRequestId(), response.toJsonString());
             return response;
