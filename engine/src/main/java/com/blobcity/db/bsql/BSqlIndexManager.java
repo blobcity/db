@@ -359,25 +359,37 @@ public class BSqlIndexManager {
 
     public void removeIndex(final String app, final String table, final String pk, final JSONObject jsonObject) throws OperationException {
         Schema schema = schemaManager.readSchema(app, table);
-        IndexingStrategy indexingStrategy;
         if (schema.isIndexingNeeded()) {
-            for (Column column : schema.getColumnMap().values()) {
+
+            schema.getColumnMap().values().parallelStream().forEach(column -> {
                 if (column.getName().equals(schema.getPrimary())) {
-                    continue;
+                    return;
                 }
 
                 if (column.getIndexType() != IndexTypes.NONE) {
-                    indexingStrategy = indexFactory.getStrategy(column.getIndexType());
+                    IndexingStrategy indexingStrategy = indexFactory.getStrategy(column.getIndexType());
                     try {
                         indexingStrategy.remove(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
-                    } catch (JSONException ex) {
-
-                        //TODO: Notify admin
-                        logger.error(null, ex);
-                        throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occurred. Unable to remove indexed value for column: " + column.getName() + " in table: " + table);
+                    } catch (JSONException | OperationException ex) {
+                        //do nothing
                     }
                 }
-            }
+            });
+
+//            for (Column column : schema.getColumnMap().values()) {
+//                if (column.getName().equals(schema.getPrimary())) {
+//                    continue;
+//                }
+//
+//                if (column.getIndexType() != IndexTypes.NONE) {
+//                    indexingStrategy = indexFactory.getStrategy(column.getIndexType());
+//                    try {
+//                        indexingStrategy.remove(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
+//                    } catch (JSONException ex) {
+//                        //do nothing
+//                    }
+//                }
+//            }
         }
     }
 
