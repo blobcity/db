@@ -393,6 +393,9 @@ public class BQueryExecutorBean implements BQueryExecutor {
                 case LIST_API_KEYS:
                     returnJson = listApiKeys();
                     break;
+                case LIST_DS_API_KEYS:
+                    returnJson = listDsApiKeys(payloadJson);
+                    break;
                 case DROP_API_KEY:
                     returnJson = listDsApiKeys(payloadJson);
                     break;
