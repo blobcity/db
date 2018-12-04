@@ -50,7 +50,7 @@ public class ApiKeyManager {
         JSONObject record = new JSONObject();
         record.put("key", newKey);
         record.put("ds", ds);
-        dataManager.insert(BSql.SYSTEM_DB, "apiKeys", record);
+        dataManager.insert(BSql.SYSTEM_DB, "ApiKeys", record);
         return newKey;
     }
 
@@ -58,7 +58,7 @@ public class ApiKeyManager {
         final String newKey = keyGen("BC");
         JSONObject record = new JSONObject();
         record.put("key", newKey);
-        dataManager.insert(BSql.SYSTEM_DB, "apiKeys", record);
+        dataManager.insert(BSql.SYSTEM_DB, "ApiKeys", record);
         return newKey;
     }
 
