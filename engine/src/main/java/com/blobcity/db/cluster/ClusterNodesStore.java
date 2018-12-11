@@ -131,7 +131,9 @@ public class ClusterNodesStore {
         }
 
 //        String selfNodeId = configBean.getStringProperty(ConfigProperties.NODE_ID);
-        String selfNodeId = License.getNodeId();
+//        String selfNodeId = License.getNodeId();
+        String selfNodeId = "default"; //temp code until removal of licensing module
+
         if (selfNodeId == null) {
             logger.warn("Self node id is not configured. Cluster may not function correctly");
         } else {

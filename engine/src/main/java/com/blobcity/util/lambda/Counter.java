@@ -14,15 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.blobcity.code;
-
-import com.blobcity.lib.export.ExportType;
-import com.blobcity.lib.export.GenericExportResponse;
+package com.blobcity.util.lambda;
 
 /**
  * @author sanketsarang
  */
-public interface ExportServiceRouter {
+public class Counter {
 
-    public GenericExportResponse export(final String ds, final String spName, final ExportType exportType, final String param);
+    private long count = 0L;
+
+    public synchronized void increment() {
+        count ++;
+    }
+
+    public long getCount() {
+        return this.count;
+    }
 }

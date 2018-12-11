@@ -39,6 +39,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.blobcity.util.lambda.Counter;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -656,5 +658,35 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
         } else {
             throw new OperationException(ErrorCode.SELECT_ERROR, "No entry found in supposedly valid cardinal inside OnDisk BTree index");
         }
+    }
+
+
+    @Override
+    public long getIndexCount(String app, String table, String column, String columnValue) throws OperationException {
+        if(LicenseRules.INDEX_CACHING) {
+            final Set<String> cachedIndex = indexCache.get(app, table, column, columnValue);
+            if (cachedIndex != null) {
+                return (long) cachedIndex.size();
+            }
+        }
+
+        final Path path = Paths.get(PathUtil.indexColumnValueFolder(app, table, column, columnValue));
+        if(!Files.exists(path)) {
+            return 0L;
+        }
+
+        try {
+            DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
+            Counter counter = new Counter();
+            directoryStream.iterator().forEachRemaining(p -> {
+                counter.increment();
+            });
+
+            return counter.getCount();
+        } catch (IOException ex) {
+            //do nothing
+        }
+
+        throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "Error reading index");
     }
 }

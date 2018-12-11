@@ -60,6 +60,7 @@ public final class BSql {
     public static final String SYSTEM_DB = ".systemdb";
     public static final String SYSTEM_DB_FOLDER = BSQL_BASE_FOLDER + SYSTEM_DB + SEPERATOR;
     public static final String RESOURCES = "resources";
+    public static final String INITIAL_CREDENTIALS_FILE = BSQL_BASE_FOLDER + SEPERATOR  + "root-pass.txt";
 
     public static final int STORAGE_VERSION = 4;
     // Map Reduce Related Constants
@@ -100,7 +101,8 @@ public final class BSql {
 
 
     /* License files */
-    public static final String NODE_LICENSE_FILE = BSQL_BASE_FOLDER + License.getNodeId() + ".lic";
+//    public static final String NODE_LICENSE_FILE = BSQL_BASE_FOLDER + License.getNodeId() + ".lic";
+    public static final String NODE_LICENSE_FILE = BSQL_BASE_FOLDER + "default.lic";
     public static final String LICENSE_PUBLIC_KEY_FILE_NAME = "public.key";
     public static final String LICENSE_PUBLIC_KEY_FOLDER = "lic";
     public static final String LICENSE_PUBLIC_KEY_FILE = BSQL_BASE_FOLDER + RESOURCES + SEPERATOR

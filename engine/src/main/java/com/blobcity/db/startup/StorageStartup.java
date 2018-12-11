@@ -67,6 +67,8 @@ public class StorageStartup {
         } else {
             //TODO else: check version, start upgrade if needed
             logger.info("systemdb found");
+            System.out.println("createDefaultTables()");
+            createDefaultTables();
         }
         if(configBean.isVersionUpgradedTo4()){
             logger.info("Database version upgrade. Generating new necessary tables");
@@ -99,6 +101,9 @@ public class StorageStartup {
 
         systemDBService.createBillingUsageTable();
         logger.info("BillingUsage table created successfully");
+
+        systemDBService.createApiKeysTable();
+        logger.info("ApiKeys table created successfully");
     }
 
     /**

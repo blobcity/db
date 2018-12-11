@@ -67,9 +67,9 @@ public class OnDiskSumHandling {
             validateNumeric(fieldType);
             Aggregate<Number> sum = new Aggregate<>();
             indexManager.getCardinals(ds, collection, columnName).forEachRemaining(ConsumerUtil.throwsException(cardinal -> {
-                    Iterator<String> streams = indexManager.readIndexStream(ds, collection, columnName, cardinal);
+                    final long size = indexManager.getIndexCount(ds, collection, columnName, cardinal);
                     Number value = (Number) fieldType.convert(cardinal);
-                    sum.add(new Double(value.doubleValue() * Iterators.size(streams)));
+                    sum.add(new Double(value.doubleValue() * size));
             }, OperationException.class));
 
             return fieldType.convert(sum.getAggregate());

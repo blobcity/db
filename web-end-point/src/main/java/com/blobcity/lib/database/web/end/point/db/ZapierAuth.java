@@ -41,7 +41,7 @@ public class ZapierAuth {
     private final SecurityManager securityManager;
 
     public ZapierAuth() {
-        this.logger = LoggerFactory.getLogger(ZapierAuth.class.getName() + ":" + System.currentTimeMillis());
+        this.logger = LoggerFactory.getLogger(ZapierAuth.class.getName());
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.bQueryExecutor = (BQueryExecutor) context.getBean("BQueryExecutorBean");
         this.requestStore = (RequestStore) context.getBean("RequestStoreBean");

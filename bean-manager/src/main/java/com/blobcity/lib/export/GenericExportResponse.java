@@ -16,23 +16,25 @@
 
 package com.blobcity.lib.export;
 
+import java.io.InputStream;
+
 /**
  * @author sanketsarang
  */
 public class GenericExportResponse {
     final String filename;
-    final String responseContents;
+    final InputStream inputStream;
 
-    public GenericExportResponse(final String filename, final String responseContents) {
+    public GenericExportResponse(final String filename, final InputStream inputStream) {
         this.filename = filename;
-        this.responseContents = responseContents;
+        this.inputStream = inputStream;
     }
 
     public String getFilename() {
         return this.filename;
     }
 
-    public String getResponseContents() {
-        return this.responseContents;
+    public InputStream getInputStream() {
+        return this.inputStream;
     }
 }

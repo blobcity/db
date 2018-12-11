@@ -92,5 +92,10 @@ public class GeoIndex implements IndexingStrategy {
     public String getAnyCardinalEntry(final String ds, final String collection, final String column, final String columnValue) throws OperationException {
         throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Fetching single cardinal entry on OnDisk Geo index is not supported");
     }
+
+    @Override
+    public long getIndexCount(String app, String table, String column, String columnValue) throws OperationException {
+        throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Requested operation not supported with index type of column: " + column);
+    }
     
 }

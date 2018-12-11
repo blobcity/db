@@ -276,26 +276,43 @@ public class BSqlIndexManager {
      * @throws OperationException if an operation error occurs
      */
     public void addIndex(final String app, final String table, final String pk, JSONObject jsonObject) throws OperationException {
-        Schema schema = schemaManager.readSchema(app, table);
-        IndexingStrategy indexingStrategy;
+        final Schema schema = schemaManager.readSchema(app, table);
         if (schema.isIndexingNeeded()) {
-            for (Column column : schema.getColumnMap().values()) {
+
+            //new code start
+            schema.getColumnMap().values().parallelStream().forEach(column -> {
                 if (column.getName().equals(schema.getPrimary())) {
-                    continue;
+                    return;
                 }
 
                 if (column.getIndexType() != IndexTypes.NONE) {
-                    indexingStrategy = indexFactory.getStrategy(column.getIndexType());
                     try {
-                        indexingStrategy.index(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
-                    } catch (JSONException ex) {
-
-                        //TODO: Notify admin
-                        logger.error(null, ex);
-                        throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occurred. Unable to add index value for column: " + column.getName() + " in table: " + table);
+                        indexFactory.getStrategy(column.getIndexType()).index(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
+                    } catch (JSONException | OperationException ex) {
+                        //do nothing
                     }
                 }
-            }
+            });
+            //new code end
+
+            //TODO: Remove this code if index works perfectly with new implementation
+//            for (Column column : schema.getColumnMap().values()) {
+//                if (column.getName().equals(schema.getPrimary())) {
+//                    continue;
+//                }
+//
+//                if (column.getIndexType() != IndexTypes.NONE) {
+//                    indexingStrategy = indexFactory.getStrategy(column.getIndexType());
+//                    try {
+//                        indexingStrategy.index(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
+//                    } catch (JSONException ex) {
+//
+//                        //TODO: Notify admin
+//                        logger.error(null, ex);
+//                        throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occurred. Unable to add index value for column: " + column.getName() + " in table: " + table);
+//                    }
+//                }
+//            }
         }
     }
 
@@ -342,25 +359,36 @@ public class BSqlIndexManager {
 
     public void removeIndex(final String app, final String table, final String pk, final JSONObject jsonObject) throws OperationException {
         Schema schema = schemaManager.readSchema(app, table);
-        IndexingStrategy indexingStrategy;
         if (schema.isIndexingNeeded()) {
-            for (Column column : schema.getColumnMap().values()) {
+
+            schema.getColumnMap().values().parallelStream().forEach(column -> {
                 if (column.getName().equals(schema.getPrimary())) {
-                    continue;
+                    return;
                 }
 
                 if (column.getIndexType() != IndexTypes.NONE) {
-                    indexingStrategy = indexFactory.getStrategy(column.getIndexType());
                     try {
-                        indexingStrategy.remove(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
-                    } catch (JSONException ex) {
-
-                        //TODO: Notify admin
-                        logger.error(null, ex);
-                        throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occurred. Unable to remove indexed value for column: " + column.getName() + " in table: " + table);
+                        indexFactory.getStrategy(column.getIndexType()).remove(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
+                    } catch (JSONException | OperationException ex) {
+                        //do nothing
                     }
                 }
-            }
+            });
+
+//            for (Column column : schema.getColumnMap().values()) {
+//                if (column.getName().equals(schema.getPrimary())) {
+//                    continue;
+//                }
+//
+//                if (column.getIndexType() != IndexTypes.NONE) {
+//                    indexingStrategy = indexFactory.getStrategy(column.getIndexType());
+//                    try {
+//                        indexingStrategy.remove(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
+//                    } catch (JSONException ex) {
+//                        //do nothing
+//                    }
+//                }
+//            }
         }
     }
 
@@ -383,6 +411,27 @@ public class BSqlIndexManager {
             strategy = indexFactory.getStrategy(column.getIndexType());
         }
         return strategy.loadIndexStream(app, table, columnName, columnValue.toString());
+    }
+
+    public long getIndexCount(final String app, final String table, final String columnName, final Object columnValue) throws OperationException {
+        Schema schema = schemaStore.getSchema(app, table);
+        Column column = schema.getColumn(columnName);
+        IndexingStrategy strategy = indexFactory.getStrategy(column.getIndexType());
+        if(strategy == null) {
+            final String opid = index(app, table, columnName, IndexTypes.BTREE, OperationLogLevel.ERROR);
+
+            /**
+             * The below semaphore mechanism is required in future when the operation is started in async manner
+             */
+//            Semaphore semaphore = new Semaphore(1);
+//            semaphore.acquireUninterruptibly();
+//            globalLiveStore.registerNotification(opid, semaphore);
+//            semaphore.acquireUninterruptibly();
+
+            column = schemaStore.getSchema(app, table).getColumn(columnName);
+            strategy = indexFactory.getStrategy(column.getIndexType());
+        }
+        return strategy.getIndexCount(app, table, columnName, columnValue.toString());
     }
 
     public Iterator<String> readIndexStreamWithFilter(final String app, final String table, final String columnName, final OperatorFileFilter filter) throws OperationException {
