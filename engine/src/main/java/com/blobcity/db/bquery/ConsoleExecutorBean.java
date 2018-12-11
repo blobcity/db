@@ -210,6 +210,9 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                 case "cluster-status":
                     response = clusterStatus();
                     break;
+                case "shutdown":
+                    response = shutdown();
+                    break;
 
             /* indexing related commands */
                 case "create-index":
@@ -315,6 +318,21 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                     break;
                 case "drop-user":
                     response = dropUser(elements);
+                    break;
+                case "create-master-key":
+                    response = createMasterKey();
+                    break;
+                case "create-ds-key":
+                    response = createDsKey(elements);
+                    break;
+                case "list-api-keys":
+                    response = listApiKeys();
+                    break;
+                case "list-ds-api-keys":
+                    response = listDsApiKeys(elements);
+                    break;
+                case "drop-api-key":
+                    response = dropApiKey(elements);
                     break;
 
             /* user group related commands */
@@ -422,6 +440,9 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                 case "set-log-level":
                     response = setLogLevel(elements);
                     break;
+                case "row-count":
+                    response = rowCount(elements);
+                    break;
 
                 case "set-interpreters":
                     response = setInterpreters(elements);
@@ -489,6 +510,11 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         }
     }
 
+    private String shutdown() {
+        Runtime.getRuntime().halt(1);
+        return "Shutdown";
+    }
+
     private String activateTrigger(String[] elements) throws OperationException {
         if (elements.length < 3 || elements.length > 3) {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Activate-triggers command takes exactly two parameters");
@@ -502,7 +528,7 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         verifyDCInfo(database, table);
         codeLoader.activateTrigger(database, table, elements[2]);
         if ("*".equals(elements[2])) {
-            return "All triggers have been succesfully activated";
+            return "All triggers have been successfully activated";
         }
         return "Trigger " + elements[2] + " successfully activated";
     }
@@ -1018,8 +1044,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
 
     private String nodeId(String[] elements) throws OperationException {
         if (elements.length == 1) {
-            return com.blobcity.license.License.getNodeId();
-//            return configBean.getStringProperty(ConfigProperties.NODE_ID); //to remove
+//                return com.blobcity.license.License.getNodeId();
+                return "default"; //temp code until removal of licensing module
         } else if (elements.length == 2) {
             final String ip = elements[1];
             return "Getting node-id by IP is not yet supported";
@@ -1735,6 +1761,24 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         return "Logging level has been set to " + logLevel.toUpperCase() + " successfully";
     }
 
+    private String rowCount(String []elements) throws OperationException {
+        if(elements.length < 2){
+            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Insufficient number of arguments provided");
+        }
+
+        final String datastoreAndCollection = elements[1];
+        if (!datastoreAndCollection.contains(".")) {
+            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Datastore and collection should be specified in format: datastoreName.collectionName");
+        }
+
+        final String datastore = datastoreAndCollection.substring(0, datastoreAndCollection.indexOf("."));
+        final String collection = datastoreAndCollection.substring(datastoreAndCollection.indexOf(".") + 1, datastoreAndCollection.length());
+
+        final int count = dataManager.getRowCount(datastore, collection);
+
+        return count + " rows";
+    }
+
 
     /* Watch service related commands here */
 
@@ -1957,5 +2001,38 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         collectionManager.changeDataType(datastore, collection, columnName, fieldType);
 
         return "Column type successfully updated in schema";
+    }
+
+    private String createMasterKey() throws OperationException {
+        return securityManager.createMasterKey();
+    }
+
+    private String createDsKey(final String []elements) throws OperationException {
+        if(elements.length != 2) {
+            return "Required format: create-ds-key {ds}";
+        }
+        final String ds = elements[1];
+        return securityManager.createDsKey(ds);
+    }
+
+    private String listApiKeys() throws OperationException {
+        return String.join("\n", securityManager.getApiKeys());
+    }
+
+    private String listDsApiKeys(final String []elements) throws OperationException {
+        if(elements.length != 2) {
+            return "Required format: create-ds-key {ds}";
+        }
+        final String ds = elements[1];
+        return String.join("\n", securityManager.getDsApiKeys(ds));
+    }
+
+    private String dropApiKey(final String []elements) throws OperationException {
+        if(elements.length != 2) {
+            return "Required format: drop-api-key {key}";
+        }
+
+        securityManager.dropApiKey(elements[1]);
+        return "API key successfully dropped";
     }
 }

@@ -58,6 +58,7 @@ import com.blobcity.lib.query.Query;
 import com.blobcity.lib.query.QueryParams;
 import com.blobcity.lib.query.RecordType;
 import com.blobcity.util.json.JsonMessages;
+import com.blobcity.util.json.JsonUtil;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 
@@ -382,6 +383,23 @@ public class BQueryExecutorBean implements BQueryExecutor {
                     returnJson = executeFilter(ds, table, payloadJson);
                     break;
 
+                /* User Access */
+                case CREATE_MASTER_KEY:
+                    returnJson = createMasterKey();
+                    break;
+                case CREATE_DS_KEY:
+                    returnJson = createDsKey(payloadJson);
+                    break;
+                case LIST_API_KEYS:
+                    returnJson = listApiKeys();
+                    break;
+                case LIST_DS_API_KEYS:
+                    returnJson = listDsApiKeys(payloadJson);
+                    break;
+                case DROP_API_KEY:
+                    returnJson = listDsApiKeys(payloadJson);
+                    break;
+
                 /* Misc/Debug etc */
                 case REPOP:
                     returnJson = executeRepopulateTable(ds, payloadJson);
@@ -458,6 +476,32 @@ public class BQueryExecutorBean implements BQueryExecutor {
         }
 
         return null;
+    }
+
+    private JSONObject createMasterKey() throws OperationException {
+        return new JSONObject(JsonMessages.SUCCESS_ACKNOWLEDGEMENT).put("key", securityManager.createMasterKey());
+    }
+
+    private JSONObject createDsKey(final JSONObject payloadJson) throws OperationException {
+        if(!payloadJson.has("ds")) {
+            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Missing DS parameter");
+        }
+        return new JSONObject(JsonMessages.SUCCESS_ACKNOWLEDGEMENT).put("key", securityManager.createDsKey(payloadJson.getString("ds")));
+    }
+
+    private JSONObject listApiKeys() throws OperationException {
+        JSONArray keysArray = new JSONArray();
+        securityManager.getApiKeys().forEach(key -> keysArray.put(key));
+        return new JSONObject(JsonMessages.SUCCESS_ACKNOWLEDGEMENT).put("keys", keysArray);
+    }
+
+    private JSONObject listDsApiKeys(final JSONObject payloadJson) throws OperationException {
+        if(!payloadJson.has("ds")) {
+            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Missing DS parameter");
+        }
+        JSONArray keysArray = new JSONArray();
+        securityManager.getDsApiKeys(payloadJson.getString("ds")).forEach(key -> keysArray.put(key));
+        return new JSONObject(JsonMessages.SUCCESS_ACKNOWLEDGEMENT).put("keys", keysArray);
     }
 
     private JSONObject insert(final String datastore, final String collection, final JSONObject payloadJson) throws OperationException {

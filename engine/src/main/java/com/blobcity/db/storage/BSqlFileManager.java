@@ -42,6 +42,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
+import com.blobcity.util.lambda.Counter;
+import com.google.common.collect.Iterators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,6 +135,15 @@ public class BSqlFileManager {
         }
     }
 
+    public int rowCount(final String ds, final String collection) throws OperationException {
+        try (DirectoryStream directoryStream = Files.newDirectoryStream(FileSystems.getDefault().getPath(PathUtil.dataFolderPath(ds, collection)))) {
+            return Iterators.size(directoryStream.iterator());
+        } catch (IOException ex) {
+            logger.trace(null, ex);
+            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);
+        }
+    }
+
     /**
      * Gets all primary keys within the specified table in the form of an iterator. Only one key is loaded at any point
      * in this. No select governor limits apply on this function.
@@ -142,39 +154,40 @@ public class BSqlFileManager {
      * @throws IOException If an i/o error occurs
      */
     public Iterator<String> selectAllKeysAsStream(final String app, final String table) throws IOException {
-        DirectoryStream ds = Files.newDirectoryStream(FileSystems.getDefault().getPath(PathUtil.dataFolderPath(app, table)));
-        final Iterator<Path> pathIterator = ds.iterator();
+        try(DirectoryStream ds = Files.newDirectoryStream(FileSystems.getDefault().getPath(PathUtil.dataFolderPath(app, table)))) {
+            final Iterator<Path> pathIterator = ds.iterator();
 
-        return new Iterator<String>() {
-            @Override
-            public boolean hasNext() {
-                boolean hasNext = pathIterator.hasNext();
-                if (!hasNext) {
+            return new Iterator<String>() {
+                @Override
+                public boolean hasNext() {
+                    boolean hasNext = pathIterator.hasNext();
+                    if (!hasNext) {
+                        try {
+                            ds.close();
+                        } catch (IOException ex) {
+                            java.util.logging.Logger.getLogger(BSqlFileManager.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    return hasNext;
+                }
+
+                @Override
+                public String next() {
+                    String fileName = pathIterator.next().getFileName().toString();
                     try {
-                        ds.close();
-                    } catch (IOException ex) {
-                        java.util.logging.Logger.getLogger(BSqlFileManager.class.getName()).log(Level.SEVERE, null, ex);
+                        return FileNameEncoding.decode(fileName);
+                    } catch (OperationException ex) {
+                        logger.error("Decoding failed for string: " + fileName, ex);
+                        throw new DbRuntimeException(ex);
                     }
                 }
-                return hasNext;
-            }
 
-            @Override
-            public String next() {
-                String fileName = pathIterator.next().getFileName().toString();
-                try {
-                    return FileNameEncoding.decode(fileName);
-                } catch (OperationException ex) {
-                    logger.error("Decoding failed for string: " + fileName, ex);
-                    throw new DbRuntimeException(ex);
+                @Override
+                public void remove() {
+                    pathIterator.remove();
                 }
-            }
-
-            @Override
-            public void remove() {
-                pathIterator.remove();
-            }
-        };
+            };
+        }
     }
 
     /**
@@ -191,38 +204,39 @@ public class BSqlFileManager {
      */
     public Iterator<String> selectWithFilterAsStream(final String app, final String table, final Filter filter) throws IOException {
 
-        DirectoryStream ds = Files.newDirectoryStream(FileSystems.getDefault().getPath(PathUtil.dataFolderPath(app, table)), filter);
-        final Iterator<Path> pathIterator = ds.iterator();
-        return new Iterator<String>() {
-            @Override
-            public boolean hasNext() {
-                boolean hasNext = pathIterator.hasNext();
-                if (!hasNext) {
+        try(DirectoryStream ds = Files.newDirectoryStream(FileSystems.getDefault().getPath(PathUtil.dataFolderPath(app, table)), filter)) {
+            final Iterator<Path> pathIterator = ds.iterator();
+            return new Iterator<String>() {
+                @Override
+                public boolean hasNext() {
+                    boolean hasNext = pathIterator.hasNext();
+                    if (!hasNext) {
+                        try {
+                            ds.close();
+                        } catch (IOException ex) {
+                            java.util.logging.Logger.getLogger(BSqlFileManager.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    return hasNext;
+                }
+
+                @Override
+                public String next() {
+                    String name = pathIterator.next().getFileName().toString();
                     try {
-                        ds.close();
-                    } catch (IOException ex) {
-                        java.util.logging.Logger.getLogger(BSqlFileManager.class.getName()).log(Level.SEVERE, null, ex);
+                        return FileNameEncoding.decode(name);
+                    } catch (OperationException ex) {
+                        logger.error("Failed to decode String: " + name, ex);
+                        throw new DbRuntimeException(ex);
                     }
                 }
-                return hasNext;
-            }
 
-            @Override
-            public String next() {
-                String name = pathIterator.next().getFileName().toString();
-                try {
-                    return FileNameEncoding.decode(name);
-                } catch (OperationException ex) {
-                    logger.error("Failed to decode String: " + name, ex);
-                    throw new DbRuntimeException(ex);
+                @Override
+                public void remove() {
+                    pathIterator.remove();
                 }
-            }
-
-            @Override
-            public void remove() {
-                pathIterator.remove();
-            }
-        };
+            };
+        }
     }
 
     /**

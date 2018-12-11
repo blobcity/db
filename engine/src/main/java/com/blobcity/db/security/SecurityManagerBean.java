@@ -16,14 +16,21 @@
 
 package com.blobcity.db.security;
 
+import com.blobcity.db.bsql.BSqlDatastoreManager;
+import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.security.exceptions.BadPasswordException;
 import com.blobcity.db.security.exceptions.BadUsernameException;
 import com.blobcity.db.security.exceptions.InvalidCredentialsException;
 import com.blobcity.util.security.PasswordHash;
+
+import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.expression.Operation;
 import org.springframework.stereotype.Service;
 import com.blobcity.lib.database.bean.manager.interfaces.security.SecurityManager;
 import org.slf4j.Logger;
@@ -38,8 +45,12 @@ public class SecurityManagerBean implements SecurityManager {
     
     private static final Logger logger = LoggerFactory.getLogger(SecurityManagerBean.class);
  
-    @Autowired
+    @Autowired @Lazy
     private UserManager userManager;
+    @Autowired @Lazy
+    private ApiKeyManager apiKeyManager;
+    @Autowired @Lazy
+    private BSqlDatastoreManager datastoreManager;
 
     /**
      * Verifies whether the password of the specified user
@@ -56,6 +67,78 @@ public class SecurityManagerBean implements SecurityManager {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Verifies if the provided access key has an entry in the ApiKeys table
+     * @param apiKey the api key to check
+     * @return <code>true</code> if an entry for the key is found, <code>false</code> otherwise
+     */
+    @Override
+    public boolean verifyKey(final String apiKey) {
+        try {
+            apiKeyManager.validateKey(apiKey);
+            return true;
+        } catch (OperationException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Verifies if the api key is valid if that key is a DS level key and permits access to the specified ds.
+     * @param apiKey the api key
+     * @param ds name of datastore
+     * @return <code>true</code> if the key and ds combination is valid, <code>false</code> otherwise
+     */
+    public boolean verifyDsKey(final String apiKey, final String ds) {
+        try {
+            apiKeyManager.validateDsAccess(apiKey, ds);
+            return true;
+        } catch (OperationException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Creates a new master key. Only an existing master key holder or the root user may create a new master key. It is
+     * responsibility of the invoker to ensure proper privileges before calling this function.
+     * @return a new master key
+     * @throws OperationException if an internal error occurs
+     */
+    public String createMasterKey() throws OperationException {
+        return apiKeyManager.createMasterKey();
+    }
+
+    /**
+     * Creates a new Ds level key. Only an existing master key holder or the same DS key holder or the root user may
+     * perform this operation. It is responsibility of the invoker to ensure proper privileges before calling this
+     * function.
+     * @param ds name of datastore
+     * @return the newly created DS level key
+     * @throws OperationException if an internal error occurs
+     */
+    public String createDsKey(final String ds) throws OperationException {
+        if(!datastoreManager.exists(ds)) {
+            throw new OperationException(ErrorCode.INVALID_DATASTORE_NAME, "No datastore found with name: " + ds);
+        }
+        return apiKeyManager.createDsKey(ds);
+    }
+
+    /**
+     * Gets a list of all API keys. Includes master and ds keys
+     * @return a list of all API keys
+     * @throws OperationException if an error occurs in fetching the keys
+     */
+    public List<String> getApiKeys() throws OperationException {
+        return apiKeyManager.listKeys();
+    }
+
+    public List<String> getDsApiKeys(final String ds) throws OperationException {
+        return apiKeyManager.listDsKeys(ds);
+    }
+
+    public void dropApiKey(final String key) throws OperationException {
+        apiKeyManager.revokeKey(key);
     }
 
     /**

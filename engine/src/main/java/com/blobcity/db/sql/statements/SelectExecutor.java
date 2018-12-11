@@ -44,6 +44,7 @@ import com.foundationdb.sql.unparser.NodeToString;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.sun.corba.se.spi.orbutil.fsm.Guard;
 import org.apache.mina.util.ConcurrentHashSet;
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -214,10 +215,25 @@ public class SelectExecutor {
             if (!inMemory) {
                 /* OnDisk special case handling */
 
+                /* SELECT COUNT(*) from table */
+                if (sqlString.trim().toLowerCase().startsWith("select count(*) from") && whereClause == null && groupByColumns.size() == 0) {
+                    return produceCountStarResult((int)onDiskAggregateHandling.computeAgg(appId, tableName, aggOperations.get(0)), startTime).toString();
+                }
+
                 /* SELECT DISTINCT Col1 FROM table */
-                if (selectNode.isDistinct() && whereClause == null && aggOperations.size() == 0 && resultColumns.size() == 1
+                else if (selectNode.isDistinct() && whereClause == null && aggOperations.size() == 0 && resultColumns.size() == 1
                         && resultColumns.getColumnNames()[0] != null && groupByColumns.size() == 0) {
                     populateSingleColumnDistinct(appId, tableName, resultColumns.getColumnNames()[0], resultMap);
+                    if(orderByList != null) {
+                        orderResult(appId, tableName, orderByList, resultMap);
+                    }
+                    return produceResult(appId, tableName, sqlString, resultMap, limit, startTime);
+                }
+
+                /* SELECT DISTINCT Col1 FROM table where <conditions> */
+                else if (selectNode.isDistinct() && whereClause != null && aggOperations.size() == 0 && resultColumns.size() == 1
+                        && resultColumns.getColumnNames()[0] != null && groupByColumns.size() == 0) {
+                    populateSingleColumnDistinctWithWhere(appId, tableName, resultColumns.getColumnNames()[0], resultColumns, whereClause, resultMap);
                     if(orderByList != null) {
                         orderResult(appId, tableName, orderByList, resultMap);
                     }
@@ -487,6 +503,37 @@ public class SelectExecutor {
         cardinals.forEachRemaining(ConsumerUtil.throwsException(cardinal -> jsonList.add(new JSONObject().put(columnName, fieldType.convert(cardinal))), OperationException.class));
 
         resultMap.put("_master_", jsonList);
+    }
+
+    private void populateSingleColumnDistinctWithWhere(final String ds, final String collection, final String columnName, final ResultColumnList resultColumnList, final ValueNode whereClause, final Map<String, List<JSONObject>> resultMap) throws OperationException {
+        try {
+            final Set<String> keys = onDiskWhereHandling.executeWhere(ds, collection, resultColumnList, whereClause);
+            final Iterator<String> cardinals = indexManager.getCardinals(ds, collection, columnName);
+            final Set<String> selectedCardinals = new HashSet<>();
+
+            cardinals.forEachRemaining(ConsumerUtil.throwsException(cardinal -> {
+                Iterator<String> indexStream = indexManager.readIndexStream(ds, collection, columnName, cardinal);
+                while(indexStream.hasNext()) {
+                    if(keys.contains(indexStream.next())) {
+                        selectedCardinals.add(cardinal);
+                        return;
+                    }
+                }
+            }, OperationException.class));
+
+            final FieldType fieldType = schemaStore.getSchema(ds, collection).getColumn(columnName).getFieldType();
+
+            if (resultMap.containsKey("_master_")) {
+                throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "SELECT query execution encountered an internal error. SelectExecutor.populateSingleColumnDistinct() wrongly invoked");
+            }
+
+            final List<JSONObject> jsonList = new ArrayList<>();
+            selectedCardinals.forEach(ConsumerUtil.throwsException(cardinal -> jsonList.add(new JSONObject().put(columnName, fieldType.convert(cardinal))), OperationException.class));
+            resultMap.put("_master_", jsonList);
+        } catch (StandardException e) {
+            e.printStackTrace();
+            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "Error in executing WHERE condition");
+        }
     }
 
     private void populateSingleColumn(final String ds, final String collection, final String columnName, final Map<String, List<JSONObject>> resultMap, final int limit) throws OperationException {
@@ -982,6 +1029,18 @@ public class SelectExecutor {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
         aggMap.forEach((aggNode, value) -> jsonObject.put(aggNode.getAggregateName() + "(" + ((ColumnReference) aggNode.getOperand()).getColumnName() + ")", value));
+        jsonArray.put(jsonObject);
+        JSONObject responseJson = ack1();
+        responseJson.put(BQueryParameters.PAYLOAD, jsonArray);
+        responseJson.put(BQueryParameters.TIME, (System.currentTimeMillis() - startTime));
+        responseJson.put(BQueryParameters.ROWS, jsonArray.length());
+        return responseJson;
+    }
+
+    private JSONObject produceCountStarResult(int count, long startTime) {
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("COUNT(*)", count);
         jsonArray.put(jsonObject);
         JSONObject responseJson = ack1();
         responseJson.put(BQueryParameters.PAYLOAD, jsonArray);

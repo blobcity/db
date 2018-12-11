@@ -45,7 +45,7 @@ public class BQueryResource {
     private final RequestStore requestStore;
 
     public BQueryResource() {
-        this.logger = LoggerFactory.getLogger(BQueryResource.class.getName() + ":" + System.currentTimeMillis());
+        this.logger = LoggerFactory.getLogger(BQueryResource.class.getName());
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.bQueryExecutor = (BQueryExecutor) context.getBean("BQueryExecutorBean");
         this.requestStore = (RequestStore) context.getBean("RequestStoreBean");
@@ -66,18 +66,26 @@ public class BQueryResource {
             final String username,
             @FormParam(value = "password")
             final String password,
+            @FormParam(value = "key")
+            final String apiKey,
             @FormParam(value = "db")
             final String db,
             @FormParam("q")
             final String query) {
         logger.trace("Received DB query: {}", query);
         final long startTime = System.currentTimeMillis();
-        final String response;
+
         if (query == null || query.isEmpty()) {
-            response = "{\"ack\":\"0\", \"cause\":\"Invalid query format\"}";
-        } else {
-            response = bQueryExecutor.runQuery(query);
+            return "{\"ack\":\"0\", \"cause\":\"Invalid query format\"}";
         }
+
+        if(apiKey != null && !securityManager.verifyKey(apiKey)) {
+            return "{\"ack\":\"0\", \"cause\":\"Invalid credentials\"}";
+        } else if(!securityManager.verifyCredentials(username, password)) {
+            return "{\"ack\":\"0\", \"cause\":\"Invalid credentials\"}";
+        }
+
+        final String response = bQueryExecutor.runQuery(query);
         final long executionTime = System.currentTimeMillis() - startTime;
         logger.trace("Response to DB query: {}", response);
         logger.trace("Execution time (ms): " + executionTime);

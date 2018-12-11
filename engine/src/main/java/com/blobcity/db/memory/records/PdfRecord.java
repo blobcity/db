@@ -14,15 +14,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.blobcity.code;
+package com.blobcity.db.memory.records;
 
-import com.blobcity.lib.export.ExportType;
-import com.blobcity.lib.export.GenericExportResponse;
+import com.blobcity.lib.query.RecordType;
+import org.json.JSONObject;
 
 /**
  * @author sanketsarang
  */
-public interface ExportServiceRouter {
+public class PdfRecord implements com.blobcity.lib.data.Record {
 
-    public GenericExportResponse export(final String ds, final String spName, final ExportType exportType, final String param);
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public RecordType getType() {
+        return null;
+    }
+
+    @Override
+    public JSONObject asJson() {
+        return null;
+    }
+
+    @Override
+    public String asCsv() {
+        return null;
+    }
+
+    @Override
+    public String asText() {
+        return null;
+    }
+
+    @Override
+    public String asXml() {
+        return null;
+    }
+
+    @Override
+    public boolean uniqueCheckRequired() {
+        return false;
+    }
 }

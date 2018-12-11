@@ -258,9 +258,9 @@ public class SchemaManager {
         try (BufferedReader reader = new BufferedReader(new FileReader(PathUtil.schemaFilePath(appId, table)))) {
             return reader.readLine();
         } catch (FileNotFoundException ex) {
-            throw new OperationException(ErrorCode.SCHEMA_FILE_NOT_FOUND);
+            throw new OperationException(ErrorCode.SCHEMA_FILE_NOT_FOUND, "No schema file found for " + appId + "." + table);
         } catch (IOException ex) {
-            throw new OperationException(ErrorCode.SCHEMA_FILE_READ_FAILED);
+            throw new OperationException(ErrorCode.SCHEMA_FILE_READ_FAILED, "Schema file read failed for " + appId + "." + table);
         }
     }
 

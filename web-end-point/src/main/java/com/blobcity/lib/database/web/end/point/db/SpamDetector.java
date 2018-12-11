@@ -46,7 +46,7 @@ public class SpamDetector {
     private SecurityManager securityManager;
 
     public SpamDetector() {
-        this.logger = LoggerFactory.getLogger(SpamDetector.class.getName() + ":" + System.currentTimeMillis());
+        this.logger = LoggerFactory.getLogger(SpamDetector.class.getName());
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.spamDetector = (com.blobcity.lib.functions.spam.SpamDetector) context.getBean("SpamDetector");
         this.securityManager = (SecurityManager) context.getBean("SecurityManagerBean");

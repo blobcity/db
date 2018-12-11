@@ -64,28 +64,28 @@ public class MemoryRow {
     }
     
     public void insert(Object json, String keyPrefix) {
-        Set<Object> keys = ((JSONObject) json).keySet();
-        for (Object col : keys) {
-            Object val = ((JSONObject) json).get(col.toString());
-            String nestedKey = col.toString();
-            if (!keyPrefix.equals("")) {
-                nestedKey = (keyPrefix + "." + col.toString());
-            }
-            if (val instanceof JSONObject) {
-                MemoryColumn memCol = new MemoryColumn(col.toString(), nestedKey);
-                row.put(memCol, val);
-//                logger.debug("1: " + memCol.getColName() + " " + memCol.getNestedColName() + " " + val.toString());
-                insert(val, nestedKey);
-            } else if (val instanceof JSONArray) {
-                MemoryColumn memCol = new MemoryColumn(col.toString(), nestedKey);
-                row.put(memCol, val);
-//                logger.debug("11: " + memCol.getColName() + " " + memCol.getNestedColName() + " " + val.toString());
-                insertJsonArray(val, nestedKey);
-            } else {
-                MemoryColumn memCol = new MemoryColumn(col.toString(), nestedKey);
-//                logger.debug("111: " + memCol.getColName() + " " + memCol.getNestedColName() + " " + val.toString());
-                row.put(memCol, val);
-            }
-        }
+//        Set<Object> keys = ((JSONObject) json).keySet();
+//        for (Object col : keys) {
+//            Object val = ((JSONObject) json).get(col.toString());
+//            String nestedKey = col.toString();
+//            if (!keyPrefix.equals("")) {
+//                nestedKey = (keyPrefix + "." + col.toString());
+//            }
+//            if (val instanceof JSONObject) {
+//                MemoryColumn memCol = new MemoryColumn(col.toString(), nestedKey);
+//                row.put(memCol, val);
+////                logger.debug("1: " + memCol.getColName() + " " + memCol.getNestedColName() + " " + val.toString());
+//                insert(val, nestedKey);
+//            } else if (val instanceof JSONArray) {
+//                MemoryColumn memCol = new MemoryColumn(col.toString(), nestedKey);
+//                row.put(memCol, val);
+////                logger.debug("11: " + memCol.getColName() + " " + memCol.getNestedColName() + " " + val.toString());
+//                insertJsonArray(val, nestedKey);
+//            } else {
+//                MemoryColumn memCol = new MemoryColumn(col.toString(), nestedKey);
+////                logger.debug("111: " + memCol.getColName() + " " + memCol.getNestedColName() + " " + val.toString());
+//                row.put(memCol, val);
+//            }
+//        }
     }
 }

@@ -116,6 +116,7 @@ public enum ErrorCode {
     UNKNOWN_NODE_ID("UNKNOWN_NODE_ID", "Node id unknown"),
     UPDATE_OPERATION_ERROR("UPDATE_OPERATION_ERROR","Update operation failed"),
     USER_CREDENTIALS_INVALID("APP003", "Invalid credentials"),
+    INVALID_API_KEY("INVALID_API_KEY", "API key invalid"),
     DATA_FILE_NOT_FOUND("DATA_FILE_NOT_FOUND","Data file not found. Check the file path"),
     UNKNOWN_ERROR("UNKNOWN_ERROR","An unknown error occurred"),
     ACF_PARSE_ERROR("ACF_PARSE_ERROR", "Error occured in parsing ACF"),

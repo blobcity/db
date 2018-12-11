@@ -30,13 +30,14 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 /**
- * REST Web Service
+ * Web Service for downloading a file from the database service. The query must be fired on the specific node that has
+ * the file saved on the disk.
  *
  * @author sanketsarang
  */
 
-@Path("ws/{ds}/{version}/{url}")
-public class WebService {
+@Path("file/{ds}/download")
+public class FileDownload {
 
     private final Logger logger;
     private final BQueryExecutor bQueryExecutor;
@@ -44,8 +45,8 @@ public class WebService {
     private final RequestStore requestStore;
     private final WebServiceExecutor webServiceExecutor;
 
-    public WebService() {
-        this.logger = LoggerFactory.getLogger(WebService.class.getName());
+    public FileDownload() {
+        this.logger = LoggerFactory.getLogger(FileDownload.class.getName());
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.bQueryExecutor = (BQueryExecutor) context.getBean("BQueryExecutorBean");
         this.requestStore = (RequestStore) context.getBean("RequestStoreBean");
@@ -54,7 +55,7 @@ public class WebService {
     }
 
     @GET
-    @Produces("application/json")
+    @Produces("application/octet-stream")
     public Response handleGet(
             @PathParam(value ="ds") final String datastore,
             @PathParam(value = "version") final String version,
