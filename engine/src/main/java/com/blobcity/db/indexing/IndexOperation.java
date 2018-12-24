@@ -33,6 +33,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.Future;
 
 /**
@@ -128,9 +129,62 @@ public class IndexOperation implements Operable {
     private Future<OperationStatus> run(final String app, final String table, final String opid, final String column, final IndexTypes indexType) {
         return run(app, table, opid, column, indexType, false);
     }
-    
+
+    /**
+     * TEMPORARY IMPLEMENTATION - Should be replaced with the original DirectoryStream function
+     */
     @Async
     private Future<OperationStatus> run(final String app, final String table, final String opid, final String column, final IndexTypes indexType, boolean inMemory) {
+        List<String> keysList;
+        IndexingStrategy indexingStrategy = indexFactory.getStrategy(indexType);
+        try {
+            keysList = dataManager.selectAllKeys(app, table);
+        } catch (OperationException ex) {
+            logger.error(null, ex);
+            onError(opid);
+            return new AsyncResult<>(OperationStatus.ERROR);
+        }
+
+        keysList.parallelStream().forEach(key -> {
+            try {
+                JSONObject jsonObject = dataManager.select(app, table, key);
+                Object value = jsonObject.get(column);
+                operationLogger.delayedLog(OperationLogLevel.FINE, opid, "Indexing: " + key);
+                indexingStrategy.index(app, table, column, value.toString(), key);
+                operationLogger.delayedLog(OperationLogLevel.INFO, opid, "Indexed: " + key);
+            } catch (OperationException | JSONException ex) {
+                try {
+                    operationLogger.delayedLog(OperationLogLevel.ERROR, opid, ex.getMessage());
+                } catch (OperationException ex1) {
+                    logger.error(null, ex1);
+                }
+            }
+        });
+
+        try {
+            operationsFileStore.update(opid, OperationProperties.RECORDS, keysList.size(), false);
+        } catch (OperationException e) {
+            logger.error(null, e);
+        }
+
+        onComplete(opid);
+        return ConcurrentUtils.constantFuture(OperationStatus.COMPLETED);
+    }
+
+
+    /**
+     * ORIGINAL IMPLEMENTATION: Uses the recommended iterator to read the keys. The DirectoryStream for reading all keys
+     * in the table is failing for unknown reasons. Replacing with select all keys.
+     * @param app
+     * @param table
+     * @param opid
+     * @param column
+     * @param indexType
+     * @param inMemory
+     * @return
+     */
+    @Async
+    private Future<OperationStatus> runOld(final String app, final String table, final String opid, final String column, final IndexTypes indexType, boolean inMemory) {
         Iterator<String> iterator;
         IndexingStrategy indexingStrategy = indexFactory.getStrategy(indexType);
 

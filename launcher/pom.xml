@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <parent>
         <groupId>com.blobcity.pom</groupId>
         <artifactId>database</artifactId>
-        <version>1.7.3-alpha</version>
+        <version>1.7.4-alpha</version>
     </parent>
     
     <groupId>com.blobcity.lib.database</groupId>
