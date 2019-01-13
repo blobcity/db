@@ -5,6 +5,7 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 BlobCity DB is a Gartner Cool Vendor 2016. [View Report](https://www.gartner.com/doc/3288923) 
 
 ![Gartner Cool Vendor 2016](https://blobcity.com/assets/img/Gartner-CoolVendor-2016.jpg =250x)
+<img src="https://blobcity.com/assets/img/Gartner-CoolVendor-2016.jpg" width="200"/>
 
 # Docs
 
