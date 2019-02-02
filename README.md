@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/blobcity/db.svg?branch=develop)](https://travis-ci.org/blobcity/db)
+
 ```
                        ___
                     .-'   `'.
