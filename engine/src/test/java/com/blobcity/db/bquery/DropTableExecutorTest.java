@@ -25,6 +25,8 @@ import com.foundationdb.sql.StandardException;
 import com.foundationdb.sql.parser.SQLParser;
 import com.foundationdb.sql.parser.StatementNode;
 import java.util.UUID;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import static org.junit.Assert.assertTrue;
@@ -55,12 +57,12 @@ public class DropTableExecutorTest {
     public void tearDown() {
     }
 
-    private void assertAck(final String response) {
+    private void assertAck(final String response) throws JSONException {
         JSONObject responseJSON = new JSONObject(response);
         JSONAssert.assertEquals(JsonMessages.SUCCESS_ACKNOWLEDGEMENT_OBJECT, responseJSON, false);
     }
 
-    private void checkSupported(final String sql) throws OperationException, StandardException {
+    private void checkSupported(final String sql) throws OperationException, StandardException, JSONException {
         SQLParser parser = new SQLParser();
         StatementNode stmt = parser.parseStatement(sql);
         String response = dropTableExecutor.execute(appId, stmt);
@@ -79,7 +81,7 @@ public class DropTableExecutorTest {
     }
 
     @Test
-    public void test() throws StandardException, OperationException {
+    public void test() throws StandardException, OperationException, JSONException {
         checkSupported("DROP TABLE sometable");
     }
 

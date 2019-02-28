@@ -26,6 +26,8 @@ import com.foundationdb.sql.StandardException;
 import com.foundationdb.sql.parser.SQLParser;
 import com.foundationdb.sql.parser.StatementNode;
 import java.util.UUID;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import static org.junit.Assert.assertTrue;
@@ -59,12 +61,12 @@ public class AlterTableExecutorTest {
     public void tearDown() {
     }
 
-    private void assertAck(final String response) {
+    private void assertAck(final String response) throws JSONException {
         JSONObject responseJSON = new JSONObject(response);
         JSONAssert.assertEquals(JsonMessages.SUCCESS_ACKNOWLEDGEMENT_OBJECT, responseJSON, false);
     }
 
-    private void checkSupported(final String sql) throws OperationException, StandardException {
+    private void checkSupported(final String sql) throws OperationException, StandardException, JSONException {
         SQLParser parser = new SQLParser();
         StatementNode stmt = parser.parseStatement(sql);
         String response = alterTableExecutor.execute(appId, stmt);
@@ -106,7 +108,7 @@ public class AlterTableExecutorTest {
 //        }
 //    }
     @Test
-    public void dropColumn() throws StandardException, OperationException {
+    public void dropColumn() throws StandardException, OperationException, JSONException {
         checkSupported("ALTER TABLE distributors DROP COLUMN address");
         checkSupported("ALTER TABLE distributors DROP address");
     }
@@ -124,7 +126,7 @@ public class AlterTableExecutorTest {
     }
 
     @Test
-    public void addColumn() throws StandardException, OperationException {
+    public void addColumn() throws StandardException, OperationException, JSONException {
         checkSupported("ALTER TABLE distributors ADD COLUMN address varchar(30)");
     }
 
@@ -144,7 +146,7 @@ public class AlterTableExecutorTest {
     }
 
     @Test
-    public void addUnique() throws StandardException, OperationException {
+    public void addUnique() throws StandardException, OperationException, JSONException {
         checkSupported("ALTER TABLE distributors ADD UNIQUE (somecol)");
     }
 
@@ -197,7 +199,7 @@ public class AlterTableExecutorTest {
     }
 
     @Test
-    public void collateTest() throws StandardException, OperationException {
+    public void collateTest() throws StandardException, OperationException, JSONException {
         SQLParser parser = new SQLParser();
         StatementNode stmt = parser.parseStatement("ALTER TABLE distributors ADD COLUMN address varchar(30) COLLATE moocowlang");
         String response = alterTableExecutor.execute(appId, stmt);

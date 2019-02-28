@@ -61,7 +61,7 @@ public class RequestHandlingBean {
         final String requestId = requestStore.registerRequest(query);
         query.requestId(requestId);
 
-        logger.info("New Request: " + query.toJsonString());
+//        logger.info("New Request: " + query.toJsonString());
 
         /* Set the masterNodeId on the query to the current node */
         query.masterNodeId(ClusterNodesStore.selfId);
