@@ -20,6 +20,8 @@ import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.schema.Types;
 import java.util.UUID;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -181,7 +183,7 @@ public class BinaryFieldTest {
      * Test of convert method, of class BinaryField.
      */
     @Test
-    public void testConvert() throws OperationException {
+    public void testConvert() throws OperationException, JSONException {
         System.out.println("convert");
         final byte[] expResult;
         byte[] result;

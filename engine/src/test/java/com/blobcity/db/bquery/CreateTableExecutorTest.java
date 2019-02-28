@@ -26,6 +26,7 @@ import com.foundationdb.sql.parser.StatementNode;
 import java.io.IOException;
 import java.util.UUID;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import static org.junit.Assert.assertTrue;
@@ -66,7 +67,7 @@ public class CreateTableExecutorTest {
     }
 
     @Test
-    public void simpleTest() throws OperationException, StandardException, IOException {
+    public void simpleTest() throws OperationException, StandardException, IOException, JSONException {
         String response = runQuery("CREATE TABLE films (\n"
                 + "    code        char(5) CONSTRAINT firstkey PRIMARY KEY,\n"
                 + "    title       varchar(40) NOT NULL,\n"
@@ -97,7 +98,7 @@ public class CreateTableExecutorTest {
     }
 
     @Test
-    public void uniqueKeyTest() throws OperationException, StandardException, IOException {
+    public void uniqueKeyTest() throws OperationException, StandardException, IOException, JSONException {
         String response = runQuery("CREATE TABLE films (\n"
                 + "    code        char(5) PRIMARY KEY,\n"
                 + "    title       varchar(40),\n"
@@ -112,7 +113,7 @@ public class CreateTableExecutorTest {
     }
 
     @Test
-    public void collateTest() throws OperationException, StandardException, IOException {
+    public void collateTest() throws OperationException, StandardException, IOException, JSONException {
         String response = runQuery("CREATE TABLE films (\n"
                 + "    code        char(5) PRIMARY KEY,\n"
                 + "    title       varchar(40),\n"

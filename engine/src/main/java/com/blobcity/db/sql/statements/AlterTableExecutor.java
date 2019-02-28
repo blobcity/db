@@ -65,7 +65,7 @@ public class AlterTableExecutor {
         AlterTableNode node = (AlterTableNode) stmt;
         //Schema name will be ignored
         final String tableName = node.getObjectName().getTableName();
-        TableElementList tableElementList = node.tableElementList;
+        TableElementList tableElementList = node.getTableElementList();
         if (tableElementList.size() >= 2) {
             addColumn(appId, tableName, tableElementList, warnings);
         } else if (tableElementList.size() == 1) {
@@ -191,7 +191,7 @@ public class AlterTableExecutor {
             case DROP:
             case FOREIGN_KEY:
             case NOT_NULL:
-            case INDEX:
+//            case INDEX:
                 throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Constraint " + constraintType.name() + " is not supported");
             //TODO
             //INDEX is not part of standard. 
