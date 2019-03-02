@@ -20,19 +20,15 @@ import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.constants.BSql;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.lib.database.bean.manager.common.Constants;
 import com.blobcity.lib.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.Operation;
 import org.springframework.stereotype.Component;
-
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 
 /**
  * Holds writers to commit log files for each collection in the database
