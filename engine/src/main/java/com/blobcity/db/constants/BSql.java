@@ -16,8 +16,6 @@
 
 package com.blobcity.db.constants;
 
-import com.blobcity.license.License;
-
 import java.io.File;
 
 /**
