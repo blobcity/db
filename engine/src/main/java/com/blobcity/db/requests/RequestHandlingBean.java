@@ -53,20 +53,27 @@ public class RequestHandlingBean {
     private ClusterMessaging clusterMessaging;
 
     public Query newRequest(Query query) {
+        String requestId = null;
 
-        /**
-         * Creates a new request registered only on current node. The query object will contain the the requestId of
-         * the new request after the operation.
-         */
-        final String requestId = requestStore.registerRequest(query);
-        query.requestId(requestId);
+        try {
+
+            /**
+             * Creates a new request registered only on current node. The query object will contain the the requestId of
+             * the new request after the operation.
+             */
+            requestId = requestStore.registerRequest(query);
+            query.requestId(requestId);
 
 //        logger.info("New Request: " + query.toJsonString());
 
-        /* Set the masterNodeId on the query to the current node */
-        query.masterNodeId(ClusterNodesStore.selfId);
+            /* Set the masterNodeId on the query to the current node */
+            query.masterNodeId(ClusterNodesStore.selfId);
 
-        return processRequest(query);
+            return processRequest(query);
+
+        } finally {
+            requestStore.unregisterRequest(requestId);
+        }
     }
 
     public Query newSubRequest(final String parentRequestId, final Query query) {
