@@ -78,25 +78,32 @@ public class RequestHandlingBean {
 
     public Query newSubRequest(final String parentRequestId, final Query query) {
 
-        /**
-         * Sets the id of the parent request
-         */
-        query.parentRequestId(parentRequestId);
+        String requestId = null;
 
-        /**
-         * Creates a new request registered only on current node. The query object will contain the the requestId of
-         * the new request after the operation.
-         */
-        final String requestId = requestStore.registerRequest(query);
-        query.requestId(requestId);
+        try {
+
+            /**
+             * Sets the id of the parent request
+             */
+            query.parentRequestId(parentRequestId);
+
+            /**
+             * Creates a new request registered only on current node. The query object will contain the the requestId of
+             * the new request after the operation.
+             */
+            requestId = requestStore.registerRequest(query);
+            query.requestId(requestId);
 
 
-        logger.info("New Sub Request for (" + parentRequestId + "): " + query.toJsonString());
+            logger.info("New Sub Request for (" + parentRequestId + "): " + query.toJsonString());
 
-        /* Set the masterNodeId on the query to the current node */
-        query.masterNodeId(ClusterNodesStore.selfId);
+            /* Set the masterNodeId on the query to the current node */
+            query.masterNodeId(ClusterNodesStore.selfId);
 
-        return processRequest(query);
+            return processRequest(query);
+        }finally {
+            requestStore.unregisterRequest(requestId);
+        }
     }
 
     private Query processRequest(final Query query) {
