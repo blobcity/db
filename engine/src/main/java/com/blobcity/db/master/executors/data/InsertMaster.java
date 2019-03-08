@@ -133,12 +133,16 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
 
         final Schema schema = SchemaStore.getInstance().getSchema(ds, collection);
 
-        for(Object r : records) {
+        final List<com.blobcity.lib.data.Record> internalInsertList = new ArrayList<>();
+
+        final RecordType recordTypeFinal = recordType;
+        final List<String> csvColumnNamesFinal = csvColumnNames;
+        records.parallelStream().forEach(r -> {
             RecordType rt;
-            if(recordType == RecordType.AUTO) {
+            if(recordTypeFinal == RecordType.AUTO) {
                 rt = RecordInterpreter.getBestMatchedType(r);
             } else {
-                rt = recordType;
+                rt = recordTypeFinal;
             }
 
             switch (rt) {
@@ -155,14 +159,45 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
                     toInsertList.add(new TextRecord(r.toString()));
                     break;
                 case CSV:
-                    if(csvColumnNames == null) {
+                    if(csvColumnNamesFinal == null) {
                         toInsertList.add(new CsvRecord(r.toString(), schema));
                     } else {
-                        toInsertList.add(new CsvRecord(csvColumnNames, Arrays.asList(r.toString().split(","))));
+                        toInsertList.add(new CsvRecord(csvColumnNamesFinal, Arrays.asList(r.toString().split(","))));
                     }
                     break;
             }
-        }
+        });
+
+//        for(Object r : records) {
+//            RecordType rt;
+//            if(recordType == RecordType.AUTO) {
+//                rt = RecordInterpreter.getBestMatchedType(r);
+//            } else {
+//                rt = recordType;
+//            }
+//
+//            switch (rt) {
+//                case JSON:
+//                    toInsertList.add(new JsonRecord(r.toString()));
+//                    break;
+//                case XML:
+//                    toInsertList.add(new XmlRecord(r.toString()));
+//                    break;
+//                case SQL:
+//                    toInsertList.add(new SqlRecord(r.toString()));
+//                    break;
+//                case TEXT:
+//                    toInsertList.add(new TextRecord(r.toString()));
+//                    break;
+//                case CSV:
+//                    if(csvColumnNames == null) {
+//                        toInsertList.add(new CsvRecord(r.toString(), schema));
+//                    } else {
+//                        toInsertList.add(new CsvRecord(csvColumnNames, Arrays.asList(r.toString().split(","))));
+//                    }
+//                    break;
+//            }
+//        }
 
         //TODO: Create missing columns here
 
