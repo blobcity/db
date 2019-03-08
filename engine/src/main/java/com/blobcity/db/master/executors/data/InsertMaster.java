@@ -52,7 +52,7 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
     private static final Logger logger = LoggerFactory.getLogger(InsertMaster.class.getName());
 
     private InsertStatusHolder insertStatusHolder;
-    private List<com.blobcity.lib.data.Record> toInsertList;
+    private final List<com.blobcity.lib.data.Record> toInsertList = new ArrayList<>();
     private Map<String, List<Record>> toInsertMap = new HashMap<>();
     private Map<String, List<Integer>> insertStatusMap = new HashMap<>(); //nodeId -> ordered status collection for insert records
     private Map<Record, List<String>> nodePairsMap = new HashMap<>();
@@ -73,7 +73,6 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
     @Override
     public Query call() throws Exception {
         startTime = System.currentTimeMillis();
-        toInsertList = new ArrayList<>();
 
         final String ds = super.query.getString(QueryParams.DATASTORE);
         final String collection = super.query.getString(QueryParams.COLLECTION);
@@ -133,47 +132,14 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
 
         final Schema schema = SchemaStore.getInstance().getSchema(ds, collection);
 
-        final List<com.blobcity.lib.data.Record> internalInsertList = new ArrayList<>();
-
-        final RecordType recordTypeFinal = recordType;
-        final List<String> csvColumnNamesFinal = csvColumnNames;
-        records.parallelStream().forEach(r -> {
-            RecordType rt;
-            if(recordTypeFinal == RecordType.AUTO) {
-                rt = RecordInterpreter.getBestMatchedType(r);
-            } else {
-                rt = recordTypeFinal;
-            }
-
-            switch (rt) {
-                case JSON:
-                    toInsertList.add(new JsonRecord(r.toString()));
-                    break;
-                case XML:
-                    toInsertList.add(new XmlRecord(r.toString()));
-                    break;
-                case SQL:
-                    toInsertList.add(new SqlRecord(r.toString()));
-                    break;
-                case TEXT:
-                    toInsertList.add(new TextRecord(r.toString()));
-                    break;
-                case CSV:
-                    if(csvColumnNamesFinal == null) {
-                        toInsertList.add(new CsvRecord(r.toString(), schema));
-                    } else {
-                        toInsertList.add(new CsvRecord(csvColumnNamesFinal, Arrays.asList(r.toString().split(","))));
-                    }
-                    break;
-            }
-        });
-
-//        for(Object r : records) {
+//        final RecordType recordTypeFinal = recordType;
+//        final List<String> csvColumnNamesFinal = csvColumnNames;
+//        records.parallelStream().forEach(r -> {
 //            RecordType rt;
-//            if(recordType == RecordType.AUTO) {
+//            if(recordTypeFinal == RecordType.AUTO) {
 //                rt = RecordInterpreter.getBestMatchedType(r);
 //            } else {
-//                rt = recordType;
+//                rt = recordTypeFinal;
 //            }
 //
 //            switch (rt) {
@@ -190,14 +156,45 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
 //                    toInsertList.add(new TextRecord(r.toString()));
 //                    break;
 //                case CSV:
-//                    if(csvColumnNames == null) {
+//                    if(csvColumnNamesFinal == null) {
 //                        toInsertList.add(new CsvRecord(r.toString(), schema));
 //                    } else {
-//                        toInsertList.add(new CsvRecord(csvColumnNames, Arrays.asList(r.toString().split(","))));
+//                        toInsertList.add(new CsvRecord(csvColumnNamesFinal, Arrays.asList(r.toString().split(","))));
 //                    }
 //                    break;
 //            }
-//        }
+//        });
+
+        for(Object r : records) {
+            RecordType rt;
+            if(recordType == RecordType.AUTO) {
+                rt = RecordInterpreter.getBestMatchedType(r);
+            } else {
+                rt = recordType;
+            }
+
+            switch (rt) {
+                case JSON:
+                    toInsertList.add(new JsonRecord(r.toString()));
+                    break;
+                case XML:
+                    toInsertList.add(new XmlRecord(r.toString()));
+                    break;
+                case SQL:
+                    toInsertList.add(new SqlRecord(r.toString()));
+                    break;
+                case TEXT:
+                    toInsertList.add(new TextRecord(r.toString()));
+                    break;
+                case CSV:
+                    if(csvColumnNames == null) {
+                        toInsertList.add(new CsvRecord(r.toString(), schema));
+                    } else {
+                        toInsertList.add(new CsvRecord(csvColumnNames, Arrays.asList(r.toString().split(","))));
+                    }
+                    break;
+            }
+        }
 
         //TODO: Create missing columns here
 
