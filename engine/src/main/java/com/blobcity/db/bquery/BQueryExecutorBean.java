@@ -145,6 +145,7 @@ public class BQueryExecutorBean implements BQueryExecutor {
         String ds = null;
         //TODO: App should eventually be picked up from the RequestStore
         String table = null;
+        String requestId = null;
         JSONObject jsonObject;
         JSONObject payloadJson;
         JSONObject returnJson = null;
@@ -176,7 +177,7 @@ public class BQueryExecutorBean implements BQueryExecutor {
                 }
 
                 // Requests with null 'app' value will also be registered.
-                String requestId = UUID.randomUUID().toString();
+                requestId = UUID.randomUUID().toString();
                 requestStore.register(ds, requestId, new QueryData(jsonString, System.currentTimeMillis())); //this is required to pass parameters to stored procedures
 
                 /* Checks if application is present on the node on which this code is executing. Do
@@ -437,9 +438,9 @@ public class BQueryExecutorBean implements BQueryExecutor {
             }
         } finally {
 
-//            if (app != null) {
-//                requestStore.unregister(app, requestId);
-//            }
+            if (ds != null) {
+                requestStore.unregister(ds, requestId);
+            }
 
 //            if (command != null) {
 //                /* Release acquired locks */
