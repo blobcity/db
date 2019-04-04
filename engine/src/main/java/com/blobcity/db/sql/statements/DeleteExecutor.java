@@ -170,10 +170,13 @@ public class DeleteExecutor {
         JSONObject jsonResponse;
         AtomicLong rowsUpdatedCounter = new AtomicLong(0);
 
-        //TODO: Change to parallel stream. This was made regular stream as the index counting for save operations is not thread safe.
         keys.parallelStream().forEach(key -> {
-            dataManager.removeAsync(appId, table, key);
-            rowsUpdatedCounter.incrementAndGet();
+            try {
+                dataManager.remove(appId, table, key);
+                rowsUpdatedCounter.incrementAndGet();
+            } catch(OperationException ex) {
+                logger.warn("Delete failed for key: " + key + " | " + ex.getErrorCode().getErrorCode());
+            }
         });
 
         try {

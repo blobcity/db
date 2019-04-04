@@ -955,7 +955,6 @@ public class BSqlDataManager {
 
     @Async
     public void removeAsync(final String datastore, final String collection, final String _id) {
-        queryResultCache.invalidate(datastore, collection);
         try {
             remove(datastore, collection, _id);
         } catch (OperationException e) {
