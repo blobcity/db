@@ -24,4 +24,6 @@ package com.blobcity.lib.database.bean.manager.interfaces.engine;
 public interface ConsoleExecutor {
     
     public String runCommand(final String user, final String query);
+
+    public String insertData(final String username, final String ds, final String collection, final String dataType, final String data);
 }

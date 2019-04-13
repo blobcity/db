@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Description
 
 BlobCity DB is an All-in-One Database. It offers support for natively storing 17 different formats of data, including JSON, XML, CSV, PDF, Word, Excel, Log, GIS, Image amongst others. It run two full feature storage engines. One that stores data in memory and the other that stores data on disk. In-memeory storage offers sheer performance for real-time analytics, while the disk storage make BlobCity an excellent alternative for DataLakes.
@@ -21,6 +22,10 @@ BlobCity DB was created by [Sanket Sarang](https://www.linkedin.com/in/sanketsar
 GNU Affero General Public License v3.0
 
 # Kraken
+=======
+[![Build Status](https://travis-ci.org/blobcity/db.svg?branch=develop)](https://travis-ci.org/blobcity/db)
+
+>>>>>>> develop
 ```
                        ___
                     .-'   `'.

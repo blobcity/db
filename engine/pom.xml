@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <parent>
         <groupId>com.blobcity.pom</groupId>
         <artifactId>database</artifactId>
-        <version>1.7.4-alpha</version>
+        <version>1.7.6-alpha</version>
     </parent>
     
     <groupId>com.blobcity.lib.database</groupId>
@@ -44,34 +44,45 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <!--</repository>-->
     <!--</repositories>-->
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!--Database dependencies-->
         <!--SQL Parsing-->
         <dependency>
             <groupId>com.foundationdb</groupId>
             <artifactId>fdb-sql-parser</artifactId>
-            <version>1.1.0</version>
+            <!--<version>1.1.0</version>-->
+            <version>1.6.1</version>
             <type>jar</type>
         </dependency>
         <!--Unit Testing Libraries-->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
+            <!--<version>1.9.5</version>-->
+            <version>1.10.19</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.9.4</version>
+            <!--<version>6.9.4</version>-->
+            <version>6.14.3</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
-            <version>1.2.3</version>
+            <!--<version>1.2.3</version>-->
+            <version>1.5.0</version>
             <scope>test</scope>
             <type>jar</type>
             <exclusions>
@@ -93,7 +104,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.3.1</version>
+            <!--<version>3.3.1</version>-->
+            <version>3.8.1</version>
             <type>jar</type>
         </dependency>
 
@@ -134,7 +146,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.5</version>
+            <!--<version>2.5</version>-->
+            <version>2.6</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>com.blobcity.lib</groupId>-->
@@ -172,7 +185,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
-            <version>1.2</version>
+            <!--<version>1.2</version>-->
+            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -188,7 +202,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-log</artifactId>
-            <version>0.17.1</version>
+            <!--<version>0.17.1</version>-->
+            <version>0.18</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -205,9 +220,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <!-- Stored procedure adapter -->
         <dependency>
-            <groupId>com.blobcity.db</groupId>
+            <groupId>com.github.blobcity</groupId>
             <artifactId>sp-adapter</artifactId>
-            <version>1.3-SNAPSHOT</version>
+            <version>1.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-codec</groupId>
@@ -215,6 +230,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.blobcity.db</groupId>-->
+            <!--<artifactId>sp-adapter</artifactId>-->
+            <!--<version>1.3-SNAPSHOT</version>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>commons-codec</groupId>-->
+                    <!--<artifactId>commons-codec</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
 
         <!-- FTP server for remote file upload org.slf4j:slf4j-api:1.7.21-->
         <dependency>
@@ -228,6 +254,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.mina/mina-core -->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.mina</groupId>-->
+            <!--<artifactId>mina-core</artifactId>-->
+            <!--<version>2.0.4</version>-->
+            <!--<exclusions>-->
+            <!--<exclusion>-->
+                <!--<groupId>org.slf4j</groupId>-->
+                <!--<artifactId>slf4j-api</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
+
+
 
         <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
         <dependency>
@@ -322,9 +363,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </dependency>
 
         <dependency>
-            <groupId>com.blobcity</groupId>
+            <groupId>com.github.blobcity</groupId>
             <artifactId>db-java-adapter</artifactId>
-            <version>1.2.8</version>
+            <version>f0d45e7186</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.json</groupId>
@@ -334,8 +375,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-context</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>com.blobcity</groupId>-->
+            <!--<artifactId>db-java-adapter</artifactId>-->
+            <!--<version>1.2.10</version>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.json</groupId>-->
+                    <!--<artifactId>json</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.springframework</groupId>-->
+                    <!--<artifactId>spring-context</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>com.google.code.gson</groupId>-->
+                    <!--<artifactId>gson</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.sun.jna/jna -->
         <dependency>
@@ -344,37 +409,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <version>3.0.9</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>1.0</version>
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/../libraries/tableausdk-linux64-10200.17.0505.1445/lib64/tableausdk/Java/jna.jar</systemPath>-->
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.jna</groupId>-->
+            <!--<artifactId>jna</artifactId>-->
+            <!--<version>1.0</version>-->
+            <!--&lt;!&ndash;<scope>system</scope>&ndash;&gt;-->
+            <!--&lt;!&ndash;<systemPath>${project.basedir}/../libraries/tableausdk-linux64-10200.17.0505.1445/lib64/tableausdk/Java/jna.jar</systemPath>&ndash;&gt;-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.tableausoftware</groupId>
-            <artifactId>tableaucommon</artifactId>
-            <version>1.0</version>
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/../libraries/tableausdk-linux64-10200.17.0505.1445/lib64/tableausdk/Java/tableaucommon.jar</systemPath>-->
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.tableausoftware</groupId>-->
+            <!--<artifactId>tableaucommon</artifactId>-->
+            <!--<version>1.0</version>-->
+            <!--&lt;!&ndash;<scope>system</scope>&ndash;&gt;-->
+            <!--&lt;!&ndash;<systemPath>${project.basedir}/../libraries/tableausdk-linux64-10200.17.0505.1445/lib64/tableausdk/Java/tableaucommon.jar</systemPath>&ndash;&gt;-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.tableausoftware</groupId>
-            <artifactId>tableauextract</artifactId>
-            <version>1.0</version>
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/../libraries/tableausdk-linux64-10200.17.0505.1445/lib64/tableausdk/Java/tableauextract.jar</systemPath>-->
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.tableausoftware</groupId>-->
+            <!--<artifactId>tableauextract</artifactId>-->
+            <!--<version>1.0</version>-->
+            <!--&lt;!&ndash;<scope>system</scope>&ndash;&gt;-->
+            <!--&lt;!&ndash;<systemPath>${project.basedir}/../libraries/tableausdk-linux64-10200.17.0505.1445/lib64/tableausdk/Java/tableauextract.jar</systemPath>&ndash;&gt;-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.tableausoftware</groupId>
-            <artifactId>tableauserver</artifactId>
-            <version>1.0</version>
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${project.basedir}/../libraries/tableausdk-linux64-10200.17.0505.1445/lib64/tableausdk/Java/tableauserver.jar</systemPath>-->
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.tableausoftware</groupId>-->
+            <!--<artifactId>tableauserver</artifactId>-->
+            <!--<version>1.0</version>-->
+            <!--&lt;!&ndash;<scope>system</scope>&ndash;&gt;-->
+            <!--&lt;!&ndash;<systemPath>${project.basedir}/../libraries/tableausdk-linux64-10200.17.0505.1445/lib64/tableausdk/Java/tableauserver.jar</systemPath>&ndash;&gt;-->
+        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.scala-lang/scala-library -->
         <dependency>
@@ -396,21 +461,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <version>3.0.3</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.blobcity.license</groupId>
-            <artifactId>key-consumer</artifactId>
-            <version>1.1-SNAPSHOT</version>
-            <exclusions>
+        <!--<dependency>-->
+            <!--<groupId>com.blobcity.license</groupId>-->
+            <!--<artifactId>key-consumer</artifactId>-->
+            <!--<version>1.1-SNAPSHOT</version>-->
+            <!--<exclusions>-->
+                <!--&lt;!&ndash;<exclusion>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<groupId>net.java.dev.jna</groupId>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<artifactId>jna</artifactId>&ndash;&gt;-->
+                <!--&lt;!&ndash;</exclusion>&ndash;&gt;-->
                 <!--<exclusion>-->
-                    <!--<groupId>net.java.dev.jna</groupId>-->
-                    <!--<artifactId>jna</artifactId>-->
+                    <!--<groupId>org.slf4j</groupId>-->
+                    <!--<artifactId>slf4j-api</artifactId>-->
                 <!--</exclusion>-->
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+            <!--</exclusions>-->
+        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.google.collections/google-collections -->
         <dependency>
@@ -419,10 +484,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <version>1.0-rc2</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>com.blobcity</groupId>-->
+            <!--<artifactId>java-commons</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>com.google.code.gson</groupId>-->
+                    <!--<artifactId>gson</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.json</groupId>-->
+                    <!--<artifactId>json</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>com.blobcity</groupId>
+            <groupId>com.github.blobcity</groupId>
             <artifactId>java-commons</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.code.gson</groupId>
@@ -548,6 +629,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <artifactId>google-api-client</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.tensorflow</groupId>
+            <artifactId>libtensorflow</artifactId>
+            <version>1.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tensorflow</groupId>
+            <artifactId>libtensorflow_jni_gpu</artifactId>
+            <version>1.12.0</version>
         </dependency>
 
 

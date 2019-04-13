@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <parent>
         <groupId>com.blobcity.pom</groupId>
         <artifactId>database</artifactId>
-        <version>1.7.4-alpha</version>
+        <version>1.7.6-alpha</version>
     </parent>
     
     <groupId>com.blobcity.lib</groupId>
@@ -35,6 +35,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <maven.compiler.source>${maven.compiler.source.version}</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.target.version}</maven.compiler.target>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
         
     <dependencies>
         <!-- Gson support -->
@@ -68,10 +75,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+        <!--<dependency>-->
+            <!--<groupId>com.blobcity.db</groupId>-->
+            <!--<artifactId>sp-adapter</artifactId>-->
+            <!--<version>1.3-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>com.blobcity.db</groupId>
+            <groupId>com.github.blobcity</groupId>
             <artifactId>sp-adapter</artifactId>
-            <version>1.3-SNAPSHOT</version>
+            <version>1.5</version>
         </dependency>
 
     </dependencies>

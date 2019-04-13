@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import com.blobcity.license.License;
+//import com.blobcity.license.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;

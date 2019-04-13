@@ -86,6 +86,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
 
         /* Create column value folder if it does not already exist */
         Path path = Paths.get(PathUtil.indexColumnValueFolder(app, table, column, columnValue));
+        //TODO: This operation is possibly not thread safe
         if (!Files.exists(path)) {
             try {
                 Files.createDirectory(path);
