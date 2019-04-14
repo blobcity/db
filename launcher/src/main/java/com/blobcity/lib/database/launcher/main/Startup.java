@@ -30,6 +30,7 @@ import java.util.Map;
 
 import com.tableausoftware.TableauCredentials;
 import com.tableausoftware.beans.TableauConfig;
+import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -93,6 +94,10 @@ public final class Startup {
             logger.error("Launching BlobCity DB has failed!", ex);
         }
         logger.info("BlobCity DB successfully started in " + (System.currentTimeMillis() - startTime) / 1000 + " seconds");
+
+        logger.info("Setting log level to ERROR. Change by using set-log-level {log_level} CLI command");
+
+        LogManager.getRootLogger().setLevel(org.apache.log4j.Level.ERROR);
         // it is assumed that startup failures are managed and appropriate logs are generated
     }
 

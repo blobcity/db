@@ -34,7 +34,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConnectionStore {
 
-    private Semaphore semaphore = new Semaphore(1);
     private final Random random = new Random();
     private final Map<String, List<ClusterConnection>> map = new HashMap<>();
     private final Map<String, List<ClusterConnection>> inUseMap = new HashMap<>();
