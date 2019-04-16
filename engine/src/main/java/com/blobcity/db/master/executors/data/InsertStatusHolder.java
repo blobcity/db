@@ -29,12 +29,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author sanketsarang
  */
 public class InsertStatusHolder {
-    private final Integer replicas;
+    private Integer replicas;
     private final Map<String, List<Record>> recordMap = new ConcurrentHashMap<>();
     private final Map<String, List<Integer>> statusMap = new ConcurrentHashMap<>();
     private final Map<Record, Integer> successMap = new ConcurrentHashMap<>();
 
-    public InsertStatusHolder(int replicationFactor) {
+//    public InsertStatusHolder(int replicationFactor) {
+//        this.replicas = replicationFactor + 1;
+//    }
+
+    public void setReplicationFactor(final int replicationFactor) {
         this.replicas = replicationFactor + 1;
     }
 

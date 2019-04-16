@@ -123,7 +123,62 @@ public class ConsoleEndPointService implements Runnable {
             writeLine(writer, "Type 'help' for assistance and 'exit' to quit");
             writer.write("blobcity>");
             writer.flush();
+
+            boolean insertMode = false;
+            String insertDs = null;
+            String insertCollection = null;
+            String insertType = null;
             while ((line = reader.readLine()) != null) {
+
+                if(insertMode) {
+                    if(line.equalsIgnoreCase("exit") || line.equalsIgnoreCase("quit")) {
+                        insertMode = false;
+                        insertDs = null;
+                        insertCollection = null;
+                        insertType = null;
+                        writeLineWithBC(writer, "Exited insert mode");
+                        continue;
+                    } else {
+                        final String insertStatus = consoleExecutor.insertData(username, insertDs, insertCollection, insertType, line);
+                        writeLine(writer, insertStatus);
+                        continue;
+                    }
+                }
+
+                if(line.startsWith("insert into")) {
+                    String []elements = line.split(" ");
+                    if(elements.length != 4 || !elements[2].contains(".")) {
+                        writeLineWithBC(writer,"Invalid syntax. Must be: insert into ds.collection dataType");
+                        continue;
+                    }
+
+
+                    insertDs = elements[2].substring(0, elements[2].indexOf("."));
+                    insertCollection = elements[2].substring(elements[2].indexOf(".") + 1, elements[2].length());
+                    insertType = elements[3];
+
+                    switch(insertType.toUpperCase()) {
+                        case "JSON":
+                        case "XML":
+                        case "CSV":
+                        case "WORD":
+                        case "EXCEL":
+                        case "PPT":
+                        case "TEXT":
+                        case "IMAGE":
+                        case "AUDIO":
+                        case "VIDEO":
+                            break;
+                        default:
+                            writeLineWithBC(writer, "Invalid data type. Must be one off: JSON, XML, CSV, WORD, EXCEL, PPT, TEXT, IMAGE, AUDIO, VIDEO");
+                            continue;
+                    }
+
+                    insertMode = true;
+                    writeLine(writer, "In insert mode. Type 1 " + insertType + " per line and press enter to insert");
+                    continue;
+                }
+
                 switch (line) {
                     case "exit":
                     case "quit":
@@ -156,6 +211,13 @@ public class ConsoleEndPointService implements Runnable {
     private void writeLine(BufferedWriter writer, String line) throws IOException {
         writer.write(line);
         writer.newLine();
+        writer.flush();
+    }
+
+    private void writeLineWithBC(BufferedWriter writer, String line) throws IOException {
+        writer.write(line);
+        writer.newLine();
+        writer.write("blobcity>");
         writer.flush();
     }
 }

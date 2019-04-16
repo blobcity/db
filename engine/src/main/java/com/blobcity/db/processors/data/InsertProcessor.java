@@ -102,24 +102,6 @@ public class InsertProcessor extends AbstractCommitProcessor implements Processo
             }
         });
 
-        /* Original non-parallel implementation */
-//        for(com.blobcity.lib.data.Record record : records) {
-//            pkList.add(record.getId());
-//
-//            try {
-//                if(super.transientStore.acquireRecordPermit(ds, collection, record.getId())) {
-//                    dataManager.insert(this.ds, this.collection, record);
-//                    statusList.add(1);
-//                    super.setRollbackNeedsAction();
-//                } else {
-//                    statusList.add(0);
-//                }
-//            } catch (OperationException e) {
-//                logger.debug(query.getRequestId() + " : " + e.getErrorCode().getErrorCode() + " - " + e.getErrorCode().getErrorMessage());
-//                statusList.add(0);
-//            }
-//        }
-
         responseQuery = new Query().requestId(query.getRequestId()).softCommitSuccessQuery().ackSuccess();
         responseQuery.put(QueryParams.STATUS, statusList);
         try {
@@ -127,6 +109,7 @@ public class InsertProcessor extends AbstractCommitProcessor implements Processo
             super.getClusterMessagingBean().sendMessage(responseQuery, query.getMasterNodeId());
         } catch (OperationException e) {
             logger.debug(query.getRequestId() + " : " + e.getErrorCode().getErrorCode() + " - " + e.getErrorCode().getErrorMessage());
+            records.parallelStream().forEach(record -> super.transientStore.releaseRecordPermit(this.ds, this.collection, record.getId()));
             sendSoftCommitFailure();
         }
     }

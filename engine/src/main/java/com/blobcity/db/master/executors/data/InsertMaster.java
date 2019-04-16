@@ -51,15 +51,9 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
 
     private static final Logger logger = LoggerFactory.getLogger(InsertMaster.class.getName());
 
-    private InsertStatusHolder insertStatusHolder;
-    private List<com.blobcity.lib.data.Record> toInsertList;
-    private Map<String, List<Record>> toInsertMap = new HashMap<>();
-    private Map<String, List<Integer>> insertStatusMap = new HashMap<>(); //nodeId -> ordered status collection for insert records
-    private Map<Record, List<String>> nodePairsMap = new HashMap<>();
+    private final InsertStatusHolder insertStatusHolder = new InsertStatusHolder();
+    private final List<com.blobcity.lib.data.Record> toInsertList = new ArrayList<>();
     private long startTime;
-    private long inserted = 0;
-    private long failed = 0;
-
 
     public InsertMaster(Query query) throws OperationException {
         super(query, ClusterNodesStore.getInstance().getLeastLoadedNodes(SchemaStore.getInstance().getReplicationFactor(query.getDs(), query.getCollection())));
@@ -73,7 +67,6 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
     @Override
     public Query call() throws Exception {
         startTime = System.currentTimeMillis();
-        toInsertList = new ArrayList<>();
 
         final String ds = super.query.getString(QueryParams.DATASTORE);
         final String collection = super.query.getString(QueryParams.COLLECTION);
@@ -84,15 +77,21 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
             return new Query().ackFailure().errorCode(ErrorCode.COLLECTION_INVALID.getErrorCode());
         }
 
-        insertStatusHolder = new InsertStatusHolder(SchemaStore.getInstance().getReplicationFactor(ds, collection));
+        insertStatusHolder.setReplicationFactor(SchemaStore.getInstance().getReplicationFactor(ds, collection));
 
         final JSONObject payloadJson = super.query.getJSONObject(QueryParams.PAYLOAD);
-        RecordType recordType = RecordType.fromTypeCode(payloadJson.getString(QueryParams.TYPE.getParam()));
+//        final RecordType recordType = RecordType.fromTypeCode(payloadJson.getString(QueryParams.TYPE.getParam()));
         final JSONArray recordsArray = payloadJson.getJSONArray(QueryParams.DATA.getParam());
         List<Object> records = new ArrayList<>();
         for(int i = 0; i < recordsArray.length(); i++) {
             records.add(recordsArray.get(i));
         }
+
+        final String interpreterName = super.query.contains(QueryParams.INTERPRETER) ? super.query.getString(QueryParams.INTERPRETER) : null;
+        final String interceptorName = super.query.contains(QueryParams.INTERCEPTOR) ? super.query.getString(QueryParams.INTERCEPTOR) : null;
+
+        final RecordType recordType = interpreterName != null || interceptorName != null ? RecordType.JSON : RecordType.fromTypeCode(payloadJson.getString(QueryParams.TYPE.getParam()));
+
 
         /* Check for column names only for CSV type of data */
         List<String> csvColumnNames = null; //only for CSV type
@@ -101,10 +100,10 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
         }
 
         /* Check for specified interpreter if insert is of text type */
-        String interpreterName = null;
-        if(recordType == RecordType.TEXT && super.query.contains(QueryParams.INTERPRETER)) {
-            interpreterName = super.query.getString(QueryParams.INTERPRETER);
-        }
+//        String interpreterName = null;
+//        if(recordType == RecordType.TEXT && super.query.contains(QueryParams.INTERPRETER)) {
+//            interpreterName = super.query.getString(QueryParams.INTERPRETER);
+//        }
 
         /* Run interpreter if defined when inserted text records */
         if(interpreterName != null) { //this will always be null if record type is not text
@@ -113,14 +112,13 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
             } catch (OperationException ex) {
                 return produceErrorResponse(ex.getErrorCode());
             }
-            recordType = RecordType.JSON; //rewrite type of records from text to json
         }
 
         /* Check for specified interceptor */
-        String interceptorName = null;
-        if(super.query.contains(QueryParams.INTERCEPTOR)) {
-            interceptorName = super.query.getString(QueryParams.INTERCEPTOR);
-        }
+//        String interceptorName = null;
+//        if(super.query.contains(QueryParams.INTERCEPTOR)) {
+//            interceptorName = super.query.getString(QueryParams.INTERCEPTOR);
+//        }
 
         if(interceptorName != null) {
             try {
@@ -128,12 +126,12 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
             } catch(OperationException ex) {
                 return produceErrorResponse(ex.getErrorCode());
             }
-            recordType = RecordType.JSON; //rewrite type of records explicitely to JSON
         }
 
         final Schema schema = SchemaStore.getInstance().getSchema(ds, collection);
 
-        for(Object r : records) {
+        final List<String> csvColumnNamesFinal = csvColumnNames;
+        records.forEach(r -> {
             RecordType rt;
             if(recordType == RecordType.AUTO) {
                 rt = RecordInterpreter.getBestMatchedType(r);
@@ -155,14 +153,45 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
                     toInsertList.add(new TextRecord(r.toString()));
                     break;
                 case CSV:
-                    if(csvColumnNames == null) {
+                    if(csvColumnNamesFinal == null) {
                         toInsertList.add(new CsvRecord(r.toString(), schema));
                     } else {
-                        toInsertList.add(new CsvRecord(csvColumnNames, Arrays.asList(r.toString().split(","))));
+                        toInsertList.add(new CsvRecord(csvColumnNamesFinal, Arrays.asList(r.toString().split(","))));
                     }
                     break;
             }
-        }
+        });
+
+//        for(Object r : records) {
+//            RecordType rt;
+//            if(recordType == RecordType.AUTO) {
+//                rt = RecordInterpreter.getBestMatchedType(r);
+//            } else {
+//                rt = recordType;
+//            }
+//
+//            switch (rt) {
+//                case JSON:
+//                    toInsertList.add(new JsonRecord(r.toString()));
+//                    break;
+//                case XML:
+//                    toInsertList.add(new XmlRecord(r.toString()));
+//                    break;
+//                case SQL:
+//                    toInsertList.add(new SqlRecord(r.toString()));
+//                    break;
+//                case TEXT:
+//                    toInsertList.add(new TextRecord(r.toString()));
+//                    break;
+//                case CSV:
+//                    if(csvColumnNames == null) {
+//                        toInsertList.add(new CsvRecord(r.toString(), schema));
+//                    } else {
+//                        toInsertList.add(new CsvRecord(csvColumnNames, Arrays.asList(r.toString().split(","))));
+//                    }
+//                    break;
+//            }
+//        }
 
         //TODO: Create missing columns here
 
