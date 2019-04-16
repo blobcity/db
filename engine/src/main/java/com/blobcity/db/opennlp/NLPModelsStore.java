@@ -70,7 +70,6 @@ public class NLPModelsStore {
             languageDetectorModel = new LanguageDetectorModel(is);
             logger.debug("OpenNLP Language detector model loaded successful");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
             logger.warn("OpenNLP Language detector model failed to load. NLPImplementation functionality may not work correctly");
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,7 +96,6 @@ public class NLPModelsStore {
             is = new FileInputStream(NLPPathUtil.setenceDetectorModelPath(NLPLanguages.ENGLISH));
             return new SentenceModel(is);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
             logger.warn("OpenNLP English sentence detector model failed to load. NLPImplementation functionality may not work correctly");
             return null;
         } catch (IOException e) {

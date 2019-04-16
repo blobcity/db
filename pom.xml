@@ -4,7 +4,7 @@
     
     <groupId>com.blobcity.pom</groupId>
     <artifactId>database</artifactId>
-    <version>1.7.5-alpha</version>
+    <version>1.7.6-alpha</version>
     <packaging>pom</packaging>
     
     <name>Kraken [POM]</name>
@@ -110,11 +110,11 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>com.blobcity.lib</groupId>
-            <artifactId>db-server-adapter</artifactId>
-            <version>${blobcity.server.adapter.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.blobcity.lib</groupId>-->
+            <!--<artifactId>db-server-adapter</artifactId>-->
+            <!--<version>${blobcity.server.adapter.version}</version>-->
+        <!--</dependency>-->
     </dependencies>
     
     <build>

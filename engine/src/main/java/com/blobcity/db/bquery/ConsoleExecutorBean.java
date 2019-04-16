@@ -79,6 +79,7 @@ import java.util.Iterator;
 import com.blobcity.lib.query.CollectionStorageType;
 import com.blobcity.lib.query.Query;
 import com.blobcity.lib.query.QueryParams;
+import com.blobcity.lib.query.RecordType;
 import org.apache.log4j.LogManager;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -154,6 +155,26 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
     private TableauPublishManager tableauPublishManager;
     @Autowired @Lazy
     private TableauTdeManager tableauTdeManager;
+
+    @Override
+    public String insertData(final String user, final String ds, final String collection, final String dataType, final String data) {
+        String queryId = UUID.randomUUID().toString();
+        logger.debug("Console Insert (" + queryId + ") " + dataType + " into " + ds + "." + collection + ": " + data);
+
+        final List<Object> dataArray = new ArrayList<>();
+        dataArray.add(data);
+        RecordType recordType = RecordType.fromTypeCode(dataType);
+        Query query = new Query().insertQueryUninferred(ds, collection, dataArray, recordType);
+
+        //TODO: Interpreters and interceptors should be added here within the query
+
+        Query responseQuery = requestHandlingBean.newRequest(query);
+        if(responseQuery.isAckSuccess()) {
+            return "Inserted";
+        } else {
+            return "Failed insert";
+        }
+    }
 
     @Override
     public String runCommand(final String user, String query) {
