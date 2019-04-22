@@ -19,6 +19,8 @@ package com.blobcity.db.billing;
 import com.blobcity.db.bquery.SQLExecutorBean;
 import com.blobcity.db.bsql.BSqlDataManager;
 import com.blobcity.db.exceptions.OperationException;
+import com.blobcity.lib.database.bean.manager.interfaces.engine.QueryStore;
+import com.blobcity.lib.database.bean.manager.interfaces.engine.RequestStore;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
