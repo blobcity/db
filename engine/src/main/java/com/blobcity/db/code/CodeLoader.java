@@ -16,6 +16,7 @@
 
 package com.blobcity.db.code;
 
+import com.blobcity.db.annotations.DataInterpreter;
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.bsql.BSqlDatastoreManager;
 import com.blobcity.db.code.datainterpreter.InterpreterStoreBean;
@@ -25,6 +26,7 @@ import com.blobcity.db.code.triggers.TriggerStoreBean;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.export.ExportProcedureStore;
+import com.blobcity.db.functions.DataInterpretable;
 import com.blobcity.db.sp.*;
 import com.blobcity.db.sp.annotations.Export;
 import com.blobcity.db.sp.annotations.Named;
@@ -37,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.tensorflow.Operation;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -197,27 +200,29 @@ public class CodeLoader {
      * @throws OperationException 
      */
     public void loadAllClasses(final String datastore) throws OperationException{
-        if( !datastoreManager.exists(datastore) )
-            throw new OperationException(ErrorCode.DATASTORE_INVALID, "Given dsSet " + datastore + " doesn't exist");
-            
-        List<String> allProcedures = manifestParser.getProcedures(datastore);
-        List<String> allTriggers = manifestParser.getTriggers(datastore);
-        List<String> allFilters = manifestParser.getFilters(datastore);
-        List<String> allInterpreters = manifestParser.getInterpreters(datastore);
-        try{
-            procedureStore.loadClasses(datastore, allProcedures);
-            triggerStore.loadClasses(datastore, allTriggers);
-            filterStore.loadClasses(datastore, allFilters);
-            interpreterStore.loadClasses(datastore, allInterpreters);
-        }
-        catch(OperationException ex){
-            logger.error("Error while loading user classes into database for dsSet: "+ datastore, ex);
-            procedureStore.removeAll(datastore);
-            triggerStore.removeAll(datastore);
-            filterStore.removeAll(datastore);
-            interpreterStore.removeAll(datastore);
-            throw new OperationException(ex.getErrorCode(), ex.getMessage());
-        }
+        throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Depricated operation. Use loadJar() instead");
+
+//        if( !datastoreManager.exists(datastore) )
+//            throw new OperationException(ErrorCode.DATASTORE_INVALID, "Given dsSet " + datastore + " doesn't exist");
+//
+//        List<String> allProcedures = manifestParser.getProcedures(datastore);
+//        List<String> allTriggers = manifestParser.getTriggers(datastore);
+//        List<String> allFilters = manifestParser.getFilters(datastore);
+//        List<String> allInterpreters = manifestParser.getInterpreters(datastore);
+//        try{
+//            procedureStore.loadClasses(datastore, allProcedures);
+//            triggerStore.loadClasses(datastore, allTriggers);
+//            filterStore.loadClasses(datastore, allFilters);
+//            interpreterStore.loadClasses(datastore, allInterpreters);
+//        }
+//        catch(OperationException ex){
+//            logger.error("Error while loading user classes into database for dsSet: "+ datastore, ex);
+//            procedureStore.removeAll(datastore);
+//            triggerStore.removeAll(datastore);
+//            filterStore.removeAll(datastore);
+//            interpreterStore.removeAll(datastore);
+//            throw new OperationException(ex.getErrorCode(), ex.getMessage());
+//        }
     }
 
     public void loadJar(final String datastore, final String jarFilePath) throws OperationException {
@@ -248,18 +253,20 @@ public class CodeLoader {
         URLClassLoader loader;
         try {
             loader = new URLClassLoader(new URL[]{new URL("file:" + jarPath)});
-
             classNames.forEach(clazz -> {
                 try {
+                    System.out.println(clazz.toString());
                     if(!clazz.toString().startsWith("com.blobcity")) {
+
                         return;
                     }
                     Class loadedClazz = loader.loadClass(clazz);
                     Object instance;
                     try {
                         if(loadedClazz.isAnnotationPresent(Rest.class) || loadedClazz.isAnnotationPresent(Named.class)
-                                || loadedClazz.isAnnotationPresent(Export.class)){
+                                || loadedClazz.isAnnotationPresent(Export.class) || loadedClazz.isAnnotationPresent(DataInterpreter.class)){
                             instance = loadedClazz.newInstance();
+                            System.out.println("Instance: " + instance.getClass().getName());
                         } else {
                             return;
                         }
@@ -283,6 +290,9 @@ public class CodeLoader {
                         return;
                     } else if(instance instanceof DataExporter) {
                         exportProcedureStore.loadExporter(datastore, loadedClazz);
+                    } else if(instance instanceof DataInterpretable) {
+                        System.out.println("Found data interpreter");
+                        interpreterStore.loadClass(datastore, loadedClazz);
                     }
 
                     Method []methods = loadedClazz.getMethods();

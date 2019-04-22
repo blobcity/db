@@ -158,13 +158,7 @@ public class BQueryExecutorBean implements BQueryExecutor {
             return null;
         }
         try {
-
-//            if (!licenseBean.isActive()) {
-//                throw new OperationException(ErrorCode.INVALID_LICENSE);
-//            }
-
             try {
-
                 /* Get datastore information */
                 if(jsonObject.has(BQueryParameters.DATASTORE)) {
                     ds = jsonObject.getString(BQueryParameters.DATASTORE);

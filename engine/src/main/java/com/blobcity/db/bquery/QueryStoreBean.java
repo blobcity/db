@@ -51,4 +51,9 @@ public class QueryStoreBean implements QueryStore {
     public Map<String, QueryData> getAppQueries(final String appId) {
         return map.get(appId);
     }
+
+    @Override
+    public int size(final String appId) {
+        return map.get(appId).keySet().size();
+    }
 }

@@ -74,4 +74,9 @@ public interface RequestStore {
      * @param requestId the requestId of which data has to be purged
      */
     public void unregisterRequest(final String requestId);
+
+    /**
+     * Gets the current size of the request store
+     */
+    public int size();
 }

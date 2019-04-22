@@ -138,4 +138,9 @@ public class RequestStoreBean implements RequestStore {
     public void unregisterRequest(final String requestId) {
         map.remove(requestId);
     }
+
+    @Override
+    public int size() {
+        return map.size();
+    }
 }
