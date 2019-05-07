@@ -16,6 +16,7 @@
 
 package com.blobcity.db.bquery;
 
+import com.blobcity.db.billing.SelectActivityLog;
 import com.blobcity.db.security.SecurityManagerBean;
 import com.blobcity.db.sql.statements.*;
 import com.blobcity.lib.database.bean.manager.interfaces.engine.QueryData;
@@ -45,6 +46,7 @@ import org.springframework.stereotype.Component;
  *
  * @author akshaydewan
  * @author Prikshit Kumar
+ * @author sanketsarang
  */
 @Component
 public class SQLExecutorBean implements SqlExecutor {
@@ -74,6 +76,8 @@ public class SQLExecutorBean implements SqlExecutor {
     private CreateSchemaExecutor createSchemaExecutor;
     @Autowired
     private QueryStore requestStore;
+    @Autowired
+    private SelectActivityLog selectActivityLog;
 
     @Override
     public String runQuery(final String requestId, final String username, final String password, final String datastore, final String sqlString) {
@@ -98,7 +102,7 @@ public class SQLExecutorBean implements SqlExecutor {
         if (StringUtils.isBlank(datastore) || StringUtils.isBlank(sqlString)) {
             return JSONOperationException.create(new OperationException(ErrorCode.INVALID_QUERY)).toString();
         }
-        StatementNode stmt;
+        StatementNode stmt = null;
 
         final String tempRequestId = UUID.randomUUID().toString();
         final long startTime = System.currentTimeMillis();
@@ -147,6 +151,12 @@ public class SQLExecutorBean implements SqlExecutor {
         } finally {
             long executionTime = System.currentTimeMillis() - startTime;
             requestStore.unregister(datastore, tempRequestId);
+
+            /* Store select activity for Query Performance Analysis */
+            if(stmt != null && stmt.getNodeType() == NodeTypes.CURSOR_NODE && !datastore.equals(".systemdb")) {
+                selectActivityLog.registerSelectQuery(datastore, "", sqlString, -1, executionTime);
+            }
+
             logger.debug("SQL Query ({}, {}) Executed in (ms): {} ", requestId, tempRequestId, executionTime);
         }
         return null;

@@ -99,6 +99,9 @@ public class StorageStartup {
         systemDBService.createSelectActivityLogTable();
         logger.info("QueryActivity table created successfully");
 
+        systemDBService.createQPSTable();
+        logger.info("QPS table created successfully");
+
         systemDBService.createBillingUsageTable();
         logger.info("BillingUsage table created successfully");
 
