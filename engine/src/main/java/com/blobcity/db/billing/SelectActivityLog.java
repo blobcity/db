@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
  * @author sanketsarang
  */
 @Component
-@Configuration
 @EnableAsync
 public class SelectActivityLog {
 
