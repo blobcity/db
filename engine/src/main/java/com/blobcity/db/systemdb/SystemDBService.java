@@ -191,6 +191,27 @@ public class SystemDBService {
         }
     }
 
+    public synchronized void createQPSTable(){
+        if(collectionManager.exists(".systemdb", "QPS")) {
+            return;
+        }
+
+        String sql = "CREATE TABLE `QPS` ("
+                + "`ds` VARCHAR(255) NOT NULL,"
+                + "`c` VARCHAR(255),"
+                + "`sql` VARCHAR(255),"
+                + "`time` BIGINT,"
+                + "`rows` BIGINT,"
+                + "`timestamp` BIGINT"
+                + ")";
+        String output = sqlExecutor.executePrivileged(".systemdb", sql);
+        JSONObject json = new JSONObject(output);
+        if (!json.getString("ack").equals("1")) {
+            logger.error("Failed to create SelectActivityLog table");
+            throw new DbRuntimeException("Failed to create SelectActivityLog table");
+        }
+    }
+
     public synchronized void createBillingUsageTable() {
         if(collectionManager.exists(".systemdb", "BillingUsage")) {
             return;
