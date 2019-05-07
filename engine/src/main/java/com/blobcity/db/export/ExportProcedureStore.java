@@ -69,7 +69,7 @@ public class ExportProcedureStore {
     }
 
     public void registerExporter(final String ds, final String name, final Class exporter) {
-        if(!exporters.containsKey(exporter)) {
+        if(!exporters.containsKey(ds)) {
             exporters.put(ds, new HashMap<>());
         }
         exporters.get(ds).put(name, exporter);

@@ -29,4 +29,6 @@ public interface QueryStore {
     public void unregister(final String appId, final String requestId);
 
     public Map<String, QueryData> getAppQueries(final String appId);
+
+    public int size(final String appId);
 }

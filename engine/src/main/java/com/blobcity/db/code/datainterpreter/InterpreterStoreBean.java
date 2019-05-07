@@ -16,6 +16,7 @@
 
 package com.blobcity.db.code.datainterpreter;
 
+import com.blobcity.db.annotations.DataInterpreter;
 import com.blobcity.db.code.LoaderStore;
 import com.blobcity.db.code.ManifestParserBean;
 import com.blobcity.db.code.RestrictedClassLoader;
@@ -29,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+
+import com.blobcity.db.sp.annotations.Rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,8 +67,8 @@ public class InterpreterStoreBean {
      * @return true if loaded, false otherwise
      */
     public boolean isPresent(final String datastore, final String interpreterName){
-        if(!interpreterMap.containsKey(datastore) ) return false;
-        return interpreterMap.get(datastore).containsKey(interpreterName);
+        if(!classMap.containsKey(datastore) ) return false;
+        return classMap.get(datastore).containsKey(interpreterName);
     }
     
     /**
@@ -76,7 +79,7 @@ public class InterpreterStoreBean {
      * @return canonical name of Class associated with given interpreter Name
      */
     public String getClassName(final String datastore, final String interpreterName) {
-        return interpreterMap.get(datastore).get(interpreterName);
+        return classMap.get(datastore).get(interpreterName).getName();
     }
 
     /**
@@ -85,9 +88,9 @@ public class InterpreterStoreBean {
      * @return list of names of all interpreter
      */
     public List<String> getInterpreters(final String datastore){
-        if(!interpreterMap.containsKey(datastore))
+        if(!classMap.containsKey(datastore))
             return Collections.EMPTY_LIST;
-        return new ArrayList<>(interpreterMap.get(datastore).keySet());
+        return new ArrayList<>(classMap.get(datastore).keySet());
     }
 
     /**
@@ -105,7 +108,7 @@ public class InterpreterStoreBean {
      * @param classList : class names of all interpreters
      * @throws OperationException
      */
-    public void loadClasses(final String datastore, final List<String> classList) throws OperationException{
+    public void loadClasses(final String datastore, final List<Class> classList) throws OperationException{
         logger.trace("Loading datainterpreters for app \"{}\"", datastore);
               
         if (interpreterMap.containsKey(datastore)) {
@@ -119,8 +122,8 @@ public class InterpreterStoreBean {
         }
 
         try {
-            for (String className : classList) {
-                System.out.println("Attempting to load class: " + className);
+            for (Class className : classList) {
+                System.out.println("Attempting to load class: " + className.getName());
                 loadClass(datastore, className);
             }
         } catch (OperationException ex) {
@@ -137,24 +140,65 @@ public class InterpreterStoreBean {
      * @param className: full name of class file
      * @throws OperationException
      */
-    public void loadClass(final String datastore, final String className) throws OperationException{
-        RestrictedClassLoader blobCityClassLoader = loaderStore.getLoaderWithCreate(datastore);
-
-        if (blobCityClassLoader.isReloadRequired(className)) {
-            logger.debug("Reload required for {}", className);
-            interpreterMap.remove(datastore);
-            classMap.remove(datastore);
-            blobCityClassLoader = loaderStore.getNewLoader(datastore);
+    public void loadClass(final String datastore, final Class clazz) throws OperationException{
+        if(!clazz.getName().startsWith("com.blobcity")) {
+            return;
         }
 
+        Object instance = null;
         try {
-            final Class loadedClass = blobCityClassLoader.loadClass(className, true);
-            processClass(datastore, loadedClass);
-        } catch (ClassNotFoundException ex) {
-            logger.error("Error while loading interpreter class \"" + className + "\" for app id \"" + datastore + "\"", ex);
-            logger.error(null, ex);
-            throw new OperationException(ErrorCode.CLASS_LOAD_ERROR, "Could not load interpreter class. " + ex.getMessage());
+            instance = clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+            throw new OperationException(ErrorCode.CODE_LOAD_ERROR);
         }
+
+        Annotation interpreterAnnotation = null;
+        Annotation [] annotations = instance.getClass().getAnnotations();
+        for(int i=0; i < annotations.length; i++) {
+            Annotation annotation = annotations[i];
+            System.out.println("Found annotation : " + annotation.toString());
+            if(annotation.annotationType().equals(DataInterpreter.class)) {
+                System.out.println("Found the @DataInterpreter annotation");
+                interpreterAnnotation = annotation;
+            }
+        }
+
+        if(interpreterAnnotation == null) {
+            System.out.println("Cannot process Interpreter class as @DataInterpreter annotation was missing");
+            throw new OperationException(ErrorCode.CODE_LOAD_ERROR, "Missing @DataInterpreter annotation on a DataInterpreter implementation");
+        }
+
+        DataInterpreter dataInterpreter = (DataInterpreter) interpreterAnnotation;
+        registerInterpreter(datastore, dataInterpreter.name(), clazz);
+
+
+//        RestrictedClassLoader blobCityClassLoader = loaderStore.getLoaderWithCreate(datastore);
+//
+//        if (blobCityClassLoader.isReloadRequired(className)) {
+//            logger.debug("Reload required for {}", className);
+//            interpreterMap.remove(datastore);
+//            classMap.remove(datastore);
+//            blobCityClassLoader = loaderStore.getNewLoader(datastore);
+//        }
+//
+//        try {
+//            final Class loadedClass = blobCityClassLoader.loadClass(className, true);
+//            processClass(datastore, loadedClass);
+//        } catch (ClassNotFoundException ex) {
+//            logger.error("Error while loading interpreter class \"" + className + "\" for app id \"" + datastore + "\"", ex);
+//            logger.error(null, ex);
+//            throw new OperationException(ErrorCode.CLASS_LOAD_ERROR, "Could not load interpreter class. " + ex.getMessage());
+//        }
+    }
+
+    public void registerInterpreter(final String ds, final String name, final Class interpreter) {
+        if(!classMap.containsKey(ds)) {
+            classMap.put(ds, new HashMap<>());
+        }
+        classMap.get(ds).put(name, interpreter);
+        System.out.println("Registered interpreter: " + name);
+        classMap.keySet().forEach(key -> classMap.get(key).keySet().forEach(System.out::println));
     }
 
     /**

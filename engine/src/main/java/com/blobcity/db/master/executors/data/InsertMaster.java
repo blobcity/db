@@ -28,6 +28,8 @@ import com.blobcity.db.memory.records.*;
 import com.blobcity.db.schema.Schema;
 import com.blobcity.db.schema.beans.SchemaStore;
 import com.blobcity.lib.data.Record;
+import com.blobcity.lib.database.bean.manager.interfaces.engine.QueryStore;
+import com.blobcity.lib.database.bean.manager.interfaces.engine.RequestStore;
 import com.blobcity.lib.query.Query;
 import com.blobcity.lib.query.QueryParams;
 import com.blobcity.lib.query.QueryType;
@@ -50,6 +52,7 @@ import java.util.*;
 public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements MasterExecutable {
 
     private static final Logger logger = LoggerFactory.getLogger(InsertMaster.class.getName());
+//    private static final Random random = new Random();
 
     private final InsertStatusHolder insertStatusHolder = new InsertStatusHolder();
     private final List<com.blobcity.lib.data.Record> toInsertList = new ArrayList<>();
@@ -70,6 +73,9 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
 
         final String ds = super.query.getString(QueryParams.DATASTORE);
         final String collection = super.query.getString(QueryParams.COLLECTION);
+
+        QueryStore queryStore = super.getBean(QueryStore.class);
+        RequestStore requestStore = super.getBean(RequestStore.class);
 
         BSqlCollectionManager collectionManager = super.getBean(BSqlCollectionManager.class);
         if(!collectionManager.exists(ds, collection)) {
@@ -205,7 +211,11 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
         insertStatusHolder.addRecords(ClusterNodesStore.getInstance().getSelfId(), toInsertList); //this needs to change for smart sharding
         super.query.insertQuery(ds, collection, toInsertList, recordType);
         this.messageAllConcernedNodes(super.query);
+
+//        int num = random.nextInt(1000);
+//        System.out.println("A: " + num + " " + queryStore.size("test") +  " " + requestStore.size());
         this.awaitCompletion(); //TODO: Might want to have a timeout to prevent indefinite waiting
+//        System.out.println("C: " + num + " " + queryStore.size("test") + " " +  requestStore.size());
         return this.getResponse();
     }
 
