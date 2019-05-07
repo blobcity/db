@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
  * @author sanketsarang
  */
 @Component
-@EnableAsync
 public class SelectActivityLog {
 
     private static final Logger logger = LoggerFactory.getLogger(SelectActivityLog.class.getName());
@@ -48,7 +47,6 @@ public class SelectActivityLog {
      * @param time the execution time in milli-seconds
      */
 
-    @Async
     public void registerSelectQuery(final String ds, final String collection, final String sql, final long rows, final long time) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ds", ds);
@@ -63,8 +61,7 @@ public class SelectActivityLog {
             ex.printStackTrace();
         }
     }
-
-    @Async
+    
     public void registerActivity(final String ds, final long rows) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ds", ds);
