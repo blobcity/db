@@ -153,9 +153,7 @@ public class SQLExecutorBean implements SqlExecutor {
             requestStore.unregister(datastore, tempRequestId);
 
             /* Store select activity for Query Performance Analysis */
-            System.out.println("Will check if insert is necessary");
             if(stmt != null && stmt.getNodeType() == NodeTypes.CURSOR_NODE && !datastore.equals(".systemdb")) {
-                System.out.println("Inserting activity inside DB now");
                 selectActivityLog.registerSelectQuery(datastore, "", sqlString, -1, executionTime);
             }
 
