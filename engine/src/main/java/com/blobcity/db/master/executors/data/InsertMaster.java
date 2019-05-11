@@ -52,7 +52,7 @@ import java.util.*;
 public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements MasterExecutable {
 
     private static final Logger logger = LoggerFactory.getLogger(InsertMaster.class.getName());
-    private static final Random random = new Random();
+//    private static final Random random = new Random();
 
     private final InsertStatusHolder insertStatusHolder = new InsertStatusHolder();
     private final List<com.blobcity.lib.data.Record> toInsertList = new ArrayList<>();
@@ -212,10 +212,10 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
         super.query.insertQuery(ds, collection, toInsertList, recordType);
         this.messageAllConcernedNodes(super.query);
 
-        int num = random.nextInt(1000);
-        System.out.println("A: " + num + " " + queryStore.size("test") +  " " + requestStore.size());
+//        int num = random.nextInt(1000);
+//        System.out.println("A: " + num + " " + queryStore.size("test") +  " " + requestStore.size());
         this.awaitCompletion(); //TODO: Might want to have a timeout to prevent indefinite waiting
-        System.out.println("C: " + num + " " + queryStore.size("test") + " " +  requestStore.size());
+//        System.out.println("C: " + num + " " + queryStore.size("test") + " " +  requestStore.size());
         return this.getResponse();
     }
 
