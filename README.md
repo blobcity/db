@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/blobcity/db.svg?branch=develop)](https://travis-ci.org/blobcity/db)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 # Description
 
