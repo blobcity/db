@@ -42,7 +42,7 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
 
     protected final Query query;
     protected final ApplicationContext applicationContext;
-    protected final Semaphore semaphore = new Semaphore(1);
+    protected final Semaphore semaphore = new Semaphore(0);
     protected boolean completed = false;
     protected Query response;
     protected TransactionPhase transactionPhase = TransactionPhase.SOFT_COMMIT;
@@ -66,9 +66,9 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
     }
 
     protected void awaitCompletion() {
-        semaphore.acquireUninterruptibly();
+//        semaphore.acquireUninterruptibly();
         semaphore.acquireUninterruptibly(); //waits till a release occurs externally
-        semaphore.release(); // release the immeidately last acquire, as the semaphore is not longer required
+        semaphore.release(); // release the immeidately last acquire, as the semaphore is no longer required
     }
 
     protected void complete(Query query) {
