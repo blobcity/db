@@ -210,6 +210,7 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
 
         insertStatusHolder.addRecords(ClusterNodesStore.getInstance().getSelfId(), toInsertList); //this needs to change for smart sharding
         super.query.insertQuery(ds, collection, toInsertList, recordType);
+//        this.acquireSemaphore();
         this.messageAllConcernedNodes(super.query);
 
 //        int num = random.nextInt(1000);

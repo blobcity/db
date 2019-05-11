@@ -180,8 +180,11 @@ public class FolderWatchService{
                     for(WatchEvent<?> event: key.pollEvents()){
                         WatchEvent.Kind<?> kind = event.kind();
                         // check what kind of event is this
-                        if(OVERFLOW == kind)
+                        if(OVERFLOW == kind) {
+                            //TODO: Manually find a delta of the changes
+
                             continue;
+                        }
                         else if (kind == ENTRY_CREATE)
                             fileCreateEvent(this.folderPath + event.context().toString());
                         else if (kind == ENTRY_DELETE)
@@ -208,7 +211,7 @@ public class FolderWatchService{
      */
     public void fileCreateEvent(final String filePath){
         logger.debug("CREATED File: " + filePath);
-        if(!new File(filePath).isDirectory()) {
+        if(!new File(filePath).isDirectory() && new File(filePath).canWrite()) {
             switch(importType) {
                 case LINE:
                     startTailFile(filePath, false, interpreter);
@@ -250,7 +253,7 @@ public class FolderWatchService{
     public void fileModifyEvent(final String filePath){
         logger.debug("MODIFIED: " + filePath);
 
-        if(!new File(filePath).isDirectory()) {
+        if(!new File(filePath).isDirectory() && new File(filePath).canWrite()) {
             switch(importType) {
                 case LINE:
                     //to implement

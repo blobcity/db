@@ -67,7 +67,7 @@ public class SchemaStore {
      * @param table The table name of the table within the specified application.
      * @throws com.blobcity.db.exceptions.OperationException
      */
-    public void loadSchema(final String appId, final String table) throws OperationException {
+    public synchronized void loadSchema(final String appId, final String table) throws OperationException {
         final Schema schema = schemaManager.readSchema(appId, table);
         ColumnMapping columnMapping = new ColumnMapping();
         try{
@@ -118,7 +118,7 @@ public class SchemaStore {
      * @return {@link Schema} from internal cache of the specified table
      * @throws OperationException if an error occurs which caching schema in memory or if the input is invalid
      */
-    public Schema getSchema(final String appId, final String table) throws OperationException {
+    public synchronized Schema getSchema(final String appId, final String table) throws OperationException {
         if (!schemaMap.containsKey(appId) || !schemaMap.get(appId).containsKey(table)) {
             loadSchema(appId, table);
         }
@@ -126,7 +126,7 @@ public class SchemaStore {
         return schemaMap.get(appId).get(table);
     }
 
-    public ColumnMapping getColumnMapping(final String appId, final String table) throws OperationException {
+    public synchronized ColumnMapping getColumnMapping(final String appId, final String table) throws OperationException {
         if (!schemaMap.containsKey(appId) || !schemaMap.get(appId).containsKey(table)) {
             loadSchema(appId, table);
         }
@@ -134,7 +134,7 @@ public class SchemaStore {
         return columnMap.get(appId).get(table);
     }
 
-    public void invalidateSchema(final String appId, final String table) throws OperationException {
+    public synchronized void invalidateSchema(final String appId, final String table) throws OperationException {
         if (schemaMap.containsKey(appId) && schemaMap.get(appId).containsKey(table)) {
             schemaMap.get(appId).remove(table);
 
