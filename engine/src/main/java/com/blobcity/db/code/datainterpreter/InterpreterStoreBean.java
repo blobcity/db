@@ -157,15 +157,13 @@ public class InterpreterStoreBean {
         Annotation [] annotations = instance.getClass().getAnnotations();
         for(int i=0; i < annotations.length; i++) {
             Annotation annotation = annotations[i];
-            System.out.println("Found annotation : " + annotation.toString());
             if(annotation.annotationType().equals(DataInterpreter.class)) {
-                System.out.println("Found the @DataInterpreter annotation");
                 interpreterAnnotation = annotation;
             }
         }
 
         if(interpreterAnnotation == null) {
-            System.out.println("Cannot process Interpreter class as @DataInterpreter annotation was missing");
+            logger.warn("Cannot process Interpreter class as @DataInterpreter annotation was missing");
             throw new OperationException(ErrorCode.CODE_LOAD_ERROR, "Missing @DataInterpreter annotation on a DataInterpreter implementation");
         }
 
@@ -197,8 +195,7 @@ public class InterpreterStoreBean {
             classMap.put(ds, new HashMap<>());
         }
         classMap.get(ds).put(name, interpreter);
-        System.out.println("Registered interpreter: " + name);
-        classMap.keySet().forEach(key -> classMap.get(key).keySet().forEach(System.out::println));
+        logger.debug("Registered interpreter: " + name);
     }
 
     /**
