@@ -99,4 +99,10 @@ public class InsertStatusHolder {
 
         return payloadJson;
     }
+
+    public void invalidate() {
+        recordMap.clear();
+        statusMap.clear();
+        successMap.clear();
+    }
 }
