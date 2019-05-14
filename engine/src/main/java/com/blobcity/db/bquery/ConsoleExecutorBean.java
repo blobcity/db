@@ -544,8 +544,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         if (!databaseAndTable.contains(".")) {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(database, table);
         codeLoader.activateTrigger(database, table, elements[2]);
         if ("*".equals(elements[2])) {
@@ -564,8 +564,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(database, table);
         final String columnName = elements[2];
         final String typeString = elements[3];
@@ -688,8 +688,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         verifyDCInfo(database, table);
 
@@ -713,8 +713,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Datastore and collection should be specified in format: datastoreName.collectionName");
         }
 
-        final String ds = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String ds = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
 
         /* Get storage type specification */
@@ -806,8 +806,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         if (!databaseAndTable.contains(".")) {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1));//start searching dot from index 1 to handle case of .systemdb as datastore name
+         final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(database, table);
         codeLoader.deActivateTrigger(database, table, elements[2]);
         if ("*".equals(elements[2])) {
@@ -837,8 +837,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             return "The specified table does not exist. This operation is only supported for in memory tables";
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(database, table);
 
         Collection<Object> allRecords = memoryManager.selectAll(database, table);
@@ -855,8 +855,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(database, table);
         final String columnName = elements[2];
         collectionManager.dropColumn(database, table, columnName);
@@ -892,8 +892,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(database, table);
         final String columnName = elements[2];
 
@@ -910,8 +910,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Datastore and collection should be specified in format: datastoreName.collectionName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         verifyDCInfo(database, table);
 
@@ -956,8 +956,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         final String exportFile = elements[3];
         JSONObject jsonObject = new JSONObject();
 
@@ -1011,8 +1011,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         String databaseAndTable = elements[1];
 
         if (databaseAndTable.contains(".")) {
-            final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-            final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+            final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+            final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
             verifyDCInfo(database, table);
             return codeLoader.listTriggers(database, table);
         } else {
@@ -1185,8 +1185,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(datastore, collection);
 
         collectionManager.truncateTable(datastore, collection);
@@ -1202,8 +1202,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(datastore, collection);
         Schema schema = schemaStore.getSchema(datastore, collection);
         // return table data in readable format
@@ -1403,8 +1403,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         dataManager.clearAllData(database, table);
         return "Table cleared";
@@ -1425,8 +1425,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         final String column = elements[2];
         final AutoDefineTypes autoDefineType = AutoDefineTypes.fromString(elements[3]);
@@ -1452,8 +1452,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         if (!databaseAndTable.contains(".")) {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
-        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         verifyDCInfo(datastore, collection);
 
@@ -1479,8 +1479,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         if (!databaseAndTable.contains(".")) {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         List<String> cols = new ArrayList<>();
         for (int i = 2; i < elements.length; i++) {
@@ -1528,8 +1528,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         // path of data file
         String filePath = elements[2];
@@ -1551,8 +1551,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             return "The specified table does not exist. This operation is only supported for in memory tables";
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         String dataFile = elements[2];
         String header = elements[3];
@@ -1572,8 +1572,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             return "The specified table does not exist. This operation is only supported for in memory tables";
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         String dataFile = elements[2];
         String header = elements[3];
@@ -1651,8 +1651,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String database = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String table = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
 
         JSONObject mapping = schemaStore.getColumnMapping(database, table).toJSONObject();
         return mapping.toString();
@@ -1667,8 +1667,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(datastore, collection);
 
         int i = 0, cnt = 0;
@@ -1703,8 +1703,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
         }
 
-        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf("."));
-        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".") + 1, databaseAndTable.length());
+        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
         verifyDCInfo(datastore, collection);
 
         int i = 0, cnt = 0;
