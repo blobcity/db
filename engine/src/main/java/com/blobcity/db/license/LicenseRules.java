@@ -44,6 +44,8 @@ public class LicenseRules {
     public static boolean VISUALISATION_ONLY = false; //if set to true, DB features are disabled
     public static boolean GEO_REP = false;
     public static boolean STORED_PROCEDURES = false;
+    public static boolean QPS = false; //used to enable/disable Query Performance Analysis tracking
+    public static boolean QPS_BLOBCITY_SYNC = false; //enable to sync QPS data to BlobCity for it to analyse it
 
     /* Dynamic Elements */
     public static long DATA_LIMIT = -1; // -1 means unlimited data. Limit is otherwise specified in GB's and applies to whole cluster this node is a part of
