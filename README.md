@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/blobcity/db.svg?branch=develop)](https://travis-ci.org/blobcity/db)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://github.com/blobcity/db/issues)
+[![Generic badge](https://img.shields.io/badge/<DOCS>-<Read>-<GREEN>.svg)](https://shields.io/)
 
 # Description
 
