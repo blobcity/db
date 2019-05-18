@@ -1,6 +1,7 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://github.com/blobcity/db/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/blobcity/db.svg?branch=develop)](https://travis-ci.org/blobcity/db)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://github.com/blobcity/db/issues)
 
 # Description
 
