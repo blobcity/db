@@ -28,6 +28,8 @@ import com.blobcity.pom.database.engine.factory.EngineBeanConfig;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
@@ -42,7 +44,7 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
 
     protected final Query query;
     protected final ApplicationContext applicationContext;
-    protected final Semaphore semaphore = new Semaphore(1);
+    protected final Semaphore semaphore = new Semaphore(0);
     protected boolean completed = false;
     protected Query response;
     protected TransactionPhase transactionPhase = TransactionPhase.SOFT_COMMIT;
@@ -65,10 +67,25 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
         return this.applicationContext.getBean(ClusterMessaging.class);
     }
 
+//    protected void awaitCompletion() {
+//        semaphore.acquireUninterruptibly(); //waits till a release occurs externally
+//        semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
+//    }
+
     protected void awaitCompletion() {
-        semaphore.acquireUninterruptibly();
-        semaphore.acquireUninterruptibly(); //waits till a release occurs externally
-        semaphore.release(); // release the immeidately last acquire, as the semaphore is not longer required
+        try {
+            semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits 60 seconds
+            semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
+        } catch (InterruptedException e) {
+            System.out.println("Insert timed out");
+            rollback();
+            try {
+                semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits another 60 seconds for rollback
+            } catch (InterruptedException e1) {
+                System.out.println("Rollback also failed");
+                complete(new Query().ack("0").errorCode("INTERNAL-ERROR with transaction handling"));
+            }
+        }
     }
 
     protected void complete(Query query) {

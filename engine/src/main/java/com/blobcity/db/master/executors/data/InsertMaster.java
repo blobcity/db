@@ -210,6 +210,7 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
 
         insertStatusHolder.addRecords(ClusterNodesStore.getInstance().getSelfId(), toInsertList); //this needs to change for smart sharding
         super.query.insertQuery(ds, collection, toInsertList, recordType);
+//        this.acquireSemaphore();
         this.messageAllConcernedNodes(super.query);
 
 //        int num = random.nextInt(1000);
@@ -261,6 +262,7 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
                 registerSuccessStatus(nodeId, query);
                 if(allSuccess()) {
                     complete(produceFinalResponse());
+                    insertStatusHolder.invalidate();
                     return;
                 } else if(didAllRespond()) {
                     logger.debug(query.getRequestId() + " : " + "Rolling back on COMMIT_SUCCESS as some nodes responded with failure");
@@ -272,6 +274,7 @@ public class InsertMaster extends ExecuteSelectedNodesCommitMaster implements Ma
                 registerSuccessStatus(nodeId, query);
                 if(didAllRespond()) {
                     complete(new Query().ack("0").errorCode(getErrorCode()));
+                    insertStatusHolder.invalidate();
                     return;
                 }
                 break;

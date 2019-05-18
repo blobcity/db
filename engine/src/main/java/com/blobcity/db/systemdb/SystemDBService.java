@@ -301,6 +301,48 @@ public class SystemDBService {
         }
     }
 
+    public synchronized void createWatchServiceFileTrackerTable() {
+        if(collectionManager.exists(".systemdb", "WSFileTracker")) {
+            return;
+        }
+
+        String sql = "CREATE TABLE `WSFileTracker` ("
+                + "ds     VARCHAR(255),"
+                + "folder     VARCHAR(255),"
+                + "file     VARCHAR(255),"
+                + "lineNo     VARCHAR(255),"
+                + "md5     VARCHAR(255),"
+                + "status   VARCHAR(255)"
+                + ")";
+        String output = sqlExecutor.executePrivileged(".systemdb", sql);
+        JSONObject json = new JSONObject(output);
+        if (!json.getString("ack").equals("1")) {
+            logger.error("Failed to create Watch Service File Tracker table");
+            throw new DbRuntimeException("Failed to create Watch Service File Tracker table");
+        }
+    }
+
+    public synchronized void createWatchServiceTrackerTable() {
+        if(collectionManager.exists(".systemdb", "WSTracker")) {
+            return;
+        }
+
+        String sql = "CREATE TABLE `WSTracker` ("
+                + "ds     VARCHAR(255),"
+                + "folder     VARCHAR(255),"
+                + "file     VARCHAR(255),"
+                + "length   LONG,"
+                + "progress  DOUBLE,"
+                + "status   VARCHAR(255)"
+                + ")";
+        String output = sqlExecutor.executePrivileged(".systemdb", sql);
+        JSONObject json = new JSONObject(output);
+        if (!json.getString("ack").equals("1")) {
+            logger.error("Failed to create Watch Service Tracker table");
+            throw new DbRuntimeException("Failed to create Watch Service Tracker table");
+        }
+    }
+
     private String randomPassword() {
         String uuid = UUID.randomUUID().toString();
         uuid = uuid.replaceAll("-", "");

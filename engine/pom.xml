@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <parent>
         <groupId>com.blobcity.pom</groupId>
         <artifactId>database</artifactId>
-        <version>1.7.6-alpha</version>
+        <version>1.7.7-alpha</version>
     </parent>
     
     <groupId>com.blobcity.lib.database</groupId>
@@ -222,7 +222,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency>
             <groupId>com.github.blobcity</groupId>
             <artifactId>sp-adapter</artifactId>
-            <version>1.5</version>
+            <version>1.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-codec</groupId>
@@ -233,7 +233,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <!--<dependency>-->
             <!--<groupId>com.blobcity.db</groupId>-->
             <!--<artifactId>sp-adapter</artifactId>-->
-            <!--<version>1.3-SNAPSHOT</version>-->
+            <!--<version>1.7-SNAPSHOT</version>-->
             <!--<exclusions>-->
                 <!--<exclusion>-->
                     <!--<groupId>commons-codec</groupId>-->

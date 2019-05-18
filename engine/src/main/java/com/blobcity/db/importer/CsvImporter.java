@@ -167,7 +167,7 @@ public class CsvImporter implements Operable {
 
         logger.trace("CsvImporter.run(ds={}, collection={}, opid={}, fileLocation={}, Map<String, String> columnMap)", app, table, opid, fileLocation);
 
-        //TODO: There is clearly some probably with columnMapping. Need to figure out.
+        //TODO: There is clearly some problem with columnMapping. Need to figure out.
 
         long count = 0;
         try (CSVReader reader = new CSVReader(new FileReader(fileLocation))) {
@@ -178,7 +178,6 @@ public class CsvImporter implements Operable {
 
             List<Object> jsonRecords = new ArrayList<>();
             while (!Thread.interrupted()) {
-                logger.trace("CsvImport reading line");
                 items = reader.readNext();
 
                 if (items == null) {
@@ -188,16 +187,21 @@ public class CsvImporter implements Operable {
                         internalQueryBean.insertJSON(app, table, jsonRecords);
                     }
 
-                    logger.trace("CsvImport completed");
+                    logger.trace("Completed Run: CsvImporter (ds={}, collection={}, opid={}, fileLocation={}, Map<String, String> columnMap)", app, table, opid, fileLocation);
                     onComplete(opid);
                     return ConcurrentUtils.constantFuture(OperationStatus.COMPLETED);
                 }
 
                 int index = 0;
+                final int maxIndex = columnOrder.length;
                 JSONObject requestJson = new JSONObject();
                 try {
                     for (String item : items) {
-                        requestJson.put(columnOrder[index++], item);
+                        if(index < maxIndex) {
+                            requestJson.put(columnOrder[index++], item);
+                        } else {
+                            logger.debug("Ignoring column at " + index + " from CSV import for item: " + item);
+                        }
                     }
 
                     try {
