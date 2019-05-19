@@ -19,7 +19,6 @@ package com.blobcity.db.code.datainterpreter;
 import com.blobcity.db.annotations.Interpreter;
 import com.blobcity.db.code.LoaderStore;
 import com.blobcity.db.code.ManifestParserBean;
-import com.blobcity.db.code.RestrictedClassLoader;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.sp.interpreter.DataInterpretable;
@@ -29,9 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-
-import com.blobcity.db.sp.annotations.Rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +153,7 @@ public class InterpreterStoreBean {
         Annotation [] annotations = instance.getClass().getAnnotations();
         for(int i=0; i < annotations.length; i++) {
             Annotation annotation = annotations[i];
-            if(annotation.annotationType().equals(DataInterpreter.class)) {
+            if(annotation.annotationType().equals(Interpreter.class)) {
                 interpreterAnnotation = annotation;
             }
         }
