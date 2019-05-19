@@ -534,10 +534,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-core</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.apache.tika</groupId>
-                    <artifactId>tika-core</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
