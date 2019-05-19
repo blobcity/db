@@ -19,7 +19,7 @@ Full technical docs for using BlobCity can be found at [https://docs.blobcity.co
 
 # Contribute
 
-Your contributions are welcome. [Join our Slack community](https://join.slack.com/t/blobcity-community/shared_invite/enQtNDE1ODExNDIzMTUyLWI3Y2UxOWRjMDU1ZDQ3YjI0ZWQ0OWViODRkOTc4ZmZlN2M1MDE0ZjYxMzYyY2FkN2VlNTg0OGNmYzhlOGZkOWM) and request to become a contributor.
+Your contributions are welcome. [Join our Slack community](https://slack.blobcity.com) and request to become a contributor.
 
 # Authors
 BlobCity DB was created by [Sanket Sarang](https://www.linkedin.com/in/sanketsarang/) along with notable contributions from [Akshay Dewan](https://www.linkedin.com/in/akshay-dewan-0a972b21) and [Karun Japhet](https://www.linkedin.com/in/karunjaphet), amongst others. BlobCity DB is sponsored by [BlobCity, Inc.](https://www.blobcity.com).
