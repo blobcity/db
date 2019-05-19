@@ -4,6 +4,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/blobcity/db.svg)](https://github.com/blobcity/db/issues)
 [![Generic badge](https://img.shields.io/badge/docs-read-blue.svg)](https://docs.blobcity.com)
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:support@blobcity.com)
+<script async defer src="https://slack.yourdomain.com/slackin.js"></script>
 
 # Description
 
