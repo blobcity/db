@@ -16,13 +16,13 @@
 
 package com.blobcity.db.code.datainterpreter;
 
-import com.blobcity.db.annotations.DataInterpreter;
+import com.blobcity.db.annotations.Interpreter;
 import com.blobcity.db.code.LoaderStore;
 import com.blobcity.db.code.ManifestParserBean;
 import com.blobcity.db.code.RestrictedClassLoader;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.functions.DataInterpretable;
+import com.blobcity.db.sp.interpreter.DataInterpretable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -167,8 +167,8 @@ public class InterpreterStoreBean {
             throw new OperationException(ErrorCode.CODE_LOAD_ERROR, "Missing @DataInterpreter annotation on a DataInterpreter implementation");
         }
 
-        DataInterpreter dataInterpreter = (DataInterpreter) interpreterAnnotation;
-        registerInterpreter(datastore, dataInterpreter.name(), clazz);
+        Interpreter annotation = (Interpreter) interpreterAnnotation;
+        registerInterpreter(datastore, annotation.name(), clazz);
 
 
 //        RestrictedClassLoader blobCityClassLoader = loaderStore.getLoaderWithCreate(datastore);
@@ -219,14 +219,14 @@ public class InterpreterStoreBean {
         // checking for interpreters in Manifest file
         List<String> interpreters = manifestParser.getInterpreters(datastore);
         if (!interpreters.contains(interpreterClass.getCanonicalName())){
-            throw new OperationException(ErrorCode.DATAINTERPRETER_LOAD_ERROR, "No such datainterpreter is defined in Manifest file");
+            throw new OperationException(ErrorCode.DATAINTERPRETER_LOAD_ERROR, "No such Interpreter is defined in Manifest file");
         }
         
         String interpreterName = null;
         // checking for 'DataInterpreter' annotation
         final Annotation[] annotations = interpreterClass.getAnnotations();
         for(Annotation annotation: annotations){
-            if( "com.blobcity.db.annotations.DataInterpreter".equals(annotation.annotationType().getCanonicalName()) ){
+            if( "com.blobcity.db.annotations.Interpreter".equals(annotation.annotationType().getCanonicalName()) ){
                 // name is supplied in annotation or not
                 if(interpreterName == null){
                     if(annotation.toString().contains("name")){
@@ -235,12 +235,12 @@ public class InterpreterStoreBean {
                     }
                     else{
                         interpreterName = interpreterClass.getSimpleName();
-                        logger.debug("{} found annotation DataInterpreter with interpreter name {}", new Object[]{interpreterClass.getCanonicalName(), interpreterName});
+                        logger.debug("{} found annotation Interpreter with interpreter name {}", new Object[]{interpreterClass.getCanonicalName(), interpreterName});
                     }
                 }
                 else{
-                    logger.debug("{} found duplicate annotation DataInterpreter", new Object[]{interpreterClass.getCanonicalName()});
-                    throw new OperationException(ErrorCode.DATAINTERPRETER_LOAD_ERROR, "Duplicate @DataInterpreter "
+                    logger.warn("{} found duplicate annotation Interpreter", new Object[]{interpreterClass.getCanonicalName()});
+                    throw new OperationException(ErrorCode.DATAINTERPRETER_LOAD_ERROR, "Duplicate @Interpreter "
                             + "annotation found on class " + interpreterClass.getCanonicalName() + ". A single interpreter class "
                             + "may have only one @DataInterpreter annotation associated with it.");
                 }

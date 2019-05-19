@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -39,8 +41,8 @@ public class ProximityNodesStore {
     private final long KILL_DURATION = 3000;//milliseconds
 
     /* node id -> node ip map */
-    private final Map<String, String> nodeMap = new HashMap<>();
-    private final Map<String, Long> lastBeacon = new HashMap<>();
+    private final Map<String, String> nodeMap = new ConcurrentHashMap<>();
+    private final Map<String, Long> lastBeacon = new ConcurrentHashMap<>();
     @Autowired
     private NodeManager nodeManager;
 

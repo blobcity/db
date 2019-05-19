@@ -16,7 +16,7 @@
 
 package com.blobcity.db.code;
 
-import com.blobcity.db.annotations.DataInterpreter;
+import com.blobcity.db.annotations.Interpreter;
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.bsql.BSqlDatastoreManager;
 import com.blobcity.db.code.datainterpreter.InterpreterStoreBean;
@@ -26,20 +26,17 @@ import com.blobcity.db.code.triggers.TriggerStoreBean;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.export.ExportProcedureStore;
-import com.blobcity.db.functions.DataInterpretable;
+import com.blobcity.db.sp.interpreter.DataInterpretable;
 import com.blobcity.db.sp.*;
 import com.blobcity.db.sp.annotations.Export;
 import com.blobcity.db.sp.annotations.Named;
 import com.blobcity.db.sp.annotations.Rest;
 import com.blobcity.db.sql.util.PathUtil;
 import com.blobcity.db.code.webservices.WebServiceStore;
-import com.google.api.client.util.Data;
-import org.json.HTTPTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.tensorflow.Operation;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -264,9 +261,9 @@ public class CodeLoader {
                     Object instance;
                     try {
                         if(loadedClazz.isAnnotationPresent(Rest.class) || loadedClazz.isAnnotationPresent(Named.class)
-                                || loadedClazz.isAnnotationPresent(Export.class) || loadedClazz.isAnnotationPresent(DataInterpreter.class)){
+                                || loadedClazz.isAnnotationPresent(Export.class) || loadedClazz.isAnnotationPresent(Interpreter.class)){
                             instance = loadedClazz.newInstance();
-                            System.out.println("Instance: " + instance.getClass().getName());
+                            logger.debug("Instance: " + instance.getClass().getName());
                         } else {
                             return;
                         }
@@ -291,7 +288,6 @@ public class CodeLoader {
                     } else if(instance instanceof DataExporter) {
                         exportProcedureStore.loadExporter(datastore, loadedClazz);
                     } else if(instance instanceof DataInterpretable) {
-                        System.out.println("Found data interpreter");
                         interpreterStore.loadClass(datastore, loadedClazz);
                     }
 
@@ -305,12 +301,10 @@ public class CodeLoader {
                             Annotation annotation = annotations[j];
 
                             if(annotation.annotationType().equals(Named.class)) {
-                                System.out.println("It is a named procedure");
-                            } else {
-                                System.out.println("It is not a named procedure");
+                                logger.debug("Found a named procedure");
                             }
 
-                            System.out.println(annotations[j].toString());
+                            logger.debug(annotations[j].toString());
                         }
                     }
                 } catch (Exception ex) {
@@ -318,12 +312,11 @@ public class CodeLoader {
                 }
             });
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            logger.error("Malformed URL Exception when loading stored procedures JAR", e);
             throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "Error in loading code for datastore " + datastore + " from jar " + jarFilePath);
         }
 
-
-        System.out.println("Jar loaded");
+        logger.debug("Stored Procedures JAR loaded");
     }
     
     /**
