@@ -5,6 +5,7 @@
 [![Generic badge](https://img.shields.io/badge/docs-read-blue.svg)](https://docs.blobcity.com)
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:support@blobcity.com)
 [![Slack](https://slack.blobcity.com/badge.svg)](https://slack.blobcity.com)
+<script src="https://slack.blobcity.com/slackin.js"></script>
 
 # Description
 
