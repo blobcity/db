@@ -1,4 +1,4 @@
-<a href="https://www.blobcity.com"><img src="https://blobcity.com/blobcity-logo.png" height="80"/></a>
+<a href="https://www.blobcity.com"><img src="https://blobcity.com/blobcity-logo.png" height="60"/></a>
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://github.com/blobcity/db/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/blobcity/db.svg?branch=master)](https://travis-ci.org/blobcity/db)
