@@ -41,7 +41,7 @@
         <logging.logback-classic.version>1.2.3</logging.logback-classic.version>
             <!--<logging.logback-classic.version>1.1.3</logging.logback-classic.version>-->
         <!-- Plugin versions -->
-        <maven.assembly.version>2.4</maven.assembly.version>
+        <maven.assembly.version>3.1.1</maven.assembly.version>
         <!-- BlobCity libraries versions -->
         <blobcity.server.adapter.version>1.0.6-SNAPSHOT</blobcity.server.adapter.version>
         <blobcity.engine.mapred.version>1.27</blobcity.engine.mapred.version>
