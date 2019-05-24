@@ -77,7 +77,7 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
 
     protected void awaitCompletion() {
         try {
-            semaphore.tryAcquire( 60, TimeUnit.SECONDS); //waits 60 seconds
+            semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits 60 seconds
             semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
         } catch (InterruptedException e) {
             System.out.println("Insert timed out");
