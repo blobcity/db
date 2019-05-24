@@ -68,7 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
-            <version>1.7.14</version>
+            <version>1.7.26</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
