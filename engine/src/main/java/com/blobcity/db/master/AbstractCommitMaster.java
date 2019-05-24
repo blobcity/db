@@ -31,6 +31,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.mina.util.ConcurrentHashSet;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
 
@@ -41,6 +42,8 @@ import org.springframework.context.ApplicationContext;
  * @author sanketsarang
  */
 public abstract class AbstractCommitMaster implements MasterExecutable {
+
+    public static final Set<String> activeQueries = new ConcurrentHashSet<>();
 
     protected final Query query;
     protected final ApplicationContext applicationContext;
@@ -74,7 +77,7 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
 
     protected void awaitCompletion() {
         try {
-            semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits 60 seconds
+            semaphore.tryAcquire( 60, TimeUnit.SECONDS); //waits 60 seconds
             semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
         } catch (InterruptedException e) {
             System.out.println("Insert timed out");

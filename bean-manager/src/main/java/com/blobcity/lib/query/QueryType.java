@@ -118,12 +118,12 @@ public enum QueryType {
     DROP_NODE("DROP-NODE"),
 
     // INTERNAL QUERIES
-    ROLLBACK("ROLLBACK"),
-    COMMIT("COMMIT"), //this is a confirmation to commit the soft commit
-    SOFT_COMMIT_SUCCESS("SOFT_COMMIT_SUCCESS"),
-    COMMIT_SUCCESS("COMMIT_SUCCESS"),
-    ROLLBACK_SUCCESS("ROLLBACK_SUCCESS"),
-    QUERY_RESPONSE("QUERY_RESPONSE"), //response for select / read queries
+    ROLLBACK("R"),
+    COMMIT("C"), //this is a confirmation to commit the soft commit
+    SOFT_COMMIT_SUCCESS("SCS"),
+    COMMIT_SUCCESS("CS"),
+    ROLLBACK_SUCCESS("RS"),
+    QUERY_RESPONSE("QR"), //response for select / read queries
     PING("PING"), //ping on on-going commit to check if thigns are still running
     MEM_FLUSH("MEM-FLUSH"); //flush a memory table to disk
 
