@@ -18,6 +18,7 @@ package com.blobcity.db.master;
 
 import com.blobcity.db.cluster.ClusterNodesStore;
 import com.blobcity.db.cluster.messaging.ClusterMessaging;
+import com.blobcity.db.cluster.nodes.ProximityNodesStore;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.master.aggregators.Aggregator;
 import com.blobcity.lib.database.bean.manager.factory.BeanConfigFactory;
@@ -29,6 +30,7 @@ import org.springframework.context.ApplicationContext;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author sanketsarang
@@ -37,13 +39,13 @@ public abstract class AbstractReadMaster implements MasterExecutable {
 
     protected final Query query;
     protected final ApplicationContext applicationContext;
-    protected final Semaphore semaphore = new Semaphore(1);
+    protected final Semaphore semaphore = new Semaphore(0);
     protected boolean completed = false;
     protected Query response;
-    protected Map<String, ErrorCode> errorCodeMap = new ConcurrentHashMap<>();
+    protected Map<String, ErrorCode> errorCodeMap = new ConcurrentHashMap<>(0);
     protected Map<String, Long> pingMap = null;
     protected Set<String> nodeIds = null;
-    protected Map<String, Query> responseMap = new ConcurrentHashMap<>();
+    protected Map<String, Query> responseMap = new ConcurrentHashMap<>(1); //set to number of nodes in cluster
     protected final Aggregator aggregator;
 
     public AbstractReadMaster(Query query, Aggregator aggregator) {
@@ -61,9 +63,19 @@ public abstract class AbstractReadMaster implements MasterExecutable {
         return this.applicationContext.getBean(ClusterMessaging.class);
     }
 
+//    protected void awaitCompletion() {
+//        semaphore.acquireUninterruptibly(); //waits till a release occurs externally
+//        semaphore.release();
+//    }
+
     protected void awaitCompletion() {
-        semaphore.acquireUninterruptibly();
-        semaphore.acquireUninterruptibly(); //waits till a release occurs externally
+        try {
+            semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits 60 seconds
+            semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
+        } catch (InterruptedException e) {
+            System.out.println("SELECT timed out");
+            rollback();
+        }
     }
 
     protected void complete(Query query) {
@@ -108,6 +120,8 @@ public abstract class AbstractReadMaster implements MasterExecutable {
                     produceResponse();
                 }
                 break;
+            default:
+                System.out.println("Select responded with: " + query.getQueryType().getQueryCode());
         }
     }
 
