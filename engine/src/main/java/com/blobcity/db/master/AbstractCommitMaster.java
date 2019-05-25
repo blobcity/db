@@ -77,10 +77,20 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
 
     protected void awaitCompletion() {
         try {
-            semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits 60 seconds
+            boolean acquired = semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits 60 seconds
             semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
+            if(!acquired) {
+                System.out.println("Insert timed out");
+                rollback();
+                try {
+                    semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits another 60 seconds for rollback
+                } catch (InterruptedException e1) {
+                    System.out.println("Rollback also failed");
+                    complete(new Query().ack("0").errorCode("INTERNAL-ERROR with transaction handling"));
+                }
+            }
         } catch (InterruptedException e) {
-            System.out.println("Insert timed out");
+            System.out.println("Insert interrupted");
             rollback();
             try {
                 semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits another 60 seconds for rollback

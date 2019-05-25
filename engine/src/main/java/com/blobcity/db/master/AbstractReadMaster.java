@@ -70,10 +70,15 @@ public abstract class AbstractReadMaster implements MasterExecutable {
 
     protected void awaitCompletion() {
         try {
-            semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits 60 seconds
-            semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
+            boolean acquired = semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits 60 seconds
+            if(acquired) {
+                semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
+            } else {
+                System.out.println("SELECT timed out");
+                rollback();
+            }
         } catch (InterruptedException e) {
-            System.out.println("SELECT timed out");
+            System.out.println("SELECT interrupted");
             rollback();
         }
     }
