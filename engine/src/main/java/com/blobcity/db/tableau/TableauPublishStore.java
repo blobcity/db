@@ -19,6 +19,7 @@ package com.blobcity.db.tableau;
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.constants.BSql;
 import com.blobcity.db.exceptions.OperationException;
+import com.blobcity.db.license.LicenseRules;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -141,6 +142,7 @@ public class TableauPublishStore {
     }
 
     public void notifyDataChange(final String datastore, final String collection) {
+        if(!LicenseRules.TABLEAU_ENABLED) return;
         if(datastore.equals(BSql.SYSTEM_DB)) {
             return;
         }
@@ -181,5 +183,11 @@ class DsAndC {
 
     public String getCollection() {
         return collection;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        DsAndC instance = (DsAndC) obj;
+        return instance.ds.equals(this.ds) && instance.collection.equals(this.collection);
     }
 }

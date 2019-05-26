@@ -36,6 +36,7 @@ public class LicenseRules {
     public static boolean CLI_QUERY_ANALYSER = false;
     public static boolean FLEXIBLE_SCHEMA = true;
     public static boolean FILE_INTERPRETED_WATCH_SERVICE = false;
+    public static boolean TABLEAU_ENABLED = false;
     public static boolean TABLEAU_AUTO_PUBLISH = false;
     public static boolean TABLEAU_DS_LEVEL_AUTO_PUBLISH = false;
     public static boolean MEMORY_DURABLE_TABLES = false;
