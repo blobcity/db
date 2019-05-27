@@ -61,11 +61,11 @@ public class ProcessHandler implements Runnable {
             /* Handle commands coming from master */
             case COMMIT:
                 processorStore = getBean(ProcessorStore.class);
-                processorStore.get(query.getRequestId()).commit();
+                processorStore.getAndUnregister(query.getRequestId()).commit();
                 return;
             case ROLLBACK:
                 processorStore = getBean(ProcessorStore.class);
-                processorStore.get(query.getRequestId()).rollback();
+                processorStore.getAndUnregister(query.getRequestId()).rollback();
                 return;
 
             /* Handle commands coming to master from processing nodes */

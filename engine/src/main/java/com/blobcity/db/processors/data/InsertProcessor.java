@@ -89,7 +89,7 @@ public class InsertProcessor extends AbstractCommitProcessor implements Processo
             pkList.add(record.getId());
 
             try {
-                if(super.transientStore.acquireRecordPermit(ds, collection, record.getId())) {
+                if(super.transientStore.acquireRecordPermit(ds, collection, record.getId())) { //permit will be released post commit or rollback
                     dataManager.insert(this.ds, this.collection, record);
                     statusList.add(1);
                     super.setRollbackNeedsAction();

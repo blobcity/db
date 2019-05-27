@@ -37,6 +37,10 @@ public class ProcessorStore {
         return map.get(requestId);
     }
 
+    public Processor getAndUnregister(final String requestId) {
+        return map.remove(requestId);
+    }
+
     public void unRegister(final String requestId) {
         map.remove(requestId);
     }
