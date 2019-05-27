@@ -74,4 +74,4 @@ echo "CLASSPATH=$CLASSPATH"
 unset IFS
 
 #All Done. Continue now
-exec "$JAVA" -classpath "$CLASSPATH" -jar "$BLOBCITY_HOME/modules/launcher-"$VERSION".jar" "$@"
+exec "$JAVA" -classpath "$CLASSPATH" -Xmx128G -jar "$BLOBCITY_HOME/modules/launcher-"$VERSION".jar" "$@"
