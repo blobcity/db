@@ -15,10 +15,10 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 <a href="https://www.gartner.com/doc/3288923"><img src="https://blobcity.com/assets/img/Gartner-CoolVendor-2016.jpg" height="80"/></a>
 <a href="https://hub.docker.com/_/blobcity-db"><img src="https://blobcity.com/assets/img/Docker_Container_white_icon%202@2x.png" height="80"/></a>
 
-<table>
+<table style="border: 0">
    <tr>
-      <td style="width: 30%"><a href="https://startup.netapp.in"><img src="https://www.blobcity.com/assets/img/netapp-excellerator.png" height="60"/></a></td>
       <td style="width: 70%">BlobCity is a proud graduate from Cohort #2 of the NetApp Excellerator program.</td>
+      <td style="width: 30%"><a href="https://startup.netapp.in"><img src="https://www.blobcity.com/assets/img/netapp-excellerator.png" height="60"/></a></td>
    </tr>
 </table>
 
