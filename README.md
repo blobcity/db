@@ -17,8 +17,8 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 
 <table style="border: 0px">
    <tr>
-      <td style="width: 70%">BlobCity is a proud graduate from Cohort #2 of the NetApp Excellerator. We were closed source until the Excellerator happened.</td>
-      <td style="width: 30%"><a href="https://startup.netapp.in"><img src="https://www.blobcity.com/assets/img/netapp-excellerator.png" height="60"/></a></td>
+      <td style="width: 62%">BlobCity is a proud graduate from Cohort #2 of the NetApp Excellerator. We were closed source until the Excellerator happened.</td>
+      <td style="width: 38%"><a href="https://startup.netapp.in"><img src="https://www.blobcity.com/assets/img/netapp-excellerator.png" height="60"/></a></td>
    </tr>
 </table>
 
