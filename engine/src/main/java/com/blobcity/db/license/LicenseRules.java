@@ -51,6 +51,8 @@ public class LicenseRules {
     /* Dynamic Elements */
     public static long DATA_LIMIT = -1; // -1 means unlimited data. Limit is otherwise specified in GB's and applies to whole cluster this node is a part of
     public static long EXPIRES = -1; //-1 means no expiry. Value is otherwise a long timestamp.
+    public static long COMMIT_OP_TIMEOUT = 60; //in seconds
+    public static long READ_OP_TIMEOUT = 300; //in seconds
 
     /* These should be moved to user permissions in the future */
     public static boolean ALLOW_LIST_DS = true; // if true will allow list-ds operation to work. Set to false for cloud.
