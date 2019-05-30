@@ -24,6 +24,7 @@ import java.util.*;
 import javax.annotation.PostConstruct;
 
 //import com.blobcity.license.License;
+import org.apache.mina.util.ConcurrentHashSet;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,8 @@ import org.springframework.stereotype.Component;
 public class ClusterNodesStore {
 
     public static String selfId = null;
-    private Set<String> clusterNodes = new HashSet<>();
-    private Set<String> onlineNodes = new HashSet<>();
+    private Set<String> clusterNodes = new ConcurrentHashSet<>();
+    private Set<String> onlineNodes = new ConcurrentHashSet<>();
     private static ClusterNodesStore clusterBeanInstance;
     private static final Logger logger = LoggerFactory.getLogger(ClusterNodesStore.class.getName());
 

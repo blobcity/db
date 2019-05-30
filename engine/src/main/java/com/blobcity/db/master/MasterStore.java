@@ -18,6 +18,7 @@ package com.blobcity.db.master;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MasterStore {
 
-    private Map<String, MasterExecutable> map = new HashMap<>();
+    private Map<String, MasterExecutable> map = new ConcurrentHashMap<>();
 
     public void register(final String requestId, final MasterExecutable masterExecutable) {
         map.put(requestId, masterExecutable);

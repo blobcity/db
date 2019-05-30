@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Holds writers to commit log files for each collection in the database
@@ -38,12 +39,21 @@ import java.util.Map;
 public class CollectionCommitLogWriter {
     private Map<String, BufferedWriter> writerMap = new HashMap<>();
 
-    @Autowired
-    private BSqlCollectionManager collectionManager;
-
     public void write(final String ds, final String collection, final Query query) throws OperationException {
-        final String key = ds + "." + collection;
+        BufferedWriter writer = getWriter(ds, collection);
+        synchronized (writer) {
+            try {
+                writer.write(System.currentTimeMillis() + "|" + query.toJsonString());
+                writer.newLine();
+                writer.flush();
+            } catch (IOException e) {
+                throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "Failed to write to commit logs of collection: " + ds + "." + collection);
+            }
+        }
+    }
 
+    private synchronized BufferedWriter getWriter(final String ds, final String collection) throws OperationException {
+        final String key = ds + "." + collection;
         if(!writerMap.containsKey(key)) {
 
             //{data_folder}/{ds}/db/{collection}/commit-logs/commit.log
@@ -58,13 +68,6 @@ public class CollectionCommitLogWriter {
             }
         }
 
-        BufferedWriter writer = writerMap.get(key);
-        try {
-            writer.write(System.currentTimeMillis() + "|" + query.toJsonString());
-            writer.newLine();
-            writer.flush();
-        } catch (IOException e) {
-            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "Failed to write to commit logs of collection: " + key);
-        }
+        return writerMap.get(key);
     }
 }
