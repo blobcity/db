@@ -19,20 +19,20 @@ package com.blobcity.db.master;
 import com.blobcity.db.cluster.ClusterNodesStore;
 import com.blobcity.db.cluster.messaging.ClusterMessaging;
 import com.blobcity.db.exceptions.ErrorCode;
+import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.transaction.TransactionPhase;
 import com.blobcity.lib.database.bean.manager.factory.BeanConfigFactory;
 import com.blobcity.lib.query.Query;
 import com.blobcity.lib.query.QueryParams;
 import com.blobcity.pom.database.engine.factory.EngineBeanConfig;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.apache.mina.util.ConcurrentHashSet;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -42,6 +42,7 @@ import org.springframework.context.ApplicationContext;
  * @author sanketsarang
  */
 public abstract class AbstractCommitMaster implements MasterExecutable {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractCommitMaster.class);
 
     public static final Set<String> activeQueries = new ConcurrentHashSet<>();
 
@@ -77,27 +78,28 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
 
     protected void awaitCompletion() {
         try {
-            boolean acquired = semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits 60 seconds
-            semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
+            boolean acquired = semaphore.tryAcquire(LicenseRules.COMMIT_OP_TIMEOUT, TimeUnit.SECONDS); //waits 60 seconds
             if(!acquired) {
-                System.out.println("Insert timed out");
+                logger.warn("Request (" + query.getRequestId() + ") timed out while attempting to commit transaction");
                 rollback();
                 try {
-                    semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits another 60 seconds for rollback
+                    semaphore.tryAcquire(LicenseRules.COMMIT_OP_TIMEOUT, TimeUnit.SECONDS); //waits another 60 seconds for rollback
                 } catch (InterruptedException e1) {
-                    System.out.println("Rollback also failed");
+                    logger.warn("Request (" + query.getRequestId() + ") rollback interrupted after commit timeout");
                     complete(new Query().ack("0").errorCode("INTERNAL-ERROR with transaction handling"));
                 }
             }
         } catch (InterruptedException e) {
-            System.out.println("Insert interrupted");
+            logger.warn("Request (" + query.getRequestId() + ") interrupted while waiting for commit");
             rollback();
             try {
-                semaphore.tryAcquire(60, TimeUnit.SECONDS); //waits another 60 seconds for rollback
+                semaphore.tryAcquire(LicenseRules.COMMIT_OP_TIMEOUT, TimeUnit.SECONDS); //waits another 60 seconds for rollback
             } catch (InterruptedException e1) {
-                System.out.println("Rollback also failed");
+                logger.warn("Request (" + query.getRequestId() + ") rollback interrupted after commit interruption");
                 complete(new Query().ack("0").errorCode("INTERNAL-ERROR with transaction handling"));
             }
+        } finally {
+            semaphore.release();
         }
     }
 

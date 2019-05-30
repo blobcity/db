@@ -20,12 +20,15 @@ import com.blobcity.db.cluster.ClusterNodesStore;
 import com.blobcity.db.cluster.messaging.ClusterMessaging;
 import com.blobcity.db.cluster.nodes.ProximityNodesStore;
 import com.blobcity.db.exceptions.ErrorCode;
+import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.master.aggregators.Aggregator;
 import com.blobcity.lib.database.bean.manager.factory.BeanConfigFactory;
 import com.blobcity.lib.query.Query;
 import com.blobcity.lib.query.QueryParams;
 import com.blobcity.pom.database.engine.factory.EngineBeanConfig;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +39,8 @@ import java.util.concurrent.TimeUnit;
  * @author sanketsarang
  */
 public abstract class AbstractReadMaster implements MasterExecutable {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractReadMaster.class);
 
     protected final Query query;
     protected final ApplicationContext applicationContext;
@@ -74,11 +79,11 @@ public abstract class AbstractReadMaster implements MasterExecutable {
             if(acquired) {
                 semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
             } else {
-                System.out.println("SELECT timed out");
+                logger.warn("Request (" + query.getRequestId() + ") timed out while waiting for read to finish. Consider increasing READ_OP_TIMEOUT. Current value is: " + LicenseRules.READ_OP_TIMEOUT + " seconds");
                 rollback();
             }
         } catch (InterruptedException e) {
-            System.out.println("SELECT interrupted");
+            logger.warn("Request (" + query.getRequestId() + ") interrupted while waiting for read to finish");
             rollback();
         }
     }
@@ -125,8 +130,6 @@ public abstract class AbstractReadMaster implements MasterExecutable {
                     produceResponse();
                 }
                 break;
-            default:
-                System.out.println("Select responded with: " + query.getQueryType().getQueryCode());
         }
     }
 
