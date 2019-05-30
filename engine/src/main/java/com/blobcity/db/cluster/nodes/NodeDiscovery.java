@@ -106,7 +106,7 @@ public class NodeDiscovery {
         try {
             socket.send(packet);
         } catch (IOException ex) {
-            logger.error("Node discovery service for clustering is cancelled", ex);
+            logger.warn("Node discovery service for clustering is cancelled. You need to manually add nodes");
             broadcastBeacon = false;
         }
     }
