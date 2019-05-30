@@ -22,7 +22,7 @@
 # The Java implementation to use. This is required.
 #export JAVA_HOME=
 
-VERSION="1.7.7-alpha"
+VERSION="1.7.8-alpha"
 JAVA=""
 if [ "$JAVA_HOME" != "" ]; then
   JAVA=$JAVA_HOME/bin/java
