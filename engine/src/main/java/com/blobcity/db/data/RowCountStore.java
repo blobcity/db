@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.Operation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -51,21 +52,15 @@ public class RowCountStore {
     public long getRowCount(final String app, final String table) throws OperationException {
         final String mapKey = getKey(app, table);
 
-        /* Cache count value if not already cached */
-        if (!map.containsKey(mapKey)) {
-            loadCount(app, table);
-        }
+        map.computeIfAbsent(mapKey, k -> {
+            try {
+                return new AtomicCounter(getCount(app, table));
+            } catch(OperationException ex) {
+                return new AtomicCounter(0);
+            }
+        });
 
-        AtomicCounter counter = map.get(mapKey);
-        try {
-            counter.getSemaphore().acquireReadLock();
-            return counter.getValue();
-        } catch (InterruptedException ex) {
-            LoggerFactory.getLogger(RowCountStore.class.getName()).error(null, ex);
-            throw new OperationException(ErrorCode.COLLECTION_ROW_COUNT_ERROR);
-        } finally {
-            counter.getSemaphore().releaseReadLock();
-        }
+        return map.get(mapKey).getValue();
     }
 
     /**
@@ -79,19 +74,19 @@ public class RowCountStore {
     public void incrementRowCount(final String app, final String table) throws OperationException {
         final String mapKey = getKey(app, table);
 
-        /* Cache count value if not already cached */
-        if (!map.containsKey(mapKey)) {
-            loadCount(app, table);
-        }
+        map.computeIfAbsent(mapKey, k -> {
+            try {
+                return new AtomicCounter(getCount(app, table));
+            } catch(OperationException ex) {
+                return new AtomicCounter(0);
+            }
+        });
 
         AtomicCounter counter = map.get(mapKey);
+        counter.getSemaphore().acquireWriteLock();
         try {
-            counter.getSemaphore().acquireWriteLock();
             final long newValue = counter.incrementAndGet();
             rowCountManager.writeCount(app, table, newValue);
-        } catch (InterruptedException ex) {
-            LoggerFactory.getLogger(RowCountStore.class.getName()).error(null, ex);
-            throw new OperationException(ErrorCode.COLLECTION_ROW_COUNT_ERROR);
         } finally {
             counter.getSemaphore().releaseWriteLock();
         }
@@ -108,19 +103,19 @@ public class RowCountStore {
     public void decrementRowCount(final String app, final String table) throws OperationException {
         final String mapKey = getKey(app, table);
 
-        /* Cache count value if not already cached */
-        if (!map.containsKey(mapKey)) {
-            loadCount(app, table);
-        }
+        map.computeIfAbsent(mapKey, k -> {
+            try {
+                return new AtomicCounter(getCount(app, table));
+            } catch(OperationException ex) {
+                return new AtomicCounter(0);
+            }
+        });
 
         AtomicCounter counter = map.get(mapKey);
+        counter.getSemaphore().acquireWriteLock();
         try {
-            counter.getSemaphore().acquireWriteLock();
             final long newValue = counter.decrementAndGet();
             rowCountManager.writeCount(app, table, newValue);
-        } catch (InterruptedException ex) {
-            LoggerFactory.getLogger(RowCountStore.class.getName()).error(null, ex);
-            throw new OperationException(ErrorCode.COLLECTION_ROW_COUNT_ERROR);
         } finally {
             counter.getSemaphore().releaseWriteLock();
         }
@@ -152,5 +147,9 @@ public class RowCountStore {
         final AtomicCounter counter = new AtomicCounter(count);
         final String mapKey = getKey(app, table);
         map.put(mapKey, counter);
+    }
+
+    private long getCount(final String app, final String table) throws OperationException {
+        return rowCountManager.readCount(app, table);
     }
 }

@@ -282,9 +282,15 @@ public class RequestHandlingBean {
             Future<Query> futureResponse = MasterExecutorService.getInstance().submit(masterExecutable);
 
             Query response = futureResponse.get();
+            if(response == null) {
+                logger.warn("Request (" + query.getRequestId() + ") failed with unknown cause");
+                masterExecutable.rollback();
+                return new Query().ackFailure();
+            }
             logger.info("Response for requestId: {}, response: {}", query.getRequestId(), response.toJsonString());
             return response;
         } catch (InterruptedException | ExecutionException e) {
+            logger.warn("Request (" + query.getRequestId() + ") failed on an internal exception");
             masterExecutable.rollback();
             return new Query().ackFailure();
         } finally {

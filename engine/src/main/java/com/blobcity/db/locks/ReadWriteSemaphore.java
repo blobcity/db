@@ -32,6 +32,7 @@ public final class ReadWriteSemaphore {
     private final Semaphore semaphore;
     private final int readPermits;
     private LockType lockType;
+    private long lastOperatedAt = System.currentTimeMillis();
 
     /**
      * Construct used to consider the semaphore with the permitted read concurrency or in other words with the number of
@@ -58,7 +59,7 @@ public final class ReadWriteSemaphore {
      * <code>NONE</code> state is marked by the availability of all permits and a read or write lock can be immediately
      * acquired on the semaphore.</p>
      *
-     * @return the current {@link LockTyoe} status of the semaphore
+     * @return the current {@link LockType} status of the semaphore
      */
     public LockType getLockType() {
         if (semaphore.availablePermits() == readPermits) {
@@ -100,12 +101,13 @@ public final class ReadWriteSemaphore {
      * {@link LockType} property of this class may result in having an inconsistent value.</p>
      *
      * <p>
-     * This function is a blocking call until a read lock is acquired or an {@link InterruptedExeception} is thrown</p>
+     * This function is a blocking call until a read lock is acquired
+     * </p>
      *
-     * @throws InterruptedException if an interrupt event occurs while waiting for a single acquire on the semaphore.
      */
-    public void acquireReadLock() throws InterruptedException {
-        semaphore.acquire();
+    public void acquireReadLock() {
+        lastOperatedAt = System.currentTimeMillis();
+        semaphore.acquireUninterruptibly();
         lockType = LockType.READ;
     }
 
@@ -113,8 +115,9 @@ public final class ReadWriteSemaphore {
      * Lock blocks the item from being available for writing by anyone other than the lock holder. Others may still read
      * the current value of the item
      */
-    public void acquireWriteLock() throws InterruptedException {
-        semaphore.acquire(readPermits);
+    public void acquireWriteLock() {
+        lastOperatedAt = System.currentTimeMillis();
+        semaphore.acquireUninterruptibly(readPermits);
         lockType = LockType.WRITE;
     }
 
@@ -125,6 +128,7 @@ public final class ReadWriteSemaphore {
      * maximum read permits.
      */
     public void releaseReadLock() {
+        lastOperatedAt = System.currentTimeMillis();
         if (lockType == LockType.READ && semaphore.availablePermits() < readPermits) {
             semaphore.release();
         }
@@ -135,8 +139,18 @@ public final class ReadWriteSemaphore {
      * <code>WRITE</code> and if the currently available permits are not zero.
      */
     public void releaseWriteLock() {
+        lastOperatedAt = System.currentTimeMillis();
         if (lockType == LockType.WRITE && semaphore.availablePermits() == 0) {
             semaphore.release(readPermits);
         }
+    }
+
+    /**
+     * Gets the time at which this Semaphore was last operated at. Only lock and release operations affect the
+     * lastOperatedAt time reported by this function
+     * @return the lastOperatedAt time in milli-seconds from epoch
+     */
+    public long getLastOperatedAt() {
+        return this.lastOperatedAt;
     }
 }

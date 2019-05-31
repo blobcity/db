@@ -16,21 +16,22 @@
 
 package com.blobcity.db.locks;
 
-import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author sanketsarang
  */
+
 @Component
 public class TransactionLocking {
 
     /* Keyed on {appId}-{table}-{pk} */
-    private final Map<String, ReadWriteSemaphore> map = new HashMap<>();
+    private final Map<String, ReadWriteSemaphore> map = new ConcurrentHashMap<>();
 
     public boolean isLocked(String app, String table, String pk) {
         return map.containsKey(generateKey(app, table, pk));
@@ -38,35 +39,49 @@ public class TransactionLocking {
 
     public LockType getLockType(String app, String table, String pk) {
         final String key = generateKey(app, table, pk);
-        if (map.containsKey(key)) {
-            return map.get(key).getLockType();
-        }
-        return LockType.NONE;
+        ReadWriteSemaphore rwSemaphore = map.get(key);
+        return rwSemaphore == null ? LockType.NONE : rwSemaphore.getLockType();
+
     }
 
-//    @Lock(javax.ejb.LockType.WRITE)
-    public String acquireLock(String app, String table, String pk, LockType lockType) throws OperationException, InterruptedException {
+    public void acquireLock(String app, String table, String pk, LockType lockType) {
         final String key = generateKey(app, table, pk);
-        ReadWriteSemaphore readWriteSemaphore;
 
         switch (lockType) {
             case READ:
-                readWriteSemaphore = new ReadWriteSemaphore(1);
-                map.put(key, readWriteSemaphore);
-                readWriteSemaphore.acquireReadLock();
-                return key;
+                map.compute(key, (k, value)-> {
+                    if(value == null) {
+                        return new ReadWriteSemaphore(1);
+                    }
+                   return value;
+                });
+                map.get(key).acquireReadLock();
             case WRITE:
-                readWriteSemaphore = new ReadWriteSemaphore(1);
-                map.put(key, readWriteSemaphore);
-                readWriteSemaphore.acquireWriteLock();
-                return key;
-            default:
-                throw new OperationException(ErrorCode.LOCKING_ERROR, "Lock type can only be one of READ, WRITE");
+                map.compute(key, (k, value)-> {
+                    if(value == null) {
+                        return new ReadWriteSemaphore(1);
+                    }
+                    return value;
+                });
+                map.get(key).acquireWriteLock();
         }
     }
 
-    public String releaseLock(String app, String table, String pk, LockType lockType) throws OperationException {
-        throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Method releaseLock(...) inside TransactionLocking not yet implemeneted.");
+    public void releaseLock(String app, String table, String pk, LockType lockType) {
+        final String key = generateKey(app, table, pk);
+        ReadWriteSemaphore rwSemaphore = map.get(key);
+        if(rwSemaphore == null) {
+            return;
+        }
+
+        switch(lockType) {
+            case READ:
+                rwSemaphore.releaseReadLock();
+                break;
+            case WRITE:
+                rwSemaphore.releaseWriteLock();
+                break;
+        }
     }
 
     private String generateKey(String app, String table, String pk) {
@@ -76,5 +91,14 @@ public class TransactionLocking {
         sb.append("-");
         sb.append(pk);
         return sb.toString();
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    private void cleanUp() {
+        final long removeBefore = System.currentTimeMillis() - 30000; //30 seconds
+        map.entrySet().removeIf(key -> {
+            ReadWriteSemaphore rws = map.get(key);
+            return rws.getLockType() == LockType.NONE && rws.getLastOperatedAt() < removeBefore;
+        });
     }
 }

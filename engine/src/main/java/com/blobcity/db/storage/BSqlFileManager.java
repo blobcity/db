@@ -22,6 +22,8 @@ import com.blobcity.db.exceptions.DbRuntimeException;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.license.LicenseRules;
+import com.blobcity.db.locks.LockType;
+import com.blobcity.db.locks.TransactionLocking;
 import com.blobcity.db.sql.util.PathUtil;
 import com.blobcity.db.util.FileNameEncoding;
 import java.io.BufferedReader;
@@ -41,6 +43,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 import com.blobcity.util.lambda.Counter;
@@ -48,6 +52,7 @@ import com.google.common.collect.Iterators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -66,6 +71,8 @@ public class BSqlFileManager {
     private DataCache dataCache;
     @Autowired
     private CacheRules cacheRules;
+    @Autowired
+    private TransactionLocking transactionLocking;
 
     /**
      * <p>
@@ -87,15 +94,20 @@ public class BSqlFileManager {
             }
         }
 
-        Path path = Paths.get(PathUtil.dataFile(app, table, key));
+        transactionLocking.acquireLock(app, table, key, LockType.READ);
         try {
-            result = new String(Files.readAllBytes(path), "UTF-8");
-            if (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table)) {
-                dataCache.cache(app, table, key, result);
+            Path path = Paths.get(PathUtil.dataFile(app, table, key));
+            try {
+                result = new String(Files.readAllBytes(path), "UTF-8");
+                if (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table)) {
+                    dataCache.cache(app, table, key, result);
+                }
+                return result;
+            } catch (IOException e) {
+                throw new OperationException(ErrorCode.PRIMARY_KEY_INEXISTENT, "A record with the given primary key: " + key + " could not be found in table: " + table);
             }
-            return result;
-        } catch (IOException e) {
-            throw new OperationException(ErrorCode.PRIMARY_KEY_INEXISTENT, "A record with the given primary key: " + key + " could not be found in table: " + table);
+        } finally {
+            transactionLocking.releaseLock(app, table, key, LockType.READ);
         }
 
         /* Old and stable implementation. Was not working for special characters */
@@ -285,18 +297,23 @@ public class BSqlFileManager {
      * @param key The row mapped to the key to delete
      */
     public void remove(final String app, final String table, String key) throws OperationException {
-        Path path = Paths.get(PathUtil.dataFile(app, table, key));
-        if (!Files.exists(path)) {
-            throw new OperationException(ErrorCode.PRIMARY_KEY_INEXISTENT, "A record with the given primary key: " + key + " could not be found in table: " + table);
-        }
+        transactionLocking.acquireLock(app, table, key, LockType.WRITE);
         try {
-            if (Files.deleteIfExists(path) && LicenseRules.DATA_CACHING) {
-                dataCache.invalidate(app, table, key);
+            Path path = Paths.get(PathUtil.dataFile(app, table, key));
+            if (!Files.exists(path)) {
+                throw new OperationException(ErrorCode.PRIMARY_KEY_INEXISTENT, "A record with the given primary key: " + key + " could not be found in table: " + table);
             }
-        } catch (IOException ex) {
+            try {
+                if (Files.deleteIfExists(path) && LicenseRules.DATA_CACHING) {
+                    dataCache.invalidate(app, table, key);
+                }
+            } catch (IOException ex) {
 
-            //TODO: Notify admin
-            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occured. Could not delete record in table: " + table);
+                //TODO: Notify admin
+                throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occured. Could not delete record in table: " + table);
+            }
+        } finally {
+            transactionLocking.releaseLock(app, table, key, LockType.WRITE);
         }
     }
 
@@ -310,32 +327,42 @@ public class BSqlFileManager {
      * @throws com.blobcity.db.exceptions.OperationException
      */
     public void save(final String app, final String table, final String key, final String jsonString) throws OperationException {
-        Path path = Paths.get(PathUtil.dataFile(app, table, key));
+        transactionLocking.acquireLock(app, table, key, LockType.WRITE);
         try {
-            Files.write(path, jsonString.getBytes("UTF-8"));
-            if (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table)) {
-                dataCache.cache(app, table, key, jsonString);
-            }
-        } catch (IOException ex) {
+            Path path = Paths.get(PathUtil.dataFile(app, table, key));
+            try {
+                Files.write(path, jsonString.getBytes("UTF-8"));
+                if (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table)) {
+                    dataCache.cache(app, table, key, jsonString);
+                }
+            } catch (IOException ex) {
 
-            //TODO: Notify admin
-            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occured. Could not commit save operation to file system for table: " + table);
+                //TODO: Notify admin
+                throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occured. Could not commit save operation to file system for table: " + table);
+            }
+        } finally {
+            transactionLocking.releaseLock(app, table, key, LockType.WRITE);
         }
     }
 
     public void insert(final String app, final String table, final String key, final String jsonString) throws OperationException {
-        Path path = Paths.get(PathUtil.dataFile(app, table, key));
-        if (Files.exists(path)) {
-            throw new OperationException(ErrorCode.PRIMARY_KEY_CONFLICT, "A record with the given primary key: " + key + " already isPresent in table: " + table);
-        }
+        transactionLocking.acquireLock(app, table, key, LockType.WRITE);
         try {
-            Files.write(path, jsonString.getBytes("UTF-8"));
-            if (LicenseRules.DATA_CACHING && LicenseRules.CACHE_INSERTS && cacheRules.shouldCache(app, table))  {
-                dataCache.cache(app, table, key, jsonString);
+            Path path = Paths.get(PathUtil.dataFile(app, table, key));
+            if (Files.exists(path)) {
+                throw new OperationException(ErrorCode.PRIMARY_KEY_CONFLICT, "A record with the given primary key: " + key + " already isPresent in table: " + table);
             }
-        } catch (IOException ex) {
-            //TODO: Notify admin
-            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occured. Could not commit insert operation to file system for table: " + table);
+            try {
+                Files.write(path, jsonString.getBytes("UTF-8"));
+                if (LicenseRules.DATA_CACHING && LicenseRules.CACHE_INSERTS && cacheRules.shouldCache(app, table)) {
+                    dataCache.cache(app, table, key, jsonString);
+                }
+            } catch (IOException ex) {
+                //TODO: Notify admin
+                throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "An internal operation error occured. Could not commit insert operation to file system for table: " + table);
+            }
+        } finally {
+          transactionLocking.releaseLock(app, table, key, LockType.WRITE);
         }
     }
 
