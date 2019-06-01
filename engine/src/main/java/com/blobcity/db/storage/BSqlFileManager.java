@@ -87,13 +87,12 @@ public class BSqlFileManager {
      */
     public String select(final String app, final String table, final String key) throws OperationException {
         String result = null;
-        if (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table)) {
+        if (app.equals(".systemdb") || (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table))) {
             result = dataCache.load(app, table, key);
             if (result != null) {
                 return result;
             }
         }
-
         transactionLocking.acquireLock(app, table, key, LockType.READ);
         try {
             Path path = Paths.get(PathUtil.dataFile(app, table, key));
@@ -332,7 +331,7 @@ public class BSqlFileManager {
             Path path = Paths.get(PathUtil.dataFile(app, table, key));
             try {
                 Files.write(path, jsonString.getBytes("UTF-8"));
-                if (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table)) {
+                if (app.equals(".systemdb") || (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table))) {
                     dataCache.cache(app, table, key, jsonString);
                 }
             } catch (IOException ex) {
@@ -354,7 +353,7 @@ public class BSqlFileManager {
             }
             try {
                 Files.write(path, jsonString.getBytes("UTF-8"));
-                if (LicenseRules.DATA_CACHING && LicenseRules.CACHE_INSERTS && cacheRules.shouldCache(app, table)) {
+                if (app.equals(".systemdb") || (LicenseRules.DATA_CACHING && LicenseRules.CACHE_INSERTS && cacheRules.shouldCache(app, table))) {
                     dataCache.cache(app, table, key, jsonString);
                 }
             } catch (IOException ex) {
@@ -380,7 +379,7 @@ public class BSqlFileManager {
             if (file.renameTo(newFile)) {
                 
                 /* Update cache */
-                if (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table)) {
+                if (app.equals(".systemdb") || (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table))) {
                     String cachedValue = dataCache.load(app, table, existingKey);
                     dataCache.invalidate(app, table, existingKey);
                     dataCache.cache(app, table, newKey, cachedValue);

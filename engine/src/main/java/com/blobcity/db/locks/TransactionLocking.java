@@ -17,6 +17,8 @@
 package com.blobcity.db.locks;
 
 import com.blobcity.db.exceptions.OperationException;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -56,6 +58,7 @@ public class TransactionLocking {
                    return value;
                 });
                 map.get(key).acquireReadLock();
+                break;
             case WRITE:
                 map.compute(key, (k, value)-> {
                     if(value == null) {
@@ -64,6 +67,7 @@ public class TransactionLocking {
                     return value;
                 });
                 map.get(key).acquireWriteLock();
+                break;
         }
     }
 
@@ -96,9 +100,6 @@ public class TransactionLocking {
     @Scheduled(cron = "0 * * * * *")
     private void cleanUp() {
         final long removeBefore = System.currentTimeMillis() - 30000; //30 seconds
-        map.entrySet().removeIf(key -> {
-            ReadWriteSemaphore rws = map.get(key);
-            return rws.getLockType() == LockType.NONE && rws.getLastOperatedAt() < removeBefore;
-        });
+        map.entrySet().removeIf(item -> item.getValue().getLockType() == LockType.NONE && item.getValue().getLastOperatedAt() < removeBefore);
     }
 }
