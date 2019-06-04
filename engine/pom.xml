@@ -624,7 +624,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency>
             <groupId>com.google.oauth-client</groupId>
             <artifactId>google-oauth-client-jetty</artifactId>
-            <version>LATEST</version>
+            <version>1.29.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.oauth-client</groupId>
