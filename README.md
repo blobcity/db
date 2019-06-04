@@ -15,20 +15,56 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 <a href="https://www.gartner.com/doc/3288923"><img src="https://blobcity.com/assets/img/Gartner-CoolVendor-2016.jpg" height="80"/></a>
 <a href="https://hub.docker.com/_/blobcity-db"><img src="https://blobcity.com/assets/img/Docker_Container_white_icon%202@2x.png" height="80"/></a>
 
-<table>
-   <tr style="border: 0px;">
-      <td style="width: 40%"><a href="https://startup.netapp.in"><img src="https://www.blobcity.com/assets/img/netapp-excellerator.png" style=" width: 350px;margin: -10px;"/></a></td>
-      <td style="width: 60%">BlobCity is a proud graduate from Cohort #2 of the NetApp Excellerator. We were closed source until the Excellerator happened.</td>
-   </tr>
-</table>
+# Get Started
+<a href="http://www.blobcity.com"><img src="https://www.blobcity.com/assets/img/blobcity-favicon.png" height="50"/></a>
+&nbsp;&nbsp;
+<a href="https://docs.blobcity.com/docs/getting-started"><img src="https://www.blobcity.com/assets/img/docker.png" height="50"/></a>
+&nbsp;&nbsp;
+<a href="https://docs.blobcity.com/docs/blobcity-on-aws-marketplace"><img src="https://www.blobcity.com/assets/img/aws.png" height="50"/></a>
+&nbsp;&nbsp;
+<a href="https://docs.blobcity.com/docs/blobcity-on-digital-ocean-marketplace"><img src="https://www.blobcity.com/assets/img/do.png" height="50"/></a>
+
+### On BlobCity Cloud
+Store unlimited data for free and pay only for what you analyse. Delivers ultra high speed analytics over multi-tenant infrastructure, starting at $10/month. 
+
+[Start Now](https://blobcity.com/getstarted.html)
+
+### Using Docker
+`docker run -i -p 10111:10111 -p 10113:10113 blobcity/db`
+
+Once container is started, open a telnet connection on port `10113` to connect to over network CLI. 
+```
+nc localhost 10113
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+username>root
+password>xxxxx
+You are now inside the BlobCity DB console
+Type 'help' for assistance and 'exit' to quit
+blobcity>
+```
+
+A random auto-generated password is placed at `/mnt/data/root-pass.txt`. This file can be found within the container. It can be fetched from within the container, or by mounting this folder to an external mount point. 
+
+`docker run -i -v /my-folder:/mnt/data -p 10111:10111 -p 10113:10113 blobcity/db`
+
+The password file can now be found at `/my-folder/root-pass.txt` on your computer. 
+
+# Acceleration
+BlobCity is a winner of Economic Times Power of Ideas (Season 2), is funded by CIIE IIM-Ahmedabad and is a graduate from NetApp Excellerator (Cohort #2). 
+
+<a href="https://ciie.co"><img src="https://www.blobcity.com/assets/img/ciie-logo.png" height="60"/></a>
+&nbsp;&nbsp;
+<a href="https://startup.netapp.in"><img src="https://www.blobcity.com/assets/img/netapp-excellerator.png" height="60"/></a>
 
 # Docs
 
-Full technical docs for using BlobCity can be found at [https://docs.blobcity.com](https://docs.blobcity.com)
+[https://docs.blobcity.com](https://docs.blobcity.com)
 
 # Contribute
 
-Your contributions are welcome. [Join our Slack community](https://slack.blobcity.com) and request to become a contributor.
+[Join our Slack community](https://slack.blobcity.com) and request to become a contributor. We encourage your contributions :)
 
 # Authors
 BlobCity DB was created by [Sanket Sarang](https://www.linkedin.com/in/sanketsarang/) along with notable contributions from [Akshay Dewan](https://www.linkedin.com/in/akshay-dewan-0a972b21) and [Karun Japhet](https://www.linkedin.com/in/karunjaphet), amongst others. BlobCity DB is sponsored by [BlobCity, Inc.](https://www.blobcity.com).
