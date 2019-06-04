@@ -20,7 +20,7 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 &nbsp;&nbsp;
 <a href="https://docs.blobcity.com/docs/getting-started"><img src="https://www.blobcity.com/assets/img/docker.png" height="50"/></a>
 &nbsp;&nbsp;
-<a href="https://docs.blobcity.com/docs/blobcity-on-aws-marketplace"><img src="https://www.blobcity.com/assets/img/aws.png" height="50"/></a>
+<a href="https://docs.blobcity.com/docs/blobcity-on-aws-marketplace"><img src="https://blobcity.com/assets/img/aws.png" height="50"/></a>
 &nbsp;&nbsp;
 <a href="https://docs.blobcity.com/docs/blobcity-on-digital-ocean-marketplace"><img src="https://www.blobcity.com/assets/img/do.png" height="50"/></a>
 
