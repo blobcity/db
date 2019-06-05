@@ -33,7 +33,7 @@ Store unlimited data for free and pay only for what you analyse. Delivers ultra 
 `docker run -i -p 10111:10111 -p 10113:10113 blobcity/db`
 
 Once container is started, open a telnet connection on port `10113` to connect to over network CLI. 
-```
+```shell
 nc localhost 10113
 Trying 127.0.0.1...
 Connected to localhost.
@@ -49,7 +49,45 @@ A random auto-generated password is placed at `/mnt/data/root-pass.txt`. This fi
 
 `docker run -i -v /my-folder:/mnt/data -p 10111:10111 -p 10113:10113 blobcity/db`
 
-The password file can now be found at `/my-folder/root-pass.txt` on your computer. 
+The password file can now be found at `/my-folder/root-pass.txt` on your computer.
+
+### Using Binary Distribution
+*Supported only on Unix & MacOS distributions*
+
+Download latest tar.gz archive from the [releases](https://github.com/blobcity/db/releases).
+
+Decompress the download file, then run `blobcity.sh` from inside the `bin` folder.
+
+```shell
+user>tar -xvf blobcity-db-x.x.x.tar.gz
+user>cd blobcity-db-x.x.x/bin
+user>sh ./blobcity.sh
+```
+
+`JAVA_HOME` must be set to a JDK / JRE version 8 or higher for the DB to be booted. 
+
+The database will create a folder called `data` at `blobcity-db-x.x.x/data`. The randomly generated `root` user password can be found inside a text file at `blobcity-db-x.x.x/data/root-pass.txt`. 
+
+Use this password to connect to the CLI console to start using the DB. It is recommended that the `data` folder be stored at a difference location than the boot volume, and the volume be XFS formatted. 
+
+The location of the data folder can be set by editing the `blobcity.sh` file and uncommenting the following line and setting a folder path of your choice.
+
+```sh
+#export BLOBCITY_DATA=
+```
+
+Look at some of the [best practices](https://docs.blobcity.com/docs/disk-storage-performance-considerations) for optimal disk storage performance. 
+
+# Features
+* **Full SQL:** Run SQL queries over REST, ODBC & JDBC connectivity
+* **DataLake:** On-disk storage engine optimised for DataLake scale with low latency query response
+* **DML Support:** Designed like a DataLake, but works like a database. Full support for `UPDATE` & `DELETE` queries
+* **Realtime:** HIgh speed in-memory storage optimised for real-time analytics
+* **17 Data Formats:** Stores 17 formats of data such as JSON, XML, PDF, Excel, Word amongst others for collective analytics
+* **ACID:** Full ACID compliant transactions on individual records
+* **Stored Procedures:** Run Java & Scala code within the database for complex operations on data without moving the data out of the database
+* **Fine-grained Access Control:** Control data access across users and departments, with column level control on user access
+* **On-Cloud:** Fully managed virtually infinte scale, multi-tenant cloud with unlimited free storae and pay only for what you analyse
 
 # Acceleration
 BlobCity is a winner of Economic Times Power of Ideas (Season 2), is funded by CIIE IIM-Ahmedabad and is a graduate from NetApp Excellerator (Cohort #2). 
