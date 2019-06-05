@@ -8,7 +8,7 @@
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:support@blobcity.com)
 [![Slack](https://slack.blobcity.com/badge.svg)](https://slack.blobcity.com)
 
-<a href="https://attendee.gotowebinar.com/register/7385597024440397835"><img src="https://www.blobcity.com/assets/img/webinar-banner.png" height="30"/></a>
+<a href="https://attendee.gotowebinar.com/register/7385597024440397835"><img src="https://www.blobcity.com/assets/img/webinar-banner.png" height="26"/></a>
 
 # Description
 
