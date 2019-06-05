@@ -15,6 +15,61 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 <a href="https://www.gartner.com/doc/3288923"><img src="https://blobcity.com/assets/img/Gartner-CoolVendor-2016.jpg" height="80"/></a>
 <a href="https://hub.docker.com/_/blobcity-db"><img src="https://blobcity.com/assets/img/Docker_Container_white_icon%202@2x.png" height="80"/></a>
 
+# Features
+* **Full SQL:** Run SQL queries over REST, ODBC & JDBC connectivity
+* **DataLake:** On-disk storage engine optimised for DataLake scale with low latency query response
+* **DML Support:** Designed like a DataLake, but works like a database. Full support for `UPDATE` & `DELETE` queries
+* **Realtime:** HIgh speed in-memory storage optimised for real-time analytics
+* **17 Data Formats:** Stores 17 formats of data such as JSON, XML, PDF, Excel, Word amongst others for collective analytics
+* **ACID:** Full ACID compliant transactions on individual records
+* **Stored Procedures:** Run Java & Scala code within the database for complex operations on data without moving the data out of the database
+* **Fine-grained Access Control:** Control data access across users and departments, with column level control on user access
+* **On-Cloud:** Fully managed virtually infinte scale, multi-tenant cloud with unlimited free storae and pay only for what you analyse
+
+# Multi-Model
+
+Push variety of data into a single collection within BlobCity, and get back a standardised response.
+
+```shell
+user$ nc localhost 10113
+username>root
+password>9a371c6445
+You are now inside the BlobCity DB console
+Type 'help' for assistance and 'exit' to quit
+blobcity>create-ds test
+Datastore successfully created
+blobcity>create-collection test.test
+Collection successfully created
+
+blobcity>insert into test.test JSON
+In insert mode. Type 1 JSON per line and press enter to insert
+{"col1": 1, "col2": 2}
+Inserted
+exit
+Exited insert mode
+
+blobcity>insert into test.test XML
+In insert mode. Type 1 XML per line and press enter to insert
+<col1>3</col1><col2>4</col2>
+Inserted
+exit
+Exited insert mode
+
+blobcity>sql test: select * from test.test
+{"p":[{"_id":"5cb30531-dde1-493c-9c67-86b5f4dce36c","col2":2,"col1":1},{"_id":"57f653e3-de68-4591-9563-af9ad66af56b","col2":4,"col1":3}],"time(ms)":2,"ack":"1","rows":2}
+
+blobcity>sql test: select col1 from test.test
+{"p":[{"col1":"1"},{"col1":"3"}],"time(ms)":18,"ack":"1","rows":2}
+
+blobcity>set-column-type test.test col1 integer 
+Column type successfully updated in schema
+
+blobcity>sql test: select SUM(col1) from test.test
+{"p":[{"SUM(col1)":4}],"time(ms)":27,"ack":"1","rows":1}
+```
+
+The above example shows inserting both JSON and XML recoreds into the same collection. The DB seamlessly creates columns and merges the columns to allow querying of both records using SQL. 
+
 # Get Started
 <a href="http://www.blobcity.com"><img src="https://www.blobcity.com/assets/img/blobcity-favicon.png" height="50"/></a>
 &nbsp;&nbsp;
@@ -77,17 +132,6 @@ The location of the data folder can be set by editing the `blobcity.sh` file and
 ```
 
 Look at some of the [best practices](https://docs.blobcity.com/docs/disk-storage-performance-considerations) for optimal disk storage performance. 
-
-# Features
-* **Full SQL:** Run SQL queries over REST, ODBC & JDBC connectivity
-* **DataLake:** On-disk storage engine optimised for DataLake scale with low latency query response
-* **DML Support:** Designed like a DataLake, but works like a database. Full support for `UPDATE` & `DELETE` queries
-* **Realtime:** HIgh speed in-memory storage optimised for real-time analytics
-* **17 Data Formats:** Stores 17 formats of data such as JSON, XML, PDF, Excel, Word amongst others for collective analytics
-* **ACID:** Full ACID compliant transactions on individual records
-* **Stored Procedures:** Run Java & Scala code within the database for complex operations on data without moving the data out of the database
-* **Fine-grained Access Control:** Control data access across users and departments, with column level control on user access
-* **On-Cloud:** Fully managed virtually infinte scale, multi-tenant cloud with unlimited free storae and pay only for what you analyse
 
 # Acceleration
 BlobCity is a winner of Economic Times Power of Ideas (Season 2), is funded by CIIE IIM-Ahmedabad and is a graduate from NetApp Excellerator (Cohort #2). 
