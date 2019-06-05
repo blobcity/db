@@ -15,18 +15,23 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 <a href="https://www.gartner.com/doc/3288923"><img src="https://blobcity.com/assets/img/Gartner-CoolVendor-2016.jpg" height="80"/></a>
 <a href="https://hub.docker.com/_/blobcity-db"><img src="https://blobcity.com/assets/img/Docker_Container_white_icon%202@2x.png" height="80"/></a>
 
-# Features
-* **Full SQL:** Run SQL queries over REST, ODBC & JDBC connectivity
-* **DataLake:** On-disk storage engine optimised for DataLake scale with low latency query response
-* **DML Support:** Designed like a DataLake, but works like a database. Full support for `UPDATE` & `DELETE` queries
-* **Realtime:** HIgh speed in-memory storage optimised for real-time analytics
-* **17 Data Formats:** Stores 17 formats of data such as JSON, XML, PDF, Excel, Word amongst others for collective analytics
-* **ACID:** Full ACID compliant transactions on individual records
-* **Stored Procedures:** Run Java & Scala code within the database for complex operations on data without moving the data out of the database
-* **Fine-grained Access Control:** Control data access across users and departments, with column level control on user access
-* **On-Cloud:** Fully managed virtually infinte scale, multi-tenant cloud with unlimited free storae and pay only for what you analyse
-
 # Multi-Model
+
+**JSON Record**
+```JSON
+{"col1": 1, "col2": 2}
+```
+
+**XML Record**
+```XML
+<col1>3</col1></col2>4</col2>
+```
+**When inserted stores as**
+
+| col1 | col2 |
+|:----:|:----:|
+|   1  |   2  |
+|   3  |   4  |
 
 Push variety of data into a single collection within BlobCity, and get back a standardised response.
 
@@ -69,6 +74,17 @@ blobcity>sql test: select SUM(col1) from test.test
 ```
 
 The above example shows inserting both JSON and XML recoreds into the same collection. The DB seamlessly creates columns and merges the columns to allow querying of both records using SQL. 
+
+# Features
+* **Full SQL:** Run SQL queries over REST, ODBC & JDBC connectivity
+* **DataLake:** On-disk storage engine optimised for DataLake scale with low latency query response
+* **DML Support:** Designed like a DataLake, but works like a database. Full support for `UPDATE` & `DELETE` queries
+* **Realtime:** HIgh speed in-memory storage optimised for real-time analytics
+* **17 Data Formats:** Stores 17 formats of data such as JSON, XML, PDF, Excel, Word amongst others for collective analytics
+* **ACID:** Full ACID compliant transactions on individual records
+* **Stored Procedures:** Run Java & Scala code within the database for complex operations on data without moving the data out of the database
+* **Fine-grained Access Control:** Control data access across users and departments, with column level control on user access
+* **On-Cloud:** Fully managed virtually infinte scale, multi-tenant cloud with unlimited free storae and pay only for what you analyse
 
 # Get Started
 <a href="http://www.blobcity.com"><img src="https://www.blobcity.com/assets/img/blobcity-favicon.png" height="50"/></a>
