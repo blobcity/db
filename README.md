@@ -8,6 +8,8 @@
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:support@blobcity.com)
 [![Slack](https://slack.blobcity.com/badge.svg)](https://slack.blobcity.com)
 
+[Join our next Product Demo Webinar](https://attendee.gotowebinar.com/register/7385597024440397835)
+
 # Description
 
 BlobCity DB is an All-in-One Database. It offers support for natively storing 17 different formats of data, including JSON, XML, CSV, PDF, Word, Excel, Log, GIS, Image amongst others. It run two full feature storage engines. One that stores data in memory and the other that stores data on disk. In-memeory storage offers sheer performance for real-time analytics, while the disk storage make BlobCity an excellent alternative for DataLakes.
