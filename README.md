@@ -1,5 +1,7 @@
 <a href="https://www.blobcity.com"><img src="https://blobcity.com/blobcity-logo.png" height="60"/></a>
 
+<a href="https://attendee.gotowebinar.com/register/7385597024440397835"><img src="https://www.blobcity.com/assets/img/webinar-banner-2.png" height="26"/></a>
+
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://github.com/blobcity/db/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/blobcity/db.svg?branch=master)](https://travis-ci.org/blobcity/db)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
@@ -7,8 +9,6 @@
 [![Generic badge](https://img.shields.io/badge/docs-read-blue.svg)](https://docs.blobcity.com)
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:support@blobcity.com)
 [![Slack](https://slack.blobcity.com/badge.svg)](https://slack.blobcity.com)
-
-<a href="https://attendee.gotowebinar.com/register/7385597024440397835"><img src="https://www.blobcity.com/assets/img/webinar-banner.png" height="26"/></a>
 
 # Description
 
