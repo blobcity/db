@@ -1,7 +1,5 @@
 <a href="https://www.blobcity.com"><img src="https://blobcity.com/blobcity-logo.png" height="60"/></a>
 
-<a href="https://attendee.gotowebinar.com/register/7385597024440397835"><img src="https://www.blobcity.com/assets/img/webinar-banner-2.png" height="26"/></a>
-
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://github.com/blobcity/db/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/blobcity/db.svg?branch=master)](https://travis-ci.org/blobcity/db)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
@@ -89,6 +87,8 @@ The above example shows inserting both JSON and XML recoreds into the same colle
 * **On-Cloud:** Fully managed virtually infinte scale, multi-tenant cloud with unlimited free storae and pay only for what you analyse
 
 # Get Started
+<a href="https://attendee.gotowebinar.com/register/7385597024440397835"><img src="https://www.blobcity.com/assets/img/webinar-banner-2.png" height="26"/></a>
+
 <a href="http://www.blobcity.com"><img src="https://www.blobcity.com/assets/img/blobcity-favicon.png" height="50"/></a>
 &nbsp;&nbsp;
 <a href="https://docs.blobcity.com/docs/getting-started"><img src="https://www.blobcity.com/assets/img/docker.png" height="50"/></a>
