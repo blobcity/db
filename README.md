@@ -87,8 +87,6 @@ The above example shows inserting both JSON and XML recoreds into the same colle
 * **On-Cloud:** Fully managed virtually infinte scale, multi-tenant cloud with unlimited free storae and pay only for what you analyse
 
 # Get Started
-<a href="https://attendee.gotowebinar.com/register/7385597024440397835"><img src="https://www.blobcity.com/assets/img/webinar-banner-2.png" height="26"/></a>
-
 <a href="http://www.blobcity.com"><img src="https://www.blobcity.com/assets/img/blobcity-favicon.png" height="50"/></a>
 &nbsp;&nbsp;
 <a href="https://docs.blobcity.com/docs/getting-started"><img src="https://www.blobcity.com/assets/img/docker.png" height="50"/></a>
