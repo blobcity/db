@@ -16,7 +16,7 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 <a href="https://hub.docker.com/_/blobcity-db"><img src="https://blobcity.com/assets/img/Docker_Container_white_icon%202@2x.png" height="80"/></a>
 
 # Supported Data Formats
-JSON, XML, CSV, SQL, Plaintext, PDF, Excel, Word, RTF, ZIP, Log, Powerpoint, syslog, audio files, video files, image files, GIS
+**Push data in any of these 17 formats:** JSON, XML, CSV, SQL, Plaintext, PDF, Excel, Word, RTF, ZIP, Log, Powerpoint, syslog, audio files, video files, image files, GIS
 
 [https://docs.blobcity.com/docs/using-blobcity-with-diverse-data-models](https://docs.blobcity.com/docs/using-blobcity-with-diverse-data-models)
 
