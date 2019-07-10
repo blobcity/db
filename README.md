@@ -15,7 +15,12 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 <a href="https://www.gartner.com/doc/3288923"><img src="https://blobcity.com/assets/img/Gartner-CoolVendor-2016.jpg" height="80"/></a>
 <a href="https://hub.docker.com/_/blobcity-db"><img src="https://blobcity.com/assets/img/Docker_Container_white_icon%202@2x.png" height="80"/></a>
 
-# Multi-Model
+# Supported Data Formats
+JSON, XML, CSV, SQL, Plaintext, PDF, Excel, Word, RTF, ZIP, Log, Powerpoint, syslog, audio files, video files, image files, GIS
+
+[https://docs.blobcity.com/docs/using-blobcity-with-diverse-data-models](https://docs.blobcity.com/docs/using-blobcity-with-diverse-data-models)
+
+# Multi-Model Example
 
 **JSON Record**
 ```JSON
@@ -26,7 +31,7 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 ```XML
 <col1>3</col1></col2>4</col2>
 ```
-**When inserted stores as**
+**Auto created table schema and data**
 
 | col1 | col2 |
 |:----:|:----:|
