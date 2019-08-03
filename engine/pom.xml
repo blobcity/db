@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <parent>
         <groupId>com.blobcity.pom</groupId>
         <artifactId>database</artifactId>
-        <version>1.7.8-alpha</version>
+        <version>1.7.9-alpha</version>
     </parent>
     
     <groupId>com.blobcity.lib.database</groupId>
@@ -540,6 +540,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-core</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -585,6 +589,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <groupId>commons-codec</groupId>
                     <artifactId>commons-codec</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -616,6 +624,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <exclusion>
                     <groupId>com.google.collections</groupId>
                     <artifactId>google-collections</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

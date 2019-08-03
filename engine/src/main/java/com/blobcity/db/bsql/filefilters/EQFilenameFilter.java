@@ -66,6 +66,10 @@ public class EQFilenameFilter<T extends Comparable<T>> implements OperatorFileFi
 
     @Override
     public Object getTypeConvertedReferenceValue() throws OperationException {
+        if(referenceValue instanceof Boolean) {
+            if(((Boolean) referenceValue).booleanValue()) return "true";
+            else return "false";
+        }
         return typeConverter.getValue(referenceValue.toString());
     }
 }

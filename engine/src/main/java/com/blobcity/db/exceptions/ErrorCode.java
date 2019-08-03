@@ -128,7 +128,8 @@ public enum ErrorCode {
     INVALID_WEBSERVICE_ENDPOINT("INVALID_WEBSERVICE_ENDPOINT", "No customer web-service registered at the specified endpoint"),
     CODE_LOAD_ERROR("CODE_LOAD_ERROR", "Unable to load code"),
     TABLEAU_EXCEPTION("TABLEAU_EXCEPTION", "Internal error with Tableau integration"),
-    GROUP_BY("GROUP_BY", "Error executing GROUP BY clause");
+    GROUP_BY("GROUP_BY", "Error executing GROUP BY clause"),
+    EXCEL_DATA_READ_ERR("EXCEL_DATA_READ_ERR", "Error reading data in Excel format");
     
     private final String errorCode;
     private final String errorMessage;

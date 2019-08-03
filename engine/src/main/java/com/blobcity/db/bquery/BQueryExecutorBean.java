@@ -1401,6 +1401,7 @@ public class BQueryExecutorBean implements BQueryExecutor {
                 case GTEQ:
                 case LT:
                 case LTEQ:
+                    System.out.println("The comparator: " + jsonObject.toString());
                     iterator = dataManager.selectWithPattern(datastore, selectTables.toArray()[0].toString(), jsonObject.getString("c"), jsonObject.get("v"), operator);
                     break;
                 case IN:

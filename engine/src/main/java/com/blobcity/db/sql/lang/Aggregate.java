@@ -27,62 +27,62 @@ public class Aggregate<T extends Number> {
     T total_count = (T) new Double(0.0);
     T avg = (T) new Double(0.0);
 
-    public void add(T number) {
+    public synchronized void add(T number) {
         aggregate = (T) new Double(aggregate.doubleValue() + number.doubleValue());
     }
 
-    public void addCount(T number) {
+    public synchronized void addCount(T number) {
         total_count = (T) new Double(total_count.doubleValue() + number.doubleValue());
     }
 
-    public T getCount() {
+    public synchronized T getCount() {
         System.out.println(total_count);
         return total_count;
     }
 
-    public T getAggregate() {
+    public synchronized T getAggregate() {
         return aggregate;
     }
 
-    public void setAverage() {
+    public synchronized void setAverage() {
         avg = (T) new Double(aggregate.doubleValue()/total_count.doubleValue());
     }
 
-    public T getAverage() {
+    public synchronized T getAverage() {
         return avg;
     }
 
-    public void setError() {
+    public synchronized void setError() {
         this.error = true;
     }
 
-    public boolean isError() {
+    public synchronized boolean isError() {
         return error;
     }
 
-    public void setInitialMin(T number) {
+    public synchronized void setInitialMin(T number) {
         min = number;
     }
 
-    public void findMin(T number) {
+    public synchronized void findMin(T number) {
         if (number.doubleValue()<min.doubleValue())
             min = number;
     }
 
-    public T getMin() {
+    public synchronized T getMin() {
         return min;
     }
 
-    public void setInitialMax(T number) {
+    public synchronized void setInitialMax(T number) {
         max = number;
     }
 
-    public void findMax(T number) {
+    public synchronized void findMax(T number) {
         if (number.doubleValue()>max.doubleValue())
             max = number;
     }
 
-    public T getMax() {
+    public synchronized T getMax() {
         return max;
     }
 }

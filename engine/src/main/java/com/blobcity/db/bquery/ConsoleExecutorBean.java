@@ -455,6 +455,9 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                 case "import-csv":
                     response = importCSV(elements);
                     break;
+                case "import-excel":
+                    response = importExcel(elements);
+                    break;
                 case "insert-custom":
                     response = insertCustom(elements);
                     break;
@@ -1457,6 +1460,40 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
 
         verifyDCInfo(datastore, collection);
 
+        String filePath = elements[2];
+
+        JSONObject opSpecs = new JSONObject();
+        opSpecs.put("type", "IMP");
+        opSpecs.put("import-type", "CSV");
+        opSpecs.put("file", filePath);
+
+        operationsManager.registerOperation(datastore, collection, OperationTypes.IMPORT, opSpecs);
+
+//        mapReduceOutputImporter.importCSVFile(datastore, collection, filePath);
+
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        return "Done in " + elapsedTime + " (ms)";
+    }
+
+    /**
+     * Used to import an Excel document in a specified table. Columns of the table correspond to columns of the Excel
+     * and the entry will have one record per row. Sheet name is also stored as a field per record.
+     * @param elements query elements from CLI request
+     * @return import success/fail status response in text form
+     * @throws OperationException if an error occurs while executing the oepration
+     */
+    private String importExcel(String[] elements) throws OperationException {
+        long startTime = System.currentTimeMillis();
+        final String databaseAndTable = elements[1];
+        if (!databaseAndTable.contains(".")) {
+            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database and table should be specified in format: databaseName.tableName");
+        }
+        final String datastore = databaseAndTable.substring(0, databaseAndTable.indexOf(".", 1)); //start searching dot from index 1 to handle case of .systemdb as datastore name
+        final String collection = databaseAndTable.substring(databaseAndTable.indexOf(".", 1) + 1, databaseAndTable.length());
+
+        verifyDCInfo(datastore, collection);
+
+        /* Maybe a public URL or a local file system path. NFS paths are currently not supported */
         String filePath = elements[2];
 
         JSONObject opSpecs = new JSONObject();

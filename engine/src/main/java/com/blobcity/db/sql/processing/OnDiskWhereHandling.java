@@ -98,6 +98,10 @@ public class OnDiskWhereHandling {
                     refValue = ((NumericConstantNode) rightOperand).getValue();
                 } else if (rightOperand instanceof CharConstantNode) {
                     refValue = ((CharConstantNode) rightOperand).getValue();
+                } else if (rightOperand instanceof BooleanConstantNode) {
+                    refValue = ((BooleanConstantNode) rightOperand).getBooleanValue();
+                } else if (rightOperand instanceof BitConstantNode) {
+                    refValue = ((BitConstantNode) rightOperand).getValue();
                 } else {
                     // if unknown make it CharConstantNode
                     if (tableManager.isInMemory(ds, collection)) {
