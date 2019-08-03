@@ -39,6 +39,7 @@ import com.blobcity.db.util.ConsumerUtil;
 import com.blobcity.json.JSON;
 import com.foundationdb.sql.StandardException;
 import com.foundationdb.sql.parser.*;
+import com.foundationdb.sql.types.TypeId;
 import com.foundationdb.sql.unparser.NodeToString;
 
 import java.util.*;
@@ -653,6 +654,10 @@ public class SelectExecutor {
                     refValue = ((NumericConstantNode) rightOperand).getValue();
                 } else if (rightOperand instanceof CharConstantNode) {
                     refValue = ((CharConstantNode) rightOperand).getValue();
+                } else if (rightOperand instanceof BooleanConstantNode) {
+                    refValue = ((BooleanConstantNode) rightOperand).getBooleanValue();
+                } else if (rightOperand instanceof BitConstantNode) {
+                    refValue = ((BitConstantNode) rightOperand).getValue();
                 } else {
                     // if unknown make it CharConstantNode
                     if (tableManager.isInMemory(appId, tableName)) {

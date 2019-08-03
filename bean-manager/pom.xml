@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <parent>
         <groupId>com.blobcity.pom</groupId>
         <artifactId>database</artifactId>
-        <version>1.7.8-alpha</version>
+        <version>1.7.9-alpha</version>
     </parent>
     
     <groupId>com.blobcity.lib</groupId>
@@ -63,7 +63,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <!--<version>r05</version>-->
-            <version>22.0</version>
+            <version>28.0-jre</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->

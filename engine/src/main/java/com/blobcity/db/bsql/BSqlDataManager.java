@@ -523,6 +523,9 @@ public class BSqlDataManager {
                     case DOUBLE:
                         comparableReferenceValue = new Double(referenceValue.toString());
                         break;
+                    case BOOLEAN:
+                        comparableReferenceValue = (boolean) referenceValue;
+                        break;
                     case STRING:
                     case VARCHAR:
                     case CHARACTER_LARGE_OBJECT:
