@@ -20,6 +20,7 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 [https://docs.blobcity.com/docs/using-blobcity-with-diverse-data-models](https://docs.blobcity.com/docs/using-blobcity-with-diverse-data-models)
 
 # Multi-Model Example
+<img src="http://blobcity.com/assets/img/JSON-XML.gif"/>
 
 **JSON Record**
 ```JSON
