@@ -9,7 +9,7 @@
 
 # Description
 
-BlobCity DB is an All-in-One Database. It offers support for natively storing 17 different formats of data, including JSON, XML, CSV, PDF, Word, Excel, Log, GIS, Image amongst others. It run two full feature storage engines. One that stores data in memory and the other that stores data on disk. In-memeory storage offers sheer performance for real-time analytics, while the disk storage make BlobCity an excellent alternative for DataLakes.
+BlobCity DB is an All-in-One Database. It offers support for natively storing 17 different formats of data, including JSON, XML, CSV, PDF, Word, Excel, Log, GIS, Image amongst others. It run two full feature storage engines. One that stores data in memory and the other that stores data on disk. In-memory storage offers sheer performance for real-time analytics, while the disk storage make BlobCity an excellent alternative for DataLakes.
 
 <a href="https://www.gartner.com/doc/3288923"><img src="https://blobcity.com/assets/img/Gartner-CoolVendor-2016.jpg" height="80"/></a>
 <a href="https://hub.docker.com/_/blobcity-db"><img src="https://blobcity.com/assets/img/Docker_Container_white_icon%202@2x.png" height="80"/></a>
