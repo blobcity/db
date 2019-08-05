@@ -17,8 +17,6 @@ BlobCity DB is an All-in-One Database. It offers support for natively storing 17
 # Supported Data Formats
 **Push data in any of these 17 formats:** JSON, XML, CSV, SQL, Plaintext, PDF, Excel, Word, RTF, ZIP, Log, Powerpoint, syslog, audio files, video files, image files, GIS
 
-[https://docs.blobcity.com/docs/using-blobcity-with-diverse-data-models](https://docs.blobcity.com/docs/using-blobcity-with-diverse-data-models)
-
 # Multi-Model Example
 <img src="http://blobcity.com/assets/img/JSON-XML.gif"/>
 
