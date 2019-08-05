@@ -142,6 +142,10 @@ public class DeleteExecutor {
                     refValue = ((NumericConstantNode) rightOperand).getValue();
                 } else if (rightOperand instanceof CharConstantNode) {
                     refValue = ((CharConstantNode) rightOperand).getValue();
+                } else if (rightOperand instanceof BooleanConstantNode) {
+                    refValue = ((BooleanConstantNode) rightOperand).getBooleanValue();
+                } else if (rightOperand instanceof BitConstantNode) {
+                    refValue = ((BitConstantNode) rightOperand).getValue();
                 }
 
                 logger.debug("selectKeysWithPattern({}, {}, {}, {}, {})",
