@@ -65,6 +65,19 @@ public class WebService {
     }
 
 
+    /**
+     * Accepts a POST request. The service accepts 2 variations for a POST request. One as a <code>form</code> parameter
+     * and the other as a <code>json</code> parameter. A <code>json</code> parameter is given first preference and a
+     * <code>form</code> parameter is given a second preference.
+     * @param datastore
+     * @param version
+     * @param url
+     * @param queryJson
+     * @param formJson
+     * @param formParamQuery
+     * @param formParamJson
+     * @return
+     */
     @POST
     @Produces("application/json")
     public Response handlePost(
@@ -72,11 +85,16 @@ public class WebService {
             @PathParam(value = "version") final String version,
             @PathParam(value = "url") final String url,
             @QueryParam(value = "json") final String queryJson,
-            @FormParam(value = "json") final String formJson
+            @FormParam(value = "json") final String formJson,
+            @QueryParam(value = "form") final String formParamQuery,
+            @FormParam(value = "form") final String formParamJson
     ) {
         final String wsPath = "/" + version + "/" + url;
         logger.debug("Webservice called [POST]: " + wsPath);
         JSONObject jsonRequest = queryJson != null ? new JSONObject(queryJson) : formJson != null ? new JSONObject(formJson) : new JSONObject();
+        if(jsonRequest.isEmpty()) {
+            jsonRequest = formParamQuery != null ? new JSONObject(formParamQuery) : formParamJson != null ? new JSONObject(formParamJson) : new JSONObject();
+        }
         return Response.ok().header("Access-Control-Allow-Origin", "*").entity(webServiceExecutor.executeGet(datastore, wsPath, jsonRequest).toString()).build();
     }
 }
