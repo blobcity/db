@@ -285,6 +285,9 @@ public class SelectExecutor {
                     if(selectNode.isDistinct()) {
                         keepDistinct(resultMap);
                     }
+                    if(orderByList != null) {
+                        orderResult(appId, tableName, orderByList, resultMap);
+                    }
                     return produceResult(appId, tableName, sqlString, resultMap, limit, startTime);
                 }
 

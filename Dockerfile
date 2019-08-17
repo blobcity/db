@@ -17,7 +17,7 @@
 
 FROM blobcity/java8-ubuntu
 
-ENV DB_VER=1.7.9-alpha
+ENV DB_VER=1.7.10-alpha
 
 RUN cd / && mkdir data
 
