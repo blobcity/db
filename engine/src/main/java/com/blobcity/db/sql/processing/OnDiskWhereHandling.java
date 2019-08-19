@@ -86,8 +86,12 @@ public class OnDiskWhereHandling {
                 leftOperand = binaryRelationalOperatorNode.getLeftOperand();
                 rightOperand = binaryRelationalOperatorNode.getRightOperand();
                 leftSupported = leftOperand.getNodeType() == NodeTypes.COLUMN_REFERENCE || (leftOperand instanceof ConstantNode);
-                rightSupported = rightOperand.getNodeType() == NodeTypes.COLUMN_REFERENCE || (rightOperand instanceof ConstantNode);
+                rightSupported = rightOperand.getNodeType() == NodeTypes.COLUMN_REFERENCE || (rightOperand instanceof ConstantNode) || (rightOperand instanceof CurrentDatetimeOperatorNode);
                 if (!(leftSupported && rightSupported)) {
+                    System.out.println("Left Operand");
+                    leftOperand.treePrint();
+                    System.out.println("Right Operand");
+                    rightOperand.treePrint();
                     throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED,
                             "Unsupported binary relation : " + binaryRelationalOperatorNode.toString());
                 }
@@ -102,6 +106,9 @@ public class OnDiskWhereHandling {
                     refValue = ((BooleanConstantNode) rightOperand).getBooleanValue();
                 } else if (rightOperand instanceof BitConstantNode) {
                     refValue = ((BitConstantNode) rightOperand).getValue();
+                } else if (rightOperand instanceof CurrentDatetimeOperatorNode) {
+                    //Qualifies for CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP
+                    refValue = System.currentTimeMillis();
                 } else {
                     // if unknown make it CharConstantNode
                     if (tableManager.isInMemory(ds, collection)) {
