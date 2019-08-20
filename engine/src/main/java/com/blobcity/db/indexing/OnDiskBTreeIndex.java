@@ -27,6 +27,8 @@ import com.blobcity.db.license.LicenseBean;
 import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.sql.util.PathUtil;
 import com.blobcity.db.util.FileNameEncoding;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
@@ -314,9 +316,15 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
      */
     @Override
     public void remove(String app, String table, String column, String columnValue, String pk) throws OperationException {
+        logger.trace("Removing index ds=" + app +", collection=" + table + ", column=" + column + ", columnValue=" + columnValue + ", _id=" + pk);
         Path path = Paths.get(PathUtil.indexColumnValueFolder(app, table, column, columnValue) + pk);
+        File indexColumnValueFolder = new File(PathUtil.indexColumnValueFolder(app, table, column, columnValue));
         try {
             if (Files.deleteIfExists(path)) {
+                if(indexColumnValueFolder.list().length == 0) {
+                    //delete the index folder, if no more files are present in the same
+                    indexColumnValueFolder.delete();
+                }
                 indexCountStore.decrementCount(app, table, column, columnValue, this);
                 if(LicenseRules.INDEX_CACHING) {
                     indexCache.removeEntry(app, table, column, columnValue, pk);

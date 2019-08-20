@@ -356,9 +356,9 @@ public class BSqlIndexManager {
     }
 
     public void removeIndex(final String app, final String table, final String pk, final JSONObject jsonObject) throws OperationException {
+        logger.trace("Removing index ds=" + app + ", collection=" + table + ", _id=" + pk + ", record=" + jsonObject.toString());
         Schema schema = schemaManager.readSchema(app, table);
         if (schema.isIndexingNeeded()) {
-
             schema.getColumnMap().values().parallelStream().forEach(column -> {
                 if (column.getName().equals(schema.getPrimary())) {
                     return;
@@ -369,6 +369,7 @@ public class BSqlIndexManager {
                         indexFactory.getStrategy(column.getIndexType()).remove(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
                     } catch (JSONException | OperationException ex) {
                         //do nothing
+                        logger.error("Error deleting index entry after deleting corresponding record", ex);
                     }
                 }
             });
