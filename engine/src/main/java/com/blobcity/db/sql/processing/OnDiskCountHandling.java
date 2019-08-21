@@ -112,7 +112,13 @@ public class OnDiskCountHandling {
                         + columnName + " for at least one aggregate group");
             }
 
-            final String aggregateName = aggregateNode.getAggregateName() + "(" + ((ColumnReference) aggregateNode.getOperand()).getColumnName() + ")";
+            String aggregateName;
+            if(aggregateNode.getAggregateName().equalsIgnoreCase("COUNT(*)") || aggregateNode.getAggregateName().equalsIgnoreCase("COUNT(`*`)")) {
+                aggregateName = "COUNT(*)";
+            } else {
+                aggregateName = aggregateNode.getAggregateName() + "(" + ((ColumnReference) aggregateNode.getOperand()).getColumnName() + ")";
+            }
+
             resultMap.forEach((key, records) -> {
                 final Object value = aggregateMap.get(key);
                 records.parallelStream().forEach(record -> {

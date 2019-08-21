@@ -435,7 +435,12 @@ public class SelectExecutor {
                 }
             } else if (resultColumn.getExpression() instanceof AggregateNode) {
                 AggregateNode aggNode = (AggregateNode) resultColumn.getExpression();
-                displayNames.add(aggNode.getAggregateName() + "(" + ((ColumnReference) aggNode.getOperand()).getColumnName() + ")");
+                if(aggNode.getAggregateName().equalsIgnoreCase("COUNT(*)")
+                || aggNode.getAggregateName().equalsIgnoreCase("COUNT(`*`)")) {
+                    //do nothing
+                } else {
+                    displayNames.add(aggNode.getAggregateName() + "(" + ((ColumnReference) aggNode.getOperand()).getColumnName() + ")");
+                }
             }
         }
 
