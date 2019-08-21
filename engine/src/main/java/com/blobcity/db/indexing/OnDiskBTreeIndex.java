@@ -87,33 +87,17 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
         }
 
         /* Create column value folder if it does not already exist */
-        Path path = Paths.get(PathUtil.indexColumnValueFolder(app, table, column, columnValue));
-        //TODO: This operation is possibly not thread safe
-        if (!Files.exists(path)) {
-            try {
-                Files.createDirectory(path);
-            } catch (IOException ex) {
 
-                //TODO: Notify admin
-                LoggerFactory.getLogger(OnDiskBTreeIndex.class.getName()).error(null, ex);
-                throw new OperationException(ErrorCode.INDEXING_ERROR, "The index for column: " + column + " in table: "
-                        + table + " could not be created");
-            }
-        }
+        //Operation will do nothing if a directory is already present
+        new File(PathUtil.indexColumnValueFolder(app, table, column, columnValue)).mkdir();
 
-        /* Create pk file inside column value folder */
-        path = Paths.get(PathUtil.indexColumnValueFolder(app, table, column, columnValue) + pk);
-        if (!Files.exists(path)) {
-            try {
-                Files.createFile(path);
-            } catch (IOException ex) {
-
-                //TODO: Notify admin
-                LoggerFactory.getLogger(OnDiskBTreeIndex.class.getName()).error(null, ex);
-                throw new OperationException(ErrorCode.INDEXING_ERROR, "The index for column: " + column + " in table: "
-                        + table + " could not be created for column value: " + columnValue
-                        + " mapping to a record with primary key: " + pk);
-            }
+        try {
+            new File(PathUtil.indexColumnValueFolder(app, table, column, columnValue) + pk).createNewFile();
+        } catch (IOException ex) {
+            LoggerFactory.getLogger(OnDiskBTreeIndex.class.getName()).error(null, ex);
+            throw new OperationException(ErrorCode.INDEXING_ERROR, "The index for column: " + column + " in table: "
+                    + table + " could not be created for column value: " + columnValue
+                    + " mapping to a record with primary key: " + pk);
         }
 
         if(LicenseRules.INDEX_CACHING) {
