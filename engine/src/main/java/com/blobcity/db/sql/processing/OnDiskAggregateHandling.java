@@ -51,7 +51,6 @@ public class OnDiskAggregateHandling {
         if("count(*)".equalsIgnoreCase(aggregateNode.getAggregateName())
                 || "count".equalsIgnoreCase(aggregateNode.getAggregateName())) {
             return countHandling.computeCount(ds, collection, aggregateNode);
-
         } else if("max".equalsIgnoreCase(aggregateNode.getAggregateName())) {
             return maxHandling.computeMax(ds, collection, aggregateNode);
 

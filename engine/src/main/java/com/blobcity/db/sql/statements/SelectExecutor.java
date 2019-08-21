@@ -221,6 +221,13 @@ public class SelectExecutor {
                     return produceCountStarResult((int)onDiskAggregateHandling.computeAgg(appId, tableName, aggOperations.get(0)), startTime).toString();
                 }
 
+                /* SELECT COUNT(*) from table where col1 = 1 */
+                else if((sqlString.trim().toLowerCase().startsWith("select count(*) from") || sqlString.trim().toLowerCase().startsWith("select count(`*`) from"))
+                 && whereClause != null && groupByColumns.size() == 0) {
+                    Set<String> keys = onDiskWhereHandling.executeWhere(appId, tableName, resultColumns, whereClause);
+                    return produceCountStarResult(keys.size(), startTime).toString();
+                }
+
                 /* SELECT DISTINCT Col1 FROM table */
                 else if (selectNode.isDistinct() && whereClause == null && aggOperations.size() == 0 && resultColumns.size() == 1
                         && resultColumns.getColumnNames()[0] != null && groupByColumns.size() == 0) {
