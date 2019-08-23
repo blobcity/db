@@ -107,6 +107,9 @@ public class StorageStartup {
 
         systemDBService.createApiKeysTable();
         logger.info("ApiKeys table created successfully");
+
+        systemDBService.createDbConfigTable();
+        logger.info("DbConfig table created successfully");
     }
 
     /**

@@ -247,6 +247,23 @@ public class SystemDBService {
         }
     }
 
+    public synchronized void createDbConfigTable() {
+        if(collectionManager.exists(".systemdb", "DbConfig")) {
+            return;
+        }
+
+        String sql = "CREATE TABLE `DbConfig` ("
+                + "`key`     VARCHAR(255),"
+                + "`value`     VARCHAR(255)"
+                + ")";
+        String output = sqlExecutor.executePrivileged(".systemdb", sql);
+        JSONObject json = new JSONObject(output);
+        if (!json.getString("ack").equals("1")) {
+            logger.error("Failed to create DbConfig table");
+            throw new DbRuntimeException("Failed to create DbConfig table");
+        }
+    }
+
     /**
      * Adds a default user with the username and password as 'root'
      */
