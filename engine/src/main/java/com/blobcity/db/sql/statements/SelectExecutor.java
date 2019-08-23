@@ -444,7 +444,7 @@ public class SelectExecutor {
                 AggregateNode aggNode = (AggregateNode) resultColumn.getExpression();
                 if(aggNode.getAggregateName().equalsIgnoreCase("COUNT(*)")
                 || aggNode.getAggregateName().equalsIgnoreCase("COUNT(`*`)")) {
-                    //do nothing
+                    displayNames.add("COUNT(*)");
                 } else {
                     displayNames.add(aggNode.getAggregateName() + "(" + ((ColumnReference) aggNode.getOperand()).getColumnName() + ")");
                 }

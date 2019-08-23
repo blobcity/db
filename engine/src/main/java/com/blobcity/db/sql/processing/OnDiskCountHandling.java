@@ -89,14 +89,33 @@ public class OnDiskCountHandling {
         final Map<String, Object> aggregateMap = new ConcurrentHashMap<>();
 
         ValueNode operand = aggregateNode.getOperand();
-        if (operand instanceof ColumnReference) {
+        if(aggregateNode.getAggregateName().equalsIgnoreCase("COUNT(*)")) {
+            final String aggregateName = "COUNT(*)";
+            resultMap.forEach((key, records) -> {
+                aggregateMap.put(key, records.size());
+            });
+
+            if(aggregateMap.size() != resultMap.size()) {
+                throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "Could not produce aggregate result for column COUNT(*) for at least one aggregate group");
+            }
+
+            resultMap.forEach((key, records) -> {
+                final Object value = aggregateMap.get(key);
+                records.parallelStream().forEach(record -> {
+                    if(record != null) {
+                        record.put(aggregateName, value);
+                    }
+                });
+            });
+        }
+
+        else if (operand instanceof ColumnReference) {
             final String columnName = ((ColumnReference) operand).getColumnName();
             Column column = schemaManager.readSchema(ds, collection).getColumn(columnName);
             if(column == null) {
                 throw new OperationException(ErrorCode.UNKNOWN_COLUMN, "No column found with name " + columnName);
             }
             FieldType fieldType = column.getFieldType();
-            validateNumeric(fieldType);
             resultMap.forEach((key, records) -> {
                 final Aggregate count = new Aggregate();
                 count.addCount(records.size());
@@ -112,12 +131,7 @@ public class OnDiskCountHandling {
                         + columnName + " for at least one aggregate group");
             }
 
-            String aggregateName;
-            if(aggregateNode.getAggregateName().equalsIgnoreCase("COUNT(*)") || aggregateNode.getAggregateName().equalsIgnoreCase("COUNT(`*`)")) {
-                aggregateName = "COUNT(*)";
-            } else {
-                aggregateName = aggregateNode.getAggregateName() + "(" + ((ColumnReference) aggregateNode.getOperand()).getColumnName() + ")";
-            }
+            final String aggregateName = aggregateNode.getAggregateName() + "(" + ((ColumnReference) aggregateNode.getOperand()).getColumnName() + ")";
 
             resultMap.forEach((key, records) -> {
                 final Object value = aggregateMap.get(key);
