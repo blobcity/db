@@ -62,7 +62,7 @@ public class QueryResultCache {
         return new LinkedHashMap<String, String>() {
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
-                return Runtime.getRuntime().totalMemory() > Runtime.getRuntime().maxMemory() * 0.98;
+                return Runtime.getRuntime().totalMemory() > Runtime.getRuntime().maxMemory() * 0.8;
             }
         };
     }
