@@ -364,7 +364,7 @@ public class BSqlIndexManager {
                     return;
                 }
 
-                if (column.getIndexType() != IndexTypes.NONE) {
+                if (column.getIndexType() != IndexTypes.NONE && jsonObject.has(column.getName())) {
                     try {
                         indexFactory.getStrategy(column.getIndexType()).remove(app, table, column.getName(), jsonObject.get(column.getName()).toString(), pk);
                     } catch (JSONException | OperationException ex) {
