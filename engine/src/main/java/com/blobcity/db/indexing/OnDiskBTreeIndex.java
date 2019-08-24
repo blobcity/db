@@ -305,14 +305,14 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
         File indexColumnValueFolder = new File(PathUtil.indexColumnValueFolder(app, table, column, columnValue));
         try {
             if (Files.deleteIfExists(path)) {
-                if(indexColumnValueFolder.list().length == 0) {
-                    //delete the index folder, if no more files are present in the same
-                    indexColumnValueFolder.delete();
-                }
                 indexCountStore.decrementCount(app, table, column, columnValue, this);
                 if(LicenseRules.INDEX_CACHING) {
                     indexCache.removeEntry(app, table, column, columnValue, pk);
                 }
+            }
+            if(indexColumnValueFolder.list().length == 0) {
+                //delete the index folder, if no more files are present in the same
+                indexColumnValueFolder.delete();
             }
         } catch (IOException ex) {
 
