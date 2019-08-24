@@ -17,7 +17,9 @@
 package com.blobcity.db.startup;
 
 import com.blobcity.db.config.ConfigBean;
+import com.blobcity.db.config.DbConfigBean;
 import com.blobcity.db.constants.BSql;
+import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.systemdb.SystemDBService;
 import java.io.File;
 import org.slf4j.Logger;
@@ -41,6 +43,8 @@ public class StorageStartup {
     private SystemDBService systemDBService;
     @Autowired  @Lazy
     private ConfigBean configBean;
+    @Autowired
+    private DbConfigBean dbConfigBean;
     
     //This is not a postconstruct method because the db root path will need be passed in the future
     public synchronized void startup() {
@@ -57,22 +61,29 @@ public class StorageStartup {
         logger.info("Looking for systemdb...");
         if (!file.exists()) {
             logger.info("systemdb not found. Attempting to create and adding default user");
-            System.out.println("ccreateSystemDB()");
+            logger.trace("createSystemDB()");
             createSystemDB();
-            System.out.println("createDefaultTables()");
+            logger.trace("createDefaultTables()");
             createDefaultTables();
-            System.out.println("addDefaultUser()");
+            logger.trace("addDefaultUser()");
             addDefaultUser();
             checkUsersTableFor_Id();
         } else {
             //TODO else: check version, start upgrade if needed
             logger.info("systemdb found");
-            System.out.println("createDefaultTables()");
+            logger.trace("createDefaultTables()");
             createDefaultTables();
         }
         if(configBean.isVersionUpgradedTo4()){
             logger.info("Database version upgrade. Generating new necessary tables");
             upgradeToV4();
+        }
+
+        /* Load system configuration */
+        try {
+            dbConfigBean.loadAllConfigs();
+        } catch (OperationException e) {
+            logger.error("Unable to load DbConfig. System starting with default configuration. Any previously set configuration is not applied");
         }
     }
 

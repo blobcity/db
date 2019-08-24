@@ -25,8 +25,7 @@ import com.blobcity.db.cluster.nodes.NodeManager;
 import com.blobcity.db.code.CodeExecutor;
 import com.blobcity.db.code.CodeLoader;
 import com.blobcity.db.config.ConfigBean;
-import com.blobcity.db.config.ConfigProperties;
-import com.blobcity.db.constants.License;
+import com.blobcity.db.config.DbConfigBean;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.export.ExportType;
@@ -155,6 +154,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
     private TableauPublishManager tableauPublishManager;
     @Autowired @Lazy
     private TableauTdeManager tableauTdeManager;
+    @Autowired @Lazy
+    private DbConfigBean dbConfigBean;
 
     @Override
     public String insertData(final String user, final String ds, final String collection, final String dataType, final String data) {
@@ -508,6 +509,14 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                     break;
 
             /* Other commands */
+                case "set-config":
+                    response = setDbConfig(elements);
+                    break;
+
+                case "get-config":
+                    response = getDbConfig(elements);
+                    break;
+
                 case "help":
                     response = "Visit http://docs.blobcity.com/telnet-cli-interface.html for more details.";
                     break;
@@ -2092,5 +2101,26 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
 
         securityManager.dropApiKey(elements[1]);
         return "API key successfully dropped";
+    }
+
+    private String setDbConfig(final String[] elements) throws OperationException {
+        if(elements.length !=3) {
+            return "Required format: set-config {key} {value}";
+        }
+
+        dbConfigBean.setConfig(elements[1], elements[2]);
+        return "DB config successfully updated";
+    }
+
+    private String getDbConfig(final String[] elements) {
+        if(elements.length !=2) {
+            return "Required format: get-config {key}";
+        }
+
+        final String config = dbConfigBean.getConfig(elements[1]);
+        if(config == null) {
+            return "No config found for key: " + elements[1];
+        }
+        return elements[1] + "=" + config;
     }
 }

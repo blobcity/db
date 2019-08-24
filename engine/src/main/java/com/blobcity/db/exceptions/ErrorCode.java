@@ -129,7 +129,8 @@ public enum ErrorCode {
     CODE_LOAD_ERROR("CODE_LOAD_ERROR", "Unable to load code"),
     TABLEAU_EXCEPTION("TABLEAU_EXCEPTION", "Internal error with Tableau integration"),
     GROUP_BY("GROUP_BY", "Error executing GROUP BY clause"),
-    EXCEL_DATA_READ_ERR("EXCEL_DATA_READ_ERR", "Error reading data in Excel format");
+    EXCEL_DATA_READ_ERR("EXCEL_DATA_READ_ERR", "Error reading data in Excel format"),
+    INVALID_CONFIG_KEY("INVALID_CONFIG_KEY", "No configuration setting found with specified key");
     
     private final String errorCode;
     private final String errorMessage;

@@ -24,6 +24,7 @@ import com.blobcity.db.bquery.*;
 import com.blobcity.db.bsql.*;
 import com.blobcity.db.cache.QueryResultCache;
 import com.blobcity.db.code.webservices.WebServiceExecutorBean;
+import com.blobcity.db.config.DbConfigBean;
 import com.blobcity.db.export.ExportProcedureStore;
 import com.blobcity.db.export.ExportServiceRouterBean;
 import com.blobcity.db.ftp.FtpServerManager;
@@ -1363,6 +1364,14 @@ public class EngineBeanConfig {
         logger.trace("Creating an instance of ApiKeyManager");
 
         return new ApiKeyManager();
+    }
+
+    @Bean(name = "DbConfigBean")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public DbConfigBean dbConfigBean() {
+        logger.trace("Creating an instance of DbConfigBean");
+
+        return new DbConfigBean();
     }
 
     /*
