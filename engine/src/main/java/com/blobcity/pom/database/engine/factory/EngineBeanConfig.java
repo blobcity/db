@@ -31,6 +31,7 @@ import com.blobcity.db.ftp.FtpServerManager;
 import com.blobcity.db.ftp.FtpServiceManager;
 import com.blobcity.db.hooks.HookableEventBean;
 import com.blobcity.db.hooks.HookableTransactionBean;
+import com.blobcity.db.hygiene.IndexCleanupBean;
 import com.blobcity.db.indexcache.OnDiskBtreeIndexCache;
 import com.blobcity.db.indexing.*;
 import com.blobcity.db.mapreduce.MapReduceOutputImporter;
@@ -1372,6 +1373,14 @@ public class EngineBeanConfig {
         logger.trace("Creating an instance of DbConfigBean");
 
         return new DbConfigBean();
+    }
+
+    @Bean(name = "IndexCleanupBean")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public IndexCleanupBean indexCleanupBean() {
+        logger.trace("Creating an instance of IndexCleanupBean");
+
+        return new IndexCleanupBean();
     }
 
     /*

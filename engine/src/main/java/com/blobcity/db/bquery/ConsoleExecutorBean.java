@@ -30,6 +30,7 @@ import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.export.ExportType;
 import com.blobcity.db.ftp.FtpServiceManager;
+import com.blobcity.db.hygiene.IndexCleanupBean;
 import com.blobcity.db.lang.columntypes.FieldType;
 import com.blobcity.db.lang.columntypes.FieldTypeFactory;
 import com.blobcity.db.license.LicenseBean;
@@ -156,6 +157,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
     private TableauTdeManager tableauTdeManager;
     @Autowired @Lazy
     private DbConfigBean dbConfigBean;
+    @Autowired @Lazy
+    private IndexCleanupBean indexCleanupBean;
 
     @Override
     public String insertData(final String user, final String ds, final String collection, final String dataType, final String data) {
@@ -519,6 +522,10 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
 
                 case "help":
                     response = "Visit http://docs.blobcity.com/telnet-cli-interface.html for more details.";
+                    break;
+
+                case "cleanup":
+                    response = cleanup(elements);
                     break;
 
                 default:
@@ -2122,5 +2129,19 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             return "No config found for key: " + elements[1];
         }
         return elements[1] + "=" + config;
+    }
+
+    private String cleanup(final String[] elements) {
+        if(elements.length != 3) {
+            return "Required format: cleanup {ds} {collection}";
+        }
+
+        try {
+            indexCleanupBean.cleanUpIndexes(elements[1], elements[2]);
+        } catch (OperationException e) {
+            return "Failed to clean up with error: " + e.getErrorCode();
+        }
+
+        return "Cleanup Successful";
     }
 }
