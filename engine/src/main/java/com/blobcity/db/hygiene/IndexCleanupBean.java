@@ -76,9 +76,6 @@ public class IndexCleanupBean {
                     ex.printStackTrace();
                 }
             });
-
-
-
         } catch (IOException ex) {
             throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);
         }
@@ -90,8 +87,7 @@ public class IndexCleanupBean {
             final List<String> toDeleteList = new ArrayList<>();
             iterator.forEachRemaining(path -> {
                 try {
-                    System.out.println(column + " " + path.getFileName().toString());
-                    if (new File(PathUtil.indexColumnValueFolder(ds, collection, column, path.getFileName().toString())).listFiles().length == 0) {
+                    if (new File(PathUtil.indexColumnValueFolder(ds, collection, column, path.getFileName().toString())).listFiles() == null) {
                         toDeleteList.add(PathUtil.indexColumnValueFolder(ds, collection, column, path.getFileName().toString()));
                     }
                 }catch(OperationException ex) {
