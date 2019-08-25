@@ -90,6 +90,7 @@ public class IndexCleanupBean {
             final List<String> toDeleteList = new ArrayList<>();
             iterator.forEachRemaining(path -> {
                 try {
+                    System.out.println(column + " " + path.getFileName().toString());
                     if (new File(PathUtil.indexColumnValueFolder(ds, collection, column, path.getFileName().toString())).listFiles().length == 0) {
                         toDeleteList.add(PathUtil.indexColumnValueFolder(ds, collection, column, path.getFileName().toString()));
                     }
