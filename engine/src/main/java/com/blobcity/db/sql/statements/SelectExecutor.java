@@ -368,7 +368,7 @@ public class SelectExecutor {
                 .put(BQueryParameters.PAYLOAD, result)
                 .put(BQueryParameters.TIME, executionTime)
                 .put(BQueryParameters.ROWS, result.size()).toString();
-        if(LicenseRules.QUERY_RESULT_CACHING) {
+        if(LicenseRules.QUERY_RESULT_CACHING && executionTime > LicenseRules.QUERY_RESULT_CACHE_TIME_CUTOFF) {
             queryResultCache.cache(ds, collection, sqlQuery, resultString);
         }
 

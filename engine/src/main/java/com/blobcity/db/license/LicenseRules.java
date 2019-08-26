@@ -32,6 +32,7 @@ public class LicenseRules {
     public static boolean INDEX_CACHING = false;
     public static boolean CACHE_INSERTS = false; // move this somewhere else as this is a user preference and not license setting.
     public static boolean QUERY_RESULT_CACHING = false;
+    public static long QUERY_RESULT_CACHE_TIME_CUTOFF = 200;
     public static boolean CLUSTERING_AVAILABLE = false;
     public static boolean CLI_QUERY_ANALYSER = false;
     public static boolean FLEXIBLE_SCHEMA = true;
