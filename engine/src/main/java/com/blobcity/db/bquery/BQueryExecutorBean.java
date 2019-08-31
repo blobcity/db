@@ -1253,7 +1253,7 @@ public class BQueryExecutorBean implements BQueryExecutor {
     private JSONObject loadCode(final String datastore, final JSONObject payloadJson) throws OperationException {
         System.out.println("JSON: " + payloadJson.toString());
         final String jarFile = payloadJson.getString("jar");
-        codeLoader.loadJar(datastore, jarFile);
+        codeLoader.loadJar(datastore, jarFile, true);
         try {
             return new JSONObject(JsonMessages.SUCCESS_ACKNOWLEDGEMENT);
         } catch (JSONException ex) {

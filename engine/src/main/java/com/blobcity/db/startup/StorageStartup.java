@@ -16,6 +16,7 @@
 
 package com.blobcity.db.startup;
 
+import com.blobcity.db.code.SPConfigBean;
 import com.blobcity.db.config.ConfigBean;
 import com.blobcity.db.config.DbConfigBean;
 import com.blobcity.db.constants.BSql;
@@ -45,6 +46,8 @@ public class StorageStartup {
     private ConfigBean configBean;
     @Autowired
     private DbConfigBean dbConfigBean;
+    @Autowired
+    private SPConfigBean spConfigBean;
     
     //This is not a postconstruct method because the db root path will need be passed in the future
     public synchronized void startup() {
@@ -85,6 +88,9 @@ public class StorageStartup {
         } catch (OperationException e) {
             logger.error("Unable to load DbConfig. System starting with default configuration. Any previously set configuration is not applied");
         }
+
+        /* Load all stored procedures. This should be the last performed operation */
+        spConfigBean.loadAllConfigs();
     }
 
     /**

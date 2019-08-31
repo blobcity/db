@@ -78,6 +78,8 @@ public class CodeLoader {
     private WebServiceStore webServiceStore;
     @Autowired
     private ExportProcedureStore exportProcedureStore;
+    @Autowired
+    private SPConfigBean spConfigBean;
 
     /**
      * activate trigger/triggers specified related to specified dsSet and collection
@@ -197,7 +199,7 @@ public class CodeLoader {
      * @throws OperationException 
      */
     public void loadAllClasses(final String datastore) throws OperationException{
-        throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Depricated operation. Use loadJar() instead");
+        throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Depricated operation. Use loadJars() instead");
 
 //        if( !datastoreManager.exists(datastore) )
 //            throw new OperationException(ErrorCode.DATASTORE_INVALID, "Given dsSet " + datastore + " doesn't exist");
@@ -222,7 +224,7 @@ public class CodeLoader {
 //        }
     }
 
-    public void loadJar(final String datastore, final String jarFilePath) throws OperationException {
+    public void loadJar(final String datastore, final String jarFilePath, final boolean saveConfig) throws OperationException {
         logger.info("Attempting to load jar: " + jarFilePath);
 
         if(jarFilePath.contains("..")){
@@ -316,6 +318,11 @@ public class CodeLoader {
             throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "Error in loading code for datastore " + datastore + " from jar " + jarFilePath);
         }
 
+        /* Save configuration for auto-loading the JAR on system reboot */
+        if(saveConfig) {
+            spConfigBean.registerJar(datastore, jarFilePath);
+        }
+
         logger.debug("Stored Procedures JAR loaded");
     }
     
@@ -334,6 +341,7 @@ public class CodeLoader {
         filterStore.removeAll(datastore);
         interpreterStore.removeAll(datastore);
         webServiceStore.unregisterWs(datastore);
+        spConfigBean.unregisterStoredProcedures(datastore);
     }
 
 }

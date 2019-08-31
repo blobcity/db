@@ -1050,7 +1050,7 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
 //        verifyDCInfo(datastore);
 //        codeLoader.loadAllClasses(datastore);
 
-        codeLoader.loadJar(datastore, jarFilePath);
+        codeLoader.loadJar(datastore, jarFilePath, true);
         return "All classes successfully loaded into the database";
     }
 
@@ -1127,10 +1127,8 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
 
     private String removeCode(String[] elements) throws OperationException {
         if (elements.length != 2) {
-            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "load-code takes only one parameter - name of class file to be loaded in database");
+            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "remove-code takes only one parameter - name of datastore");
         }
-        String datastore = elements[1];
-        verifyDCInfo(datastore);
         codeLoader.removeAllClasses(elements[1]);
         return "All classes have been removed from database successfully";
     }
