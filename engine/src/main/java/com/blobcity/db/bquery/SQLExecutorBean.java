@@ -24,7 +24,6 @@ import com.blobcity.lib.database.bean.manager.interfaces.engine.QueryStore;
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseBean;
 import com.blobcity.db.util.JSONOperationException;
 import com.blobcity.lib.database.bean.manager.interfaces.engine.SqlExecutor;
 import com.foundationdb.sql.StandardException;
@@ -55,8 +54,6 @@ public class SQLExecutorBean implements SqlExecutor {
 
     @Autowired @Lazy
     private BSqlCollectionManager collectionManager;
-    @Autowired
-    private LicenseBean licenseBean;
     @Autowired
     private SecurityManagerBean securityManager;
     // Statement Executors---------------------------------------------------------------------------------------------
@@ -163,10 +160,6 @@ public class SQLExecutorBean implements SqlExecutor {
     }
 
     // Setters for EJBs (used for setting mocks in unit tests ---------------------------------------------------------
-    public void setLicenseBean(LicenseBean licenseBean) {
-        this.licenseBean = licenseBean;
-    }
-
     public void setTableManager(BSqlCollectionManager tableManager) {
         this.collectionManager = tableManager;
     }

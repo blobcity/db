@@ -22,12 +22,7 @@ import com.blobcity.db.constants.BQueryCommands;
 import com.blobcity.db.constants.BQueryParameters;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.lang.columntypes.StringField;
-import com.blobcity.db.license.LicenseRules;
-import com.blobcity.db.schema.AutoDefineTypes;
-import com.blobcity.db.schema.IndexTypes;
 import com.blobcity.db.schema.Schema;
-import com.blobcity.db.schema.Types;
 import com.blobcity.db.schema.beans.SchemaStore;
 import com.blobcity.util.json.JsonMessages;
 import java.util.Set;
@@ -112,7 +107,7 @@ public class InternalBQueryExecutor {
         Schema schema = SchemaStore.getInstance().getSchema(datastore, collection);
         
         /* If schema is flexible, add any missing columns before performing the insert operation */
-        if(LicenseRules.FLEXIBLE_SCHEMA && schema.isFlexibleSchema()) {
+        if(schema.isFlexibleSchema()) {
             Set<String> missingColumnNames = schema.getMissingColumnNames(insertJSON.keySet());
             for (String missingColumnName : missingColumnNames) {
                 

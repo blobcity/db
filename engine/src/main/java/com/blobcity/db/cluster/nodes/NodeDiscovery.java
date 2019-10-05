@@ -19,7 +19,7 @@ package com.blobcity.db.cluster.nodes;
 import com.blobcity.db.config.ConfigBean;
 import com.blobcity.db.config.ConfigProperties;
 import com.blobcity.db.constants.ClusterConstants;
-import com.blobcity.db.license.LicenseRules;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -56,11 +56,6 @@ public class NodeDiscovery {
     @PostConstruct
     private void init() {
         
-        if(!LicenseRules.CLUSTERING_AVAILABLE){
-            logger.info("Not starting cluster service. Clustering not available as part of current license");
-            return;
-        }
-        
         if (!configBean.contains(ConfigProperties.CLUSTER_BROADCAST_IP)) {
             logger.warn("Broadcast IP not configured for node. Clustering will be disabled until an appropriate broadcast IP address is set.");
             return;
@@ -83,10 +78,7 @@ public class NodeDiscovery {
 
     @Scheduled(fixedRate = 1000)
     private void broadcastBeacon() {
-        if(!LicenseRules.CLUSTERING_AVAILABLE) {
-            return;
-        }
-        
+
         if (socket == null || packet == null) {
             logger.info("Beacon not initialized for broadcast. Attempting restart");
             init();

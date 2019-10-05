@@ -23,11 +23,9 @@ import com.blobcity.db.config.ConfigBean;
 import com.blobcity.db.config.ConfigProperties;
 import com.blobcity.db.constants.BQueryCommands;
 import com.blobcity.db.constants.BQueryParameters;
-import com.blobcity.db.constants.License;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.export.ExportType;
-import com.blobcity.db.license.LicenseBean;
 import com.blobcity.db.operations.OperationStatus;
 import com.blobcity.db.operations.OperationTypes;
 import com.blobcity.db.operations.OperationsManager;
@@ -69,8 +67,6 @@ public class BQueryAdminBean implements BQueryExecutor {
     private ProximityNodesStore nodeStore;
     @Autowired
     private ConfigBean configBean;
-    @Autowired
-    private LicenseBean licenseBean;
     @Autowired
     private ProcedureStoreBean procedureStore;
     @Autowired
@@ -157,15 +153,6 @@ public class BQueryAdminBean implements BQueryExecutor {
                     break;
                 case UNREGISTER_TRIGGER:
                     returnJson = unregisterTrigger(payloadJson);
-                    break;
-                case APPLY_LICENSE:
-                    returnJson = applyLicense(payloadJson);
-                    break;
-                case LICENSE_STATUS:
-                    returnJson = licenseStatus(payloadJson);
-                    break;
-                case REVOKE_LICENSE:
-                    returnJson = revokeLicense(payloadJson);
                     break;
                 case BULK_EXPORT:
                     returnJson = bulkExport(app, table, payloadJson);
@@ -495,117 +482,7 @@ public class BQueryAdminBean implements BQueryExecutor {
     private JSONObject unregisterProcedure(JSONObject jsonObject) throws OperationException {
         throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED);
     }
-    
-    private JSONObject applyLicense(JSONObject payloadJson) throws OperationException {
-        String license;
-        String currentNodeId;
-        String nodeId = null;
-        JSONObject responseJson;
-        JSONObject licenseJson;
-        
-        try {
-            if (payloadJson.has("node-id")) {
-                nodeId = payloadJson.getString("node-id");
-            }
-            currentNodeId = configBean.getStringProperty(ConfigProperties.NODE_ID);
-            
-            if (nodeId != null && !nodeId.equals(currentNodeId)) {
 
-                //TODO: broadcast the query so that only the specified node executes it.
-                throw new OperationException(ErrorCode.UNKNOWN_NODE_ID);
-            }
-            
-            license = payloadJson.getString("license");
-            licenseBean.applyLicense(license);
-            
-            responseJson = new JSONObject(JsonMessages.SUCCESS_ACKNOWLEDGEMENT);
-            licenseJson = internalLicenseStatus();
-            responseJson.put("license", licenseJson);
-            return responseJson;
-        } catch (JSONException ex) {
-            logger.error(null, ex);
-            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);
-        }
-    }
-    
-    private JSONObject licenseStatus(JSONObject payloadJson) throws OperationException {
-        JSONObject responseJson;
-        String currentNodeId;
-        String nodeId = null;
-        
-        try {
-            if (payloadJson != null && payloadJson.has("node-id")) {
-                nodeId = payloadJson.getString("node-id");
-            }
-            currentNodeId = configBean.getStringProperty(ConfigProperties.NODE_ID);
-            
-            if (nodeId != null && !nodeId.equals(currentNodeId)) {
-
-                //TODO: broadcast the query so that only the specified node executes it.
-                throw new OperationException(ErrorCode.UNKNOWN_NODE_ID);
-            }
-            
-            responseJson = new JSONObject(JsonMessages.SUCCESS_ACKNOWLEDGEMENT);
-            responseJson.put("license", internalLicenseStatus());
-            return responseJson;
-        } catch (JSONException ex) {
-            logger.error(null, ex);
-            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);
-        }
-    }
-    
-    private JSONObject internalLicenseStatus() throws OperationException {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("node-id", configBean.getStringProperty(ConfigProperties.NODE_ID));
-            jsonObject.put("type", "DB");
-            jsonObject.put("valid", licenseBean.isActive());
-            jsonObject.put("validity", licenseBean.getValidUntil());
-            jsonObject.put("db-size", licenseBean.getDbSize());
-            jsonObject.put("db-version", License.VERSION);
-            return jsonObject;
-        } catch (JSONException ex) {
-            logger.error(null, ex);
-            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);
-        }
-    }
-    
-    private JSONObject revokeLicense(JSONObject payloadJson) throws OperationException {
-        String currentNodeId;
-        String nodeId;
-        
-        if (payloadJson == null) {
-            licenseBean.revokeLicense();
-            try {
-                return new JSONObject(JsonMessages.SUCCESS_ACKNOWLEDGEMENT);
-            } catch (JSONException ex) {
-                logger.error(null, ex);
-                throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);
-            }
-        }
-        try {
-            nodeId = payloadJson.getString("node-id");
-            currentNodeId = configBean.getStringProperty(ConfigProperties.NODE_ID);
-            
-            if (nodeId.equals(currentNodeId)) {
-                licenseBean.revokeLicense();
-                try {
-                    return new JSONObject(JsonMessages.SUCCESS_ACKNOWLEDGEMENT);
-                } catch (JSONException ex) {
-                    logger.error(null, ex);
-                    throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);
-                }
-            }
-
-            //TODO: broadcast the query so that only the specified node executes it.
-        } catch (JSONException ex) {
-            logger.error(null, ex);
-            throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR);
-        }
-        
-        throw new OperationException(ErrorCode.UNKNOWN_NODE_ID);
-    }
-    
     private JSONObject bulkExport(final String app, final String table, final JSONObject payloadJson) throws OperationException {
         JSONObject jsonObject = new JSONObject();
         final String exportType;

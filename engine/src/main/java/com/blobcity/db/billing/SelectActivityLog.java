@@ -18,7 +18,7 @@ package com.blobcity.db.billing;
 
 import com.blobcity.db.bsql.BSqlDataManager;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseRules;
+import com.blobcity.db.features.FeatureRules;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class SelectActivityLog {
      */
     @Async
     public void registerSelectQuery(final String ds, final String collection, final String sql, final long rows, final long time) {
-        if(!LicenseRules.QPS) return;
+        if(!FeatureRules.QPS) return;
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ds", ds);
         jsonObject.put("c", collection);

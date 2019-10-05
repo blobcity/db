@@ -19,9 +19,7 @@ package com.blobcity.db.cli.statements;
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.schema.ReplicationType;
-import com.blobcity.db.schema.Schema;
 import com.blobcity.db.schema.SchemaBuilder;
 import com.blobcity.db.schema.TableType;
 import java.io.IOException;
@@ -61,13 +59,6 @@ public class DDLStatement {
         SchemaBuilder builder = SchemaBuilder.newDefault();
         CreateTableArgumentsParser parser = new CreateTableArgumentsParser(elements);
         parser.applyToSchema(builder);
-
-        Schema schema = new Schema(builder.toJson());
-
-        /* Restrict creation of table with flexible schema if not permitted as part of current license */
-        if (schema.isFlexibleSchema() && !LicenseRules.FLEXIBLE_SCHEMA) {
-            throw new OperationException(ErrorCode.FEATURE_RESTRICTED, "Flexible schema support is not available in the current license");
-        }
 
         tableManager.createTable(database, table, builder.toJson());
         return "Collection successfully created";

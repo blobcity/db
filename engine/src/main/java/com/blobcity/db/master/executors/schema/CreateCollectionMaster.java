@@ -18,13 +18,10 @@ package com.blobcity.db.master.executors.schema;
 
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.master.MasterExecutable;
 import com.blobcity.db.master.executors.generic.ExecuteAllNodesCommitMaster;
 import com.blobcity.lib.query.Query;
-import com.blobcity.lib.query.QueryParams;
 import com.blobcity.lib.query.QueryType;
-import org.springframework.expression.Operation;
 
 /**
  * Master that manages the create-collection request
@@ -35,15 +32,6 @@ public class CreateCollectionMaster extends ExecuteAllNodesCommitMaster implemen
 
     public CreateCollectionMaster(Query query) throws OperationException {
         super(query);
-
-        if(!LicenseRules.MEMORY_DURABLE_TABLES && query.getString(QueryParams.STORAGE_TYPE).equalsIgnoreCase("in-memory")) {
-            throw new OperationException(ErrorCode.FEATURE_RESTRICTED, "Feature not available in current license. Consider purchasing an Enterprise License");
-        }
-
-        if(!LicenseRules.MEMORY_NON_DURABLE_TABLES &&
-                (query.getString(QueryParams.STORAGE_TYPE).equalsIgnoreCase("in-memory-nd") || query.getString(QueryParams.STORAGE_TYPE).equalsIgnoreCase("in-memory-non-durable"))) {
-            throw new OperationException(ErrorCode.FEATURE_RESTRICTED, "Feature not available in current license. Consider purchasing an Enterprise License");
-        }
 
         if(query.getQueryType() != QueryType.CREATE_COLLECTION && query.getQueryType() != QueryType.CREATE_TABLE) {
             throw new OperationException(ErrorCode.INTERNAL_OPERATION_ERROR, "Incorrect query passed to create-collection master");

@@ -20,7 +20,6 @@ import com.blobcity.db.bsql.filefilters.EQFilenameFilter;
 import com.blobcity.db.bsql.filefilters.OperatorFileFilter;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.sql.util.PathUtil;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -37,7 +36,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.blobcity.util.lambda.Counter;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

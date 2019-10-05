@@ -21,17 +21,13 @@ import com.blobcity.db.cache.DataCache;
 import com.blobcity.db.exceptions.DbRuntimeException;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseRules;
+import com.blobcity.db.features.FeatureRules;
 import com.blobcity.db.locks.LockType;
 import com.blobcity.db.locks.TransactionLocking;
 import com.blobcity.db.sql.util.PathUtil;
 import com.blobcity.db.util.FileNameEncoding;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.DirectoryStream.Filter;
 import java.nio.file.FileSystems;
@@ -43,16 +39,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
-import com.blobcity.util.lambda.Counter;
 import com.google.common.collect.Iterators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -87,7 +79,7 @@ public class BSqlFileManager {
      */
     public String select(final String app, final String table, final String key) throws OperationException {
         String result = null;
-        if (app.equals(".systemdb") || (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table))) {
+        if (app.equals(".systemdb") || (FeatureRules.DATA_CACHING && cacheRules.shouldCache(app, table))) {
             result = dataCache.load(app, table, key);
             if (result != null) {
                 return result;
@@ -98,7 +90,7 @@ public class BSqlFileManager {
             Path path = Paths.get(PathUtil.dataFile(app, table, key));
             try {
                 result = new String(Files.readAllBytes(path), "UTF-8");
-                if (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table)) {
+                if (FeatureRules.DATA_CACHING && cacheRules.shouldCache(app, table)) {
                     dataCache.cache(app, table, key, result);
                 }
                 return result;
@@ -303,7 +295,7 @@ public class BSqlFileManager {
                 throw new OperationException(ErrorCode.PRIMARY_KEY_INEXISTENT, "A record with the given primary key: " + key + " could not be found in table: " + table);
             }
             try {
-                if (Files.deleteIfExists(path) && LicenseRules.DATA_CACHING) {
+                if (Files.deleteIfExists(path) && FeatureRules.DATA_CACHING) {
                     dataCache.invalidate(app, table, key);
                 }
             } catch (IOException ex) {
@@ -331,7 +323,7 @@ public class BSqlFileManager {
             Path path = Paths.get(PathUtil.dataFile(app, table, key));
             try {
                 Files.write(path, jsonString.getBytes("UTF-8"));
-                if (app.equals(".systemdb") || (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table))) {
+                if (app.equals(".systemdb") || (FeatureRules.DATA_CACHING && cacheRules.shouldCache(app, table))) {
                     dataCache.cache(app, table, key, jsonString);
                 }
             } catch (IOException ex) {
@@ -353,7 +345,7 @@ public class BSqlFileManager {
             }
             try {
                 Files.write(path, jsonString.getBytes("UTF-8"));
-                if (app.equals(".systemdb") || (LicenseRules.DATA_CACHING && LicenseRules.CACHE_INSERTS && cacheRules.shouldCache(app, table))) {
+                if (app.equals(".systemdb") || (FeatureRules.DATA_CACHING && FeatureRules.CACHE_INSERTS && cacheRules.shouldCache(app, table))) {
                     dataCache.cache(app, table, key, jsonString);
                 }
             } catch (IOException ex) {
@@ -379,7 +371,7 @@ public class BSqlFileManager {
             if (file.renameTo(newFile)) {
                 
                 /* Update cache */
-                if (app.equals(".systemdb") || (LicenseRules.DATA_CACHING && cacheRules.shouldCache(app, table))) {
+                if (app.equals(".systemdb") || (FeatureRules.DATA_CACHING && cacheRules.shouldCache(app, table))) {
                     String cachedValue = dataCache.load(app, table, existingKey);
                     dataCache.invalidate(app, table, existingKey);
                     dataCache.cache(app, table, newKey, cachedValue);

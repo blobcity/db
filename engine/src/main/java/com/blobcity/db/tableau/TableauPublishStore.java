@@ -19,13 +19,12 @@ package com.blobcity.db.tableau;
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.constants.BSql;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseRules;
+import com.blobcity.db.features.FeatureRules;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -142,7 +141,7 @@ public class TableauPublishStore {
     }
 
     public void notifyDataChange(final String datastore, final String collection) {
-        if(!LicenseRules.TABLEAU_ENABLED) return;
+        if(!FeatureRules.TABLEAU_ENABLED) return;
         if(datastore.equals(BSql.SYSTEM_DB)) {
             return;
         }

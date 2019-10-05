@@ -17,7 +17,6 @@
 package com.blobcity.db.config;
 
 import com.blobcity.db.constants.BSql;
-import com.blobcity.db.license.LicenseBean;
 import com.blobcity.db.locks.ReadWriteSemaphore;
 //import com.blobcity.security.consume.LicenseManager;
 //import com.blobcity.security.exception.InternalException;
@@ -33,17 +32,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 
 //import com.blobcity.license.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
-import javax.naming.TimeLimitExceededException;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * TODO: The ConfigBean should read nothing from the config file except for node-id and license. All other data needs to
@@ -61,9 +57,7 @@ public class ConfigBean {
     public Map<String, Object> configMap = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(ConfigBean.class.getName());
     private final ReadWriteSemaphore semaphore = new ReadWriteSemaphore(CONCURRENT_ACCESS_PERMITES);
-    @Autowired
-    private LicenseBean licenseBean;
-    
+
     //NOTETOSELF:
     // think of any other way to let storage system know that database has been upgraded to v4
     private static boolean versionUpgradedTo4 = false;

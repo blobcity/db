@@ -16,12 +16,10 @@
 
 package com.blobcity.db.watchservice;
 
-import com.blobcity.db.code.CodeExecutor;
 import com.blobcity.db.code.datainterpreter.InterpreterStoreBean;
 import com.blobcity.db.constants.BSql;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.sql.util.PathUtil;
 import com.blobcity.lib.database.bean.manager.factory.ModuleApplicationContextHolder;
 import org.json.JSONArray;
@@ -58,9 +56,6 @@ public class WatchServiceManager {
     }
 
     public void startWatch(String relativePath, final String datastore, final String collection, final boolean startFromEnd, final WatchServiceImportType importType, final String interpreter) throws OperationException {
-        if(importType == WatchServiceImportType.FILE_INTERPRETED && !LicenseRules.FILE_INTERPRETED_WATCH_SERVICE) {
-            throw new OperationException(ErrorCode.INVALID_LICENSE, "Current license does not permit file-interpreted type of watch service. Upgrade to enterprise license.");
-        }
 
         String absolutePath = PathUtil.datastoreFtpFolder(datastore) + (relativePath.startsWith(BSql.SEPERATOR) ? "" : BSql.SEPERATOR) + relativePath;
 

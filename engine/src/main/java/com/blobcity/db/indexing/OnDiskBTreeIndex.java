@@ -23,8 +23,7 @@ import com.blobcity.db.exceptions.DbRuntimeException;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.indexcache.OnDiskBtreeIndexCache;
-import com.blobcity.db.license.LicenseBean;
-import com.blobcity.db.license.LicenseRules;
+import com.blobcity.db.features.FeatureRules;
 import com.blobcity.db.sql.util.PathUtil;
 import com.blobcity.db.util.FileNameEncoding;
 import java.io.IOException;
@@ -114,7 +113,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
             }
         }
 
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             indexCache.addEntry(app, table, column, columnValue, pk);
         }
 
@@ -123,7 +122,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
 
     @Override
     public Set<String> loadIndex(String app, String table, String column, String columnValue) throws OperationException {
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             final Set<String> cachedIndex = indexCache.get(app, table, column, columnValue);
             if (cachedIndex != null) {
                 return cachedIndex;
@@ -146,7 +145,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
                     + "  in table: " + table + " for searched value: " + columnValue);
         }
 
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             indexCache.cache(app, table, column, columnValue, set);
         }
 
@@ -179,7 +178,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
 
     @Override
     public Iterator<String> loadIndexStream(String app, String table, String column, String columnValue) throws OperationException {
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             final Set<String> cachedIndex = indexCache.get(app, table, column, columnValue);
             if (cachedIndex != null) {
                 return cachedIndex.iterator();
@@ -232,7 +231,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
         }
 
         /* In case caching is enabled, will execute the full iterator, cache and return an iterator from cache */
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             Set<String> pkSet = new HashSet<>();
             iterator.forEachRemaining(pk -> pkSet.add(pk));
             indexCache.cache(app, table, column, columnValue, pkSet);
@@ -284,7 +283,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
 
     @Override
     public boolean contains(String app, String table, String column, String columnValue, String pk) throws OperationException {
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             Optional<Boolean> optional = indexCache.contains(app, table, column, columnValue, pk);
             if(optional.isPresent()) {
                 return optional.get();
@@ -318,7 +317,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
         try {
             if (Files.deleteIfExists(path)) {
                 indexCountStore.decrementCount(app, table, column, columnValue, this);
-                if(LicenseRules.INDEX_CACHING) {
+                if(FeatureRules.INDEX_CACHING) {
                     indexCache.removeEntry(app, table, column, columnValue, pk);
                 }
             }
@@ -337,7 +336,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
         Path destinationPath = Paths.get(PathUtil.globalDeleteFolder(app + "_" + table + "_" + column + "_" + System.currentTimeMillis()));
         try {
             Files.move(sourcePath, destinationPath, StandardCopyOption.ATOMIC_MOVE);
-            if(LicenseRules.INDEX_CACHING) {
+            if(FeatureRules.INDEX_CACHING) {
                 indexCache.invalidate(app, table, column);
             }
         } catch (IOException ex) {
@@ -351,7 +350,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
 
     @Override
     public Iterator<String> cardinality(String app, String table, String column) throws OperationException {
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             Optional<Set<String>> cardinalSet = indexCache.cardinality(app, table, column);
             if(cardinalSet.isPresent()) {
                 return cardinalSet.get().iterator();
@@ -562,7 +561,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
             return Collections.EMPTY_LIST.iterator();
         }
 
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             Optional<Set<String>> optional = indexCache.inQuery(app, table, column, values);
             if(optional.isPresent()) {
                 return optional.get().iterator();
@@ -639,7 +638,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
     }
 
     public String getAnyCardinalEntry(final String ds, final String collection, final String column, final String columnValue) throws OperationException {
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             final Set<String> pkSet = indexCache.get(ds, collection, column, columnValue);
             if(pkSet != null && !pkSet.isEmpty()) {
                 return pkSet.iterator().next();
@@ -664,7 +663,7 @@ public class OnDiskBTreeIndex implements IndexingStrategy {
 
     @Override
     public long getIndexCount(String app, String table, String column, String columnValue) throws OperationException {
-        if(LicenseRules.INDEX_CACHING) {
+        if(FeatureRules.INDEX_CACHING) {
             final Set<String> cachedIndex = indexCache.get(app, table, column, columnValue);
             if (cachedIndex != null) {
                 return (long) cachedIndex.size();
