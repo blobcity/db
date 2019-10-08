@@ -26,6 +26,7 @@ public class FeatureRules {
     /**
      * Default configuration that is used
      */
+    public static boolean QUERY_RESULT_CACHING = true;
     public static boolean DATA_CACHING = false;  // enable when stable
     public static boolean INDEX_CACHING = false; // enable when stable
     public static boolean CACHE_INSERTS = false; // enable when stable, move this somewhere else as this is a user preference and not license setting.

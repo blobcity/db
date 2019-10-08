@@ -21,6 +21,7 @@ import com.blobcity.db.bsql.BSqlDataManager;
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.bsql.BSqlIndexManager;
 import com.blobcity.db.cache.QueryResultCache;
+import com.blobcity.db.features.FeatureRules;
 import com.blobcity.db.lang.columntypes.FieldType;
 import com.blobcity.db.schema.beans.SchemaManager;
 import com.blobcity.db.schema.beans.SchemaStore;
@@ -138,10 +139,12 @@ public class SelectExecutor {
             }
 
             /* Load query result from cache if present in cache */
-            final String result = queryResultCache.get(sqlString);
-            if(result != null) {
-                logger.trace("Returning cached response for SQL query: " + sqlString);
-                return result;
+            if(FeatureRules.QUERY_RESULT_CACHING) {
+                final String result = queryResultCache.get(sqlString);
+                if (result != null) {
+                    logger.trace("Returning cached response for SQL query: " + sqlString);
+                    return result;
+                }
             }
 
             String schema = selectNode.getFromList().get(0).getTableName().getSchemaName();
@@ -356,7 +359,10 @@ public class SelectExecutor {
                 .put(BQueryParameters.PAYLOAD, result)
                 .put(BQueryParameters.TIME, executionTime)
                 .put(BQueryParameters.ROWS, result.size()).toString();
-        queryResultCache.cache(ds, collection, sqlQuery, resultString);
+
+        if(FeatureRules.QUERY_RESULT_CACHING) {
+            queryResultCache.cache(ds, collection, sqlQuery, resultString);
+        }
 
         /* Register the number of rows selected for cloud billing purposes */
         if(!ds.equals(".systemdb")) {
