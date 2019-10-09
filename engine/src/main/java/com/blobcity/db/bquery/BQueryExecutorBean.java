@@ -34,7 +34,6 @@ import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.lang.Operators;
 import com.blobcity.db.lang.columntypes.FieldType;
 import com.blobcity.db.lang.columntypes.FieldTypeFactory;
-import com.blobcity.db.license.LicenseBean;
 import com.blobcity.db.locks.MasterLockBean;
 import com.blobcity.db.locks.TransactionLocking;
 import com.blobcity.db.operations.OperationLogLevel;
@@ -58,7 +57,6 @@ import com.blobcity.lib.query.Query;
 import com.blobcity.lib.query.QueryParams;
 import com.blobcity.lib.query.RecordType;
 import com.blobcity.util.json.JsonMessages;
-import com.blobcity.util.json.JsonUtil;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 
@@ -111,9 +109,6 @@ public class BQueryExecutorBean implements BQueryExecutor {
     @Autowired(required = false)
     @Lazy
     private BSqlIndexManager indexManager;
-    @Autowired(required = false)
-    @Lazy
-    private LicenseBean licenseBean;
     @Autowired(required = false)
     @Lazy
     private ManifestParserBean manifestParserBean;

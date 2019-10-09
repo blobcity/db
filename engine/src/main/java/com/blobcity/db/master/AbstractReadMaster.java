@@ -18,9 +18,8 @@ package com.blobcity.db.master;
 
 import com.blobcity.db.cluster.ClusterNodesStore;
 import com.blobcity.db.cluster.messaging.ClusterMessaging;
-import com.blobcity.db.cluster.nodes.ProximityNodesStore;
 import com.blobcity.db.exceptions.ErrorCode;
-import com.blobcity.db.license.LicenseRules;
+import com.blobcity.db.features.FeatureRules;
 import com.blobcity.db.master.aggregators.Aggregator;
 import com.blobcity.lib.database.bean.manager.factory.BeanConfigFactory;
 import com.blobcity.lib.query.Query;
@@ -79,7 +78,7 @@ public abstract class AbstractReadMaster implements MasterExecutable {
             if(acquired) {
                 semaphore.release(); // release the immediately last acquire, as the semaphore is no longer required
             } else {
-                logger.warn("Request (" + query.getRequestId() + ") timed out while waiting for read to finish. Consider increasing READ_OP_TIMEOUT. Current value is: " + LicenseRules.READ_OP_TIMEOUT + " seconds");
+                logger.warn("Request (" + query.getRequestId() + ") timed out while waiting for read to finish. Consider increasing READ_OP_TIMEOUT. Current value is: " + FeatureRules.READ_OP_TIMEOUT + " seconds");
                 rollback();
             }
         } catch (InterruptedException e) {

@@ -65,6 +65,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <artifactId>bean-manager</artifactId>
             <version>${bean-manager.version}</version>
         </dependency>
+
+        <!-- JAXB dependencies which were removed from Java 11 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.0</version>
+        </dependency>
     </dependencies>
 
     <build>

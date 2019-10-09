@@ -19,7 +19,7 @@ package com.blobcity.db.master;
 import com.blobcity.db.cluster.ClusterNodesStore;
 import com.blobcity.db.cluster.messaging.ClusterMessaging;
 import com.blobcity.db.exceptions.ErrorCode;
-import com.blobcity.db.license.LicenseRules;
+import com.blobcity.db.features.FeatureRules;
 import com.blobcity.db.transaction.TransactionPhase;
 import com.blobcity.lib.database.bean.manager.factory.BeanConfigFactory;
 import com.blobcity.lib.query.Query;
@@ -78,12 +78,12 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
 
     protected void awaitCompletion() {
         try {
-            boolean acquired = semaphore.tryAcquire(LicenseRules.COMMIT_OP_TIMEOUT, TimeUnit.SECONDS); //waits 60 seconds
+            boolean acquired = semaphore.tryAcquire(FeatureRules.COMMIT_OP_TIMEOUT, TimeUnit.SECONDS); //waits 60 seconds
             if(!acquired) {
                 logger.warn("Request (" + query.getRequestId() + ") timed out while attempting to commit transaction");
                 rollback();
                 try {
-                    semaphore.tryAcquire(LicenseRules.COMMIT_OP_TIMEOUT, TimeUnit.SECONDS); //waits another 60 seconds for rollback
+                    semaphore.tryAcquire(FeatureRules.COMMIT_OP_TIMEOUT, TimeUnit.SECONDS); //waits another 60 seconds for rollback
                 } catch (InterruptedException e1) {
                     logger.warn("Request (" + query.getRequestId() + ") rollback interrupted after commit timeout");
                     complete(new Query().ack("0").errorCode("INTERNAL-ERROR with transaction handling"));
@@ -93,7 +93,7 @@ public abstract class AbstractCommitMaster implements MasterExecutable {
             logger.warn("Request (" + query.getRequestId() + ") interrupted while waiting for commit");
             rollback();
             try {
-                semaphore.tryAcquire(LicenseRules.COMMIT_OP_TIMEOUT, TimeUnit.SECONDS); //waits another 60 seconds for rollback
+                semaphore.tryAcquire(FeatureRules.COMMIT_OP_TIMEOUT, TimeUnit.SECONDS); //waits another 60 seconds for rollback
             } catch (InterruptedException e1) {
                 logger.warn("Request (" + query.getRequestId() + ") rollback interrupted after commit interruption");
                 complete(new Query().ack("0").errorCode("INTERNAL-ERROR with transaction handling"));

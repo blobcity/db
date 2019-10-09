@@ -18,7 +18,6 @@ package com.blobcity.db.code.webservices;
 
 import com.blobcity.code.WebServiceExecutor;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseRules;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,10 +34,6 @@ public class WebServiceExecutorBean implements WebServiceExecutor {
     @Override
     public JSONObject executePost(final String datatore, final String path, final JSONObject jsonBody, final JSONObject requestParmas) {
 
-        if(!LicenseRules.STORED_PROCEDURES) {
-            return new JSONObject("{\"error\":\"Current license does not permit this operation. Upgrade to enterprise edition\"}");
-        }
-
         try {
             return webServiceStore.getNewInstance(datatore, path).post(jsonBody, requestParmas);
         } catch (OperationException e) {
@@ -50,10 +45,6 @@ public class WebServiceExecutorBean implements WebServiceExecutor {
     }
 
     public JSONObject executeGet(final String datastore, final String path, final JSONObject requestParams) {
-
-        if(!LicenseRules.STORED_PROCEDURES) {
-            return new JSONObject("{\"error\":\"Current license does not permit this operation. Upgrade to enterprise edition\"}");
-        }
 
         try {
             return webServiceStore.getNewInstance(datastore, path).get(requestParams);

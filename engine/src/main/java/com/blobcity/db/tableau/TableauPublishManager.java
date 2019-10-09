@@ -18,17 +18,14 @@ package com.blobcity.db.tableau;
 
 import com.blobcity.db.bquery.InternalQueryBean;
 import com.blobcity.db.constants.BSql;
-import com.blobcity.db.constants.License;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
-import com.blobcity.db.license.LicenseRules;
+import com.blobcity.db.features.FeatureRules;
 import com.blobcity.lib.query.CollectionStorageType;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.Operation;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,7 +61,7 @@ public class TableauPublishManager {
     }
 
     public List<JSONObject> getAllAutoPublishSettings() throws OperationException {
-        if(!LicenseRules.TABLEAU_AUTO_PUBLISH) {
+        if(!FeatureRules.TABLEAU_AUTO_PUBLISH) {
             return Collections.emptyList();
         }
 
@@ -80,13 +77,13 @@ public class TableauPublishManager {
     }
 
     private void setAutoPublish(final String datastore, final Boolean on) throws OperationException {
-        if(!LicenseRules.TABLEAU_AUTO_PUBLISH) {
-            throw new OperationException(ErrorCode.INVALID_LICENSE, "Current license does not support " +
+        if(!FeatureRules.TABLEAU_AUTO_PUBLISH) {
+            throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Current version does not support " +
                     "tableau-auto-publish feature");
         }
 
-        if(!LicenseRules.TABLEAU_DS_LEVEL_AUTO_PUBLISH) {
-            throw new OperationException(ErrorCode.INVALID_LICENSE, "Current license does not support " +
+        if(!FeatureRules.TABLEAU_DS_LEVEL_AUTO_PUBLISH) {
+            throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Current version does not support " +
                     "tableau-auto-publish feature at datastore level. Attempt setting for individual collections");
         }
 
@@ -115,8 +112,8 @@ public class TableauPublishManager {
     }
 
     private void setAutoPublish(final String datastore, final String collection, final Boolean on) throws OperationException {
-        if(!LicenseRules.TABLEAU_AUTO_PUBLISH) {
-            throw new OperationException(ErrorCode.INVALID_LICENSE, "Current license does not support " +
+        if(!FeatureRules.TABLEAU_AUTO_PUBLISH) {
+            throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Current version does not support " +
                     "tableau-auto-publish feature");
         }
 

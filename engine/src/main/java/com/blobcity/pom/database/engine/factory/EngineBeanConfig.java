@@ -94,7 +94,6 @@ import com.blobcity.db.lang.datatypes.converters.IntConverter;
 import com.blobcity.db.lang.datatypes.converters.LongConverter;
 import com.blobcity.db.lang.datatypes.converters.StringConverter;
 import com.blobcity.db.lang.datatypes.converters.TypeConverterFactory;
-import com.blobcity.db.license.LicenseBean;
 import com.blobcity.db.locks.MasterLockBean;
 import com.blobcity.db.locks.RecordLockBean;
 import com.blobcity.db.locks.TransactionLocking;
@@ -180,13 +179,6 @@ public class EngineBeanConfig {
         logger.trace("Creating an instance of ConfigBean");
 
         return new ConfigBean();
-    }
-
-    @Bean
-    public LicenseBean licenseBean() { // startup bean
-        logger.trace("Creating an instance of LicenseBean");
-
-        return new LicenseBean();
     }
 
     @Bean

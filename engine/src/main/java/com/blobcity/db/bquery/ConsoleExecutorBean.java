@@ -25,16 +25,13 @@ import com.blobcity.db.cluster.nodes.NodeManager;
 import com.blobcity.db.code.CodeExecutor;
 import com.blobcity.db.code.CodeLoader;
 import com.blobcity.db.config.ConfigBean;
-import com.blobcity.db.config.ConfigProperties;
-import com.blobcity.db.constants.License;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.export.ExportType;
 import com.blobcity.db.ftp.FtpServiceManager;
 import com.blobcity.db.lang.columntypes.FieldType;
 import com.blobcity.db.lang.columntypes.FieldTypeFactory;
-import com.blobcity.db.license.LicenseBean;
-import com.blobcity.db.license.LicenseRules;
+import com.blobcity.db.features.FeatureRules;
 import com.blobcity.db.mapreduce.MapReduceExecutor;
 import com.blobcity.db.mapreduce.MapReduceJobManager;
 import com.blobcity.db.mapreduce.MapReduceOutputImporter;
@@ -124,8 +121,6 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
     @Autowired @Lazy
     private BSqlIndexManager indexManager;
     @Autowired @Lazy
-    private LicenseBean licenseBean;
-    @Autowired @Lazy
     private BSqlMemoryManagerOld memoryManager;
     @Autowired @Lazy
     private MapReduceExecutor mapReduceExecutor;
@@ -194,7 +189,7 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
         logger.debug("Console Query (" + queryId + "): " + query);
 
         /* Check if the user is not root and is attempt to execute a root user only operation */
-        if(!LicenseRules.BYPASS_ROOT_ONLY && !user.equals("root")){
+        if(!FeatureRules.BYPASS_ROOT_ONLY && !user.equals("root")){
             switch(elements[0]) {
                 case "list-ds":
                 case "add-node":
@@ -224,9 +219,6 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                     break;
                 case "node-id":
                     response = nodeId(elements);
-                    break;
-                case "apply-license":
-                    response = applyLicense(elements);
                     break;
                 case "cluster-status":
                     response = clusterStatus();
@@ -599,12 +591,6 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             default:
                 throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Format for add-node command is> add-node <node-id> <ip-address>");
         }
-    }
-
-    private String applyLicense(String[] elements) throws OperationException {
-        String license = elements[1];
-        licenseBean.applyLicense(license);
-        return "License applied";
     }
 
     private String clusterStatus() {
@@ -1048,7 +1034,7 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
     }
 
     private String listDS(String[] elements) throws OperationException {
-        if(!LicenseRules.ALLOW_LIST_DS) {
+        if(!FeatureRules.ALLOW_LIST_DS) {
             throw new OperationException(ErrorCode.FEATURE_RESTRICTED, "you do not have necessary permissions to run list-ds");
         }
 
@@ -1079,10 +1065,6 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
     }
 
     private String queryStats(String[] elements) throws OperationException {
-        if (!LicenseRules.CLI_QUERY_ANALYSER) {
-            throw new OperationException(ErrorCode.FEATURE_RESTRICTED);
-        }
-
         if (elements.length == 1) {
             throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Database name missing");
         }

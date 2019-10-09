@@ -21,8 +21,8 @@ import com.blobcity.db.bsql.BSqlDataManager;
 import com.blobcity.db.bsql.BSqlCollectionManager;
 import com.blobcity.db.bsql.BSqlIndexManager;
 import com.blobcity.db.cache.QueryResultCache;
+import com.blobcity.db.features.FeatureRules;
 import com.blobcity.db.lang.columntypes.FieldType;
-import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.schema.beans.SchemaManager;
 import com.blobcity.db.schema.beans.SchemaStore;
 import com.blobcity.db.sql.processing.OnDiskAggregateHandling;
@@ -39,13 +39,11 @@ import com.blobcity.db.util.ConsumerUtil;
 import com.blobcity.json.JSON;
 import com.foundationdb.sql.StandardException;
 import com.foundationdb.sql.parser.*;
-import com.foundationdb.sql.types.TypeId;
 import com.foundationdb.sql.unparser.NodeToString;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.sun.corba.se.spi.orbutil.fsm.Guard;
 import org.apache.mina.util.ConcurrentHashSet;
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -141,9 +139,9 @@ public class SelectExecutor {
             }
 
             /* Load query result from cache if present in cache */
-            if(LicenseRules.QUERY_RESULT_CACHING) {
+            if(FeatureRules.QUERY_RESULT_CACHING) {
                 final String result = queryResultCache.get(sqlString);
-                if(result != null) {
+                if (result != null) {
                     logger.trace("Returning cached response for SQL query: " + sqlString);
                     return result;
                 }
@@ -361,7 +359,8 @@ public class SelectExecutor {
                 .put(BQueryParameters.PAYLOAD, result)
                 .put(BQueryParameters.TIME, executionTime)
                 .put(BQueryParameters.ROWS, result.size()).toString();
-        if(LicenseRules.QUERY_RESULT_CACHING) {
+
+        if(FeatureRules.QUERY_RESULT_CACHING) {
             queryResultCache.cache(ds, collection, sqlQuery, resultString);
         }
 

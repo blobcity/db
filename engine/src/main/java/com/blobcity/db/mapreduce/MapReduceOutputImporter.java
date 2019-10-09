@@ -25,7 +25,6 @@ import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.lang.columntypes.FieldType;
 import com.blobcity.db.lang.columntypes.FieldTypeFactory;
-import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.schema.AutoDefineTypes;
 import com.blobcity.db.schema.IndexTypes;
 import com.blobcity.db.schema.Schema;
@@ -334,8 +333,7 @@ public class MapReduceOutputImporter {
         //read column Mapping from the file.
         String[] cols = readColumnMapping(filePath);
         
-        //  update schema if allowed
-        if(schema.isFlexibleSchema() && LicenseRules.FLEXIBLE_SCHEMA){
+        if(schema.isFlexibleSchema()){
             updateSchema(app, table, cols);
         }
         schema = schemaManager.readSchema(app, table);

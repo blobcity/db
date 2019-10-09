@@ -17,7 +17,6 @@
 package com.blobcity.db.bsql;
 
 import com.blobcity.db.constants.BSql;
-import com.blobcity.db.constants.License;
 import com.blobcity.db.data.RowCountManager;
 import com.blobcity.db.exceptions.ErrorCode;
 import com.blobcity.db.exceptions.OperationException;
@@ -26,10 +25,8 @@ import com.blobcity.db.indexing.IndexFactory;
 import com.blobcity.db.indexing.IndexingStrategy;
 import com.blobcity.db.lang.columntypes.FieldType;
 import com.blobcity.db.lang.columntypes.FieldTypeFactory;
-import com.blobcity.db.license.LicenseRules;
 import com.blobcity.db.memory.collection.MemCollection;
 import com.blobcity.db.memory.collection.MemCollectionStoreBean;
-import com.blobcity.db.memory.old.MemoryTable;
 import com.blobcity.db.memory.old.MemoryTableStore;
 import com.blobcity.db.operations.OperationLogLevel;
 import com.blobcity.db.schema.*;
@@ -52,7 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.expression.Operation;
 import org.springframework.stereotype.Component;
 
 /**
