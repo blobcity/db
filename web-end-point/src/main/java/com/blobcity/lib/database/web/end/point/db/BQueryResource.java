@@ -79,8 +79,10 @@ public class BQueryResource {
             return "{\"ack\":\"0\", \"cause\":\"Invalid query format\"}";
         }
 
-        if(apiKey != null && !securityManager.verifyKey(apiKey)) {
-            return "{\"ack\":\"0\", \"cause\":\"Invalid credentials\"}";
+        if(apiKey != null) {
+            if(!securityManager.verifyKey(apiKey)) {
+                return "{\"ack\":\"0\", \"cause\":\"Invalid credentials\"}";
+            }
         } else if(!securityManager.verifyCredentials(username, password)) {
             return "{\"ack\":\"0\", \"cause\":\"Invalid credentials\"}";
         }
