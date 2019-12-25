@@ -26,6 +26,10 @@ import com.blobcity.db.exceptions.OperationException;
 import com.blobcity.db.lang.Operators;
 import com.blobcity.db.memory.records.JsonRecord;
 import com.blobcity.db.requests.RequestHandlingBean;
+import com.blobcity.db.sql.util.PathUtil;
+import com.blobcity.db.watchservice.handlers.DefaultReader;
+import com.blobcity.db.watchservice.handlers.GenericFileReader;
+import com.blobcity.db.watchservice.handlers.ImageReader;
 import com.blobcity.lib.data.Record;
 import com.blobcity.lib.database.bean.manager.factory.ModuleApplicationContextHolder;
 import com.blobcity.lib.query.Query;
@@ -217,7 +221,8 @@ public class FolderWatchService{
                     startTailFile(filePath, false, interpreter);
                     break;
                 case FILE:
-                    readWholeFile(filePath, interpreter);
+                    processFile(filePath, interpreter);
+//                    readWholeFile(filePath, interpreter); //original code before adding custom processors
                     break;
                 case FILE_INTERPRETED:
                     readWholeFileInterpreted(filePath, interpreter);
@@ -310,6 +315,27 @@ public class FolderWatchService{
         fileWatchService.setOptions(filePath, this.datastore, this.collection, startFromEnd, interpreter);
         fileWatchService.startService();
         fileWatchServiceMap.put(filePath, fileWatchService);
+    }
+
+    public void processFile(final String filePath, final String interpreter) {
+        final String internalFolderPath = this.folderPath.replace(PathUtil.datastoreFtpFolder(this.datastore), "");
+        GenericFileReader reader;
+        if(filePath.endsWith(".csv")) {
+            reader = new DefaultReader(internalFolderPath, filePath); //TODO: Change this
+        } else if(filePath.endsWith(".json")) {
+            reader = new DefaultReader(internalFolderPath, filePath); //TODO: Change this
+        } else if(filePath.endsWith(".png")
+                || filePath.endsWith(".jpg")
+                || filePath.endsWith(".jpeg")
+                || filePath.endsWith(".gif")) {
+            reader = new ImageReader(internalFolderPath, filePath);
+        } else {
+            reader = new DefaultReader(internalFolderPath, filePath);
+        }
+        JSONObject jsonRepresentation = reader.getJsonRepresentation();
+        logger.debug(filePath + " " + datastore + "." + collection+ ": " + jsonRepresentation.toString());
+        Query query = new Query().insertQuery(datastore, collection, Arrays.asList(new Record[]{new JsonRecord(jsonRepresentation)}), RecordType.JSON);
+        requestHandlingBean.newRequest(query);
     }
 
     public void readWholeFile(final String filePath, final String interpreter) {
