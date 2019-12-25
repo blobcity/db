@@ -27,6 +27,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.blobcity.lib.database.bean.manager.interfaces.security.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -43,6 +45,7 @@ public class SqlResource {
 
     private final SqlExecutor sqlExecutorBean;
     private final RequestStore requestStore;
+    private final SecurityManager securityManager;
     private final Logger logger;
 
     public SqlResource() {
@@ -50,6 +53,7 @@ public class SqlResource {
         ApplicationContext context = BeanConfigFactory.getConfigBean("com.blobcity.pom.database.engine.factory.EngineBeanConfig");
         this.sqlExecutorBean = context.getBean(SqlExecutor.class);
         this.requestStore = (RequestStore) context.getBean("RequestStoreBean");
+        this.securityManager = (SecurityManager) context.getBean("SecurityManagerBean");
     }
 
     @GET
@@ -73,6 +77,8 @@ public class SqlResource {
             final String username,
             @FormParam(value = "password")
             final String password,
+            @FormParam(value = "key")
+            final String apiKey,
             @FormParam(value = "ds")
             final String db,
             @FormParam(value = "q")
@@ -82,8 +88,18 @@ public class SqlResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("All of the parameters: username, password, db, q - are required").build();
         }
 
+        if(apiKey != null) {
+            if(!securityManager.verifyKey(apiKey)) {
+                return Response.ok("{\"ack\":\"0\", \"cause\":\"Invalid credentials\"}", MediaType.APPLICATION_JSON).build();
+            }
+        } else if(!securityManager.verifyCredentials(username, password)) {
+            return Response.ok("{\"ack\":\"0\", \"cause\":\"Invalid credentials\"}", MediaType.APPLICATION_JSON).build();
+        }
+
         final long startTime = System.currentTimeMillis();
+//        final String response = sqlExecutorBean.runQuery("internal", username, password, db, queryPayload);
         final String response = sqlExecutorBean.runQuery("internal", username, password, db, queryPayload);
+//        sqlExecutorBean.run
         final long executionTime = System.currentTimeMillis() - startTime;
         logger.debug("User: \"{}\"\n"
                 + "DB: \"{}\"\n"

@@ -134,6 +134,8 @@ public class OnDiskWhereHandling {
                 return toSet(keys);
             case NodeTypes.IN_LIST_OPERATOR_NODE:
                 return processIn(ds, collection, columns, whereClause);
+            case NodeTypes.BINARY_PLUS_OPERATOR_NODE:
+                throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "+ operator in SQL query not yet supported");
             default:
                 throw new OperationException(ErrorCode.OPERATION_NOT_SUPPORTED, "Unsupported clause : " + whereClause.toString());
         }

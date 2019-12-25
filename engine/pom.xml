@@ -374,9 +374,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </dependency>
 
         <dependency>
-            <groupId>com.github.blobcity</groupId>
+            <!--<groupId>com.github.blobcity</groupId>-->
+            <!--<artifactId>db-java-adapter</artifactId>-->
+            <!--<version>1.2.11</version>-->
+
+            <groupId>com.blobcity</groupId>
             <artifactId>db-java-adapter</artifactId>
-            <version>f0d45e7186</version>
+            <version>1.2.11</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.json</groupId>
