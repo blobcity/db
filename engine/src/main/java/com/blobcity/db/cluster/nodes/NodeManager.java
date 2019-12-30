@@ -118,6 +118,10 @@ public class NodeManager {
         }
     }
 
+    public void addNode(final String nodeId, final String ip, final String port) throws OperationException {
+        //TODO: Implement add node operation over a custom port
+    }
+
     public void removeNode(final String nodeId, final boolean graceful) throws OperationException {
         try {
             UUID.fromString(nodeId);

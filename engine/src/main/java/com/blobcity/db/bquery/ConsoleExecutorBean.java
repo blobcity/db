@@ -603,6 +603,7 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
     private String addNode(String[] elements) throws OperationException {
         final String nodeId;
         final String ipAddress;
+        final String port;
 
         switch (elements.length) {
             /* add-node <node-id> */
@@ -614,6 +615,12 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             case 3:
                 nodeId = elements[1];
                 ipAddress = elements[2];
+                nodeManager.addNode(nodeId, ipAddress);
+                return "Node " + nodeId + "," + ipAddress + " successfully added";
+            case 4:
+                nodeId = elements[1];
+                ipAddress = elements[2];
+                port = elements[3];
                 nodeManager.addNode(nodeId, ipAddress);
                 return "Node " + nodeId + "," + ipAddress + " successfully added";
             default:
