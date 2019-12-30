@@ -298,6 +298,9 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                 case "view-collection":
                     response = viewTable(elements);
                     break;
+                case "view-ds":
+                    response = viewDs(elements);
+                    break;
                 case "list-tables":
                 case "list-collections":
                     response = listTables(elements);
@@ -1240,6 +1243,46 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
             if (tmp.getName().equals(schema.getPrimary())) collectionInfo.append("\t\tPRIMARY");
             collectionInfo.append("\n");
         }
+        return collectionInfo.toString();
+    }
+
+    private String viewDs(String[] elements) throws OperationException {
+        if (elements.length != 2) {
+            throw new OperationException(ErrorCode.INVALID_QUERY_FORMAT, "Invalid number of arguments provided");
+        }
+        final String datastore = elements[1];
+        if (!datastoreManager.exists(datastore))
+            throw new OperationException(ErrorCode.DATASTORE_INVALID);
+
+        List<String> collections = collectionManager.listTables(datastore);
+        Collections.sort(collections);
+
+        StringBuilder collectionInfo = new StringBuilder("\n");
+        collections.forEach(collection -> {
+            try {
+                Schema schema = schemaStore.getSchema(datastore, collection);
+                collectionInfo.append("collection:\t").append(collection).append("\n")
+                        .append("replication-type:\t").append(schema.getReplicationType().toString()).append("\n")
+                        .append("replication-factor:\t").append(schema.getReplicationFactor()).append("\n")
+                        .append("table-type:\t\t").append(schema.getTableType().toString()).append("\n")
+                        .append("flexible-schema:\t").append(schema.isFlexibleSchema()).append("\n")
+                        .append("colummns:\n")
+                        .append("\tAuto-define\tIndex\t\tType\t\tName\n");
+                for (Column tmp : schema.getColumnMap().values()) {
+                    collectionInfo.append("\t")
+                            .append(tmp.getAutoDefineType().getText()).append("\t\t")
+                            .append(tmp.getIndexType().getText()).append("\t\t")
+                            .append(tmp.getFieldType().getType().toString()).append("\t\t")
+                            .append(tmp.getName()).append("\t");
+                    if (tmp.getName().equals(schema.getPrimary())) collectionInfo.append("\t\tPRIMARY");
+                    collectionInfo.append("\n");
+                }
+                collectionInfo.append("\n");
+            } catch(OperationException ex) {
+                //do nothing
+            }
+        });
+
         return collectionInfo.toString();
     }
 
