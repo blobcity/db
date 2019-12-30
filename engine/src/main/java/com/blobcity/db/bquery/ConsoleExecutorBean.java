@@ -299,6 +299,7 @@ public class ConsoleExecutorBean implements ConsoleExecutor {
                     response = viewTable(elements);
                     break;
                 case "view-ds":
+                case "view-datastore":
                     response = viewDs(elements);
                     break;
                 case "list-tables":
