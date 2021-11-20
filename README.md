@@ -158,7 +158,7 @@ BlobCity is a winner of Economic Times Power of Ideas (Season 2), is funded by C
 
 # Docs
 
-[https://docs.blobcity.com](https://docs.blobcity.com)
+[https://docs.db.blobcity.com](https://docs.db.blobcity.com)
 
 # Contribute
 
