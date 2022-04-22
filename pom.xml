@@ -31,7 +31,7 @@
         <tableau.version>${project.version}</tableau.version>
         <!--Dependency versions-->
         <!--<spring.version>4.3.6.RELEASE</spring.version>-->
-        <spring.version>5.1.7.RELEASE</spring.version>
+        <spring.version>5.3.19</spring.version>
         <logging.slf4j-api.version>1.7.26</logging.slf4j-api.version>
             <!--<logging.slf4j-api.version>1.7.14</logging.slf4j-api.version>-->
         <logging.jcl-over-slf4j.version>1.7.26</logging.jcl-over-slf4j.version>
