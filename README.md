@@ -1,11 +1,10 @@
-<a href="https://www.blobcity.com"><img src="https://blobcity.com/blobcity-logo.png" height="60"/></a>
+<a href="https://www.blobcity.com"><img src="https://signup.blobcity.com/assets/svg/logos/logo.svg" height="60"/></a>
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://github.com/blobcity/db/blob/master/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![GitHub issues](https://img.shields.io/github/issues/blobcity/db.svg)](https://github.com/blobcity/db/issues)
 [![Generic badge](https://img.shields.io/badge/docs-read-blue.svg)](https://docs.db.blobcity.com)
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:support@blobcity.com)
-[![Slack](https://slack.blobcity.com/badge.svg)](https://slack.blobcity.com)
 
 # Description
 
