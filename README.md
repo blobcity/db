@@ -151,10 +151,6 @@ Look at some of the [best practices](https://docs.blobcity.com/docs/disk-storage
 # Acceleration
 BlobCity is a winner of Economic Times Power of Ideas (Season 2), is funded by CIIE IIM-Ahmedabad and is a graduate from NetApp Excellerator (Cohort #2). 
 
-<a href="https://ciie.co"><img src="https://www.blobcity.com/assets/img/ciie-logo.png" height="60"/></a>
-&nbsp;&nbsp;
-<a href="https://startup.netapp.in"><img src="https://www.blobcity.com/assets/img/netapp-excellerator.png" height="60"/></a>
-
 # Docs
 
 [https://docs.db.blobcity.com](https://docs.db.blobcity.com)
