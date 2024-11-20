@@ -52,7 +52,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.19.3</version>
+            <version>1.19.4</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.sun.jersey.contribs/jersey-multipart -->
         <dependency>
