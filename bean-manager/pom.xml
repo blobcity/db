@@ -63,7 +63,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <!--<version>r05</version>-->
-            <version>28.0-jre</version>
+            <version>29.0-jre</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
